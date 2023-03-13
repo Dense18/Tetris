@@ -25,6 +25,8 @@ class Tetris(State):
 
         self.lines_cleared = 0
 
+        self.game_over = False
+
         self.nextPieceText = "Next Piece:"
         self.holdPieceText = "Hold Piece:"
         self.score_text = "Lines cleared:"
@@ -105,6 +107,10 @@ class Tetris(State):
         if self.tetromino.has_landed:
             self.accelerate = False
             self.has_hold = False
+            if self.tetromino.blocks[0].pos.y == INITIAL_TETROMINO_OFFSET[1]:
+                self.game_over = True
+                self.reset()
+                return
             self.place_tetromino()
             self.tetromino = Tetromino(self, self.bag.pop(0))
             if len(self.bag) <= 1:
@@ -114,6 +120,9 @@ class Tetris(State):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 self.handle_key_pressed(event.key)
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_a:
+                    self.accelerate = False
 
     #     self.handle_key_pressed(pygame.key.get_pressed())
     
@@ -145,7 +154,9 @@ class Tetris(State):
             self.hard_drop()
         elif key == pygame.K_c:
             self.hold()
-     
+    
+    def reset(self):
+        self.__init__(self.app)
     """
         Drawing Fuctions
     """
@@ -155,7 +166,6 @@ class Tetris(State):
         self.draw_grid()
 
         self.draw_side_bar()
-        print(self.lines_cleared)
     
     def draw_field(self):
         for row in range(len(self.field_arr)):
@@ -170,9 +180,6 @@ class Tetris(State):
         self.draw_hold_piece()
         self.draw_score()
 
-
-        # nextTetromino.setPivotAbsPosition((nextItemRect.x - 10, nextItemRect.y + 30))
-        # nextTetromino.drawAbsolute(self.app.screen)
     def draw_next_piece(self):
         nextItemTextObj = self.textFont.render(self.nextPieceText, 1, "black")
         nextItemRect = nextItemTextObj.get_rect()

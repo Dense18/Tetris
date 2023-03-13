@@ -56,11 +56,3 @@ class Tetromino:
 
     def draw(self, screen):
         [block.draw(screen) for block in self.blocks]
-    
-    def drawAbsolute(self, screen):
-        [block.drawAbsolute(screen) for block in self.blocks]
-    
-    def setPivotAbsPosition(self, pos):
-        pos = vec(pos)
-        for block in self.blocks: 
-            block.absolutePosition += pos * BLOCK_SIZE

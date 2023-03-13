@@ -17,10 +17,6 @@ class Block:
         pygame.draw.rect(screen, self.color, ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)),border_radius=8)
         pygame.draw.rect(screen, "black", ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
     
-    def drawAbsolute(self, screen):
-        pygame.draw.rect(screen, self.color, ((self.absolutePosition),(BLOCK_SIZE, BLOCK_SIZE)),border_radius=8)
-        pygame.draw.rect(screen, "black", ((self.absolutePosition),(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
-    
     def rotate(self, pivot):
         #TODO: Implement this urself
         translated = self.pos - pivot
