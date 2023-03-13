@@ -20,12 +20,24 @@ class Tetris(State):
         self.bag = random.sample(list(Tetromino.SHAPE.keys()), len(Tetromino.SHAPE.keys()))
         self.tetromino = Tetromino(self, self.bag.pop(0))
 
+        self.hold_piece_shape = None
+        self.has_hold = False
+
         self.nextPieceText = "Next Piece"
+        self.holdPieceText = "Hold Piece"
         self.textSize = 30
         self.textFont = pygame.font.SysFont("comicsans", self.textSize)
     
     def add_new_bag(self):
         self.bag += random.sample(list(Tetromino.SHAPE.keys()), len(Tetromino.SHAPE.keys()))
+    
+    def hold(self):
+        if not self.has_hold:
+            self.has_hold = True
+            if not self.hold_piece_shape:
+                self.hold_piece_shape, self.tetromino = self.tetromino.shape, Tetromino(self, self.bag.pop())
+                return
+            self.hold_piece_shape, self.tetromino = self.tetromino.shape, Tetromino(self, self.hold_piece_shape)
 
     # def check_full_line(self):
     #     lines_cleared = 0
@@ -88,6 +100,7 @@ class Tetris(State):
 
         if self.tetromino.has_landed:
             self.accelerate = False
+            self.has_hold = False
             self.place_tetromino()
             self.tetromino = Tetromino(self, self.bag.pop(0))
             if len(self.bag) <= 1:
@@ -111,6 +124,9 @@ class Tetris(State):
     #         self.accelerate = True
 
     def hard_drop(self):
+        """
+            Move the current tetromino down until it has landed
+        """
         while not self.tetromino.has_landed:
             self.tetromino.update()
 
@@ -123,6 +139,8 @@ class Tetris(State):
             self.accelerate = True
         elif key == pygame.K_SPACE:
             self.hard_drop()
+        elif key == pygame.K_c:
+            self.hold()
      
     """
         Drawing Fuctions
@@ -147,13 +165,24 @@ class Tetris(State):
         nextItemTextObj = self.textFont.render(self.nextPieceText, 1, "black")
         nextItemRect = nextItemTextObj.get_rect()
         nextItemRect.center = (BOARD_WIDTH + SIDEBAR_WIDTH//2, BOARD_HEIGHT//2)
+        self.app.screen.blit(nextItemTextObj, nextItemRect)
 
-        nextTetromino = Tetromino(self, self.bag[0])
-        nextTetromino.move((7,13))
-        nextTetromino.draw(self.app.screen)
+        hold_item_text_obj = self.textFont.render(self.holdPieceText, 1, "black")
+        hold_item_rect = hold_item_text_obj.get_rect()
+        hold_item_rect.center = (BOARD_WIDTH + SIDEBAR_WIDTH//2, BOARD_HEIGHT//5)
+        self.app.screen.blit(hold_item_text_obj, hold_item_rect)
+
+        next_tetromino = Tetromino(self, self.bag[0])
+        next_tetromino.move((7,13))
+        next_tetromino.draw(self.app.screen)
+
+        if self.hold_piece_shape != None:
+            hold_tetromino = Tetromino(self, self.hold_piece_shape)
+            hold_tetromino.move((7, 7))
+            hold_tetromino.draw(self.app.screen)
+
         # nextTetromino.setPivotAbsPosition((nextItemRect.x - 10, nextItemRect.y + 30))
         # nextTetromino.drawAbsolute(self.app.screen)
-        self.app.screen.blit(nextItemTextObj, nextItemRect)
     
     def draw_grid(self):
         for row in range(FIELD_HEIGHT):
