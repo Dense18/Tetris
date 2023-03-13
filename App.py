@@ -47,7 +47,7 @@ class App:
         pass
 
     def draw(self):
-        pygame.draw.rect(self.screen, (40,40,40), (0,0,self.screen.get_width(), self.screen.get_height()))
+        pygame.draw.rect(self.screen, BG_COLOR, (0,0,self.screen.get_width(), self.screen.get_height()))
         self.tetris.draw()
         pygame.display.update()
         pass

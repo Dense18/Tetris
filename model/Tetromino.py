@@ -39,6 +39,10 @@ class Tetromino:
         if direction == "down":
             self.has_landed = True
     
+    def move(self, pos):
+        for block in self.blocks:
+            block.pos += pos
+
     def rotate(self):
         pivot = self.blocks[0].pos
         new_position = [block.rotate(pivot) for block in self.blocks]
@@ -52,3 +56,11 @@ class Tetromino:
 
     def draw(self, screen):
         [block.draw(screen) for block in self.blocks]
+    
+    def drawAbsolute(self, screen):
+        [block.drawAbsolute(screen) for block in self.blocks]
+    
+    def setPivotAbsPosition(self, pos):
+        pos = vec(pos)
+        for block in self.blocks: 
+            block.absolutePosition += pos * BLOCK_SIZE

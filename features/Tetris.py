@@ -9,7 +9,6 @@ class Tetris(State):
     """
         Class handling the execution of a Tetris game
     """
-    # key_dict = {pygame.K_LEFT: "left", pygame.K_RIGHT: "right", pygame.K_UP: "up", pygame.K_DOWN: "down"}
     key_dict = {pygame.K_LEFT: "left", pygame.K_RIGHT: "right", pygame.K_DOWN: "down"}
 
     def __init__(self, app):
@@ -19,7 +18,11 @@ class Tetris(State):
         self.accelerate = False
 
         self.bag = random.sample(list(Tetromino.SHAPE.keys()), len(Tetromino.SHAPE.keys()))
-        self.tetromino = Tetromino(self, self.bag.pop())
+        self.tetromino = Tetromino(self, self.bag.pop(0))
+
+        self.nextPieceText = "Next Piece"
+        self.textSize = 30
+        self.textFont = pygame.font.SysFont("comicsans", self.textSize)
     
     def add_new_bag(self):
         self.bag += random.sample(list(Tetromino.SHAPE.keys()), len(Tetromino.SHAPE.keys()))
@@ -57,7 +60,6 @@ class Tetris(State):
     
     def check_full_line(self):
         line = len(self.field_arr) - 1
-        print(line)
         for row in range(len(self.field_arr) - 1, -1, -1):
             count = 0
             for col in range(len(self.field_arr[row])):
@@ -87,7 +89,7 @@ class Tetris(State):
         if self.tetromino.has_landed:
             self.accelerate = False
             self.place_tetromino()
-            self.tetromino = Tetromino(self, self.bag.pop())
+            self.tetromino = Tetromino(self, self.bag.pop(0))
             if len(self.bag) <= 1:
                 self.add_new_bag()
 
@@ -115,26 +117,44 @@ class Tetris(State):
             self.tetromino.rotate()
         elif key == pygame.K_a:
             self.accelerate = True
-
+    
+    def next_tetromino_shape(self):
+        return self.bag[0]
+    """
+        Drawing Fuctions
+    """
     def draw(self):
         self.tetromino.draw(self.app.screen)
         self.draw_field()
         self.draw_grid()
-        pass
 
+        self.draw_side_bar()
+        pass
+    
     def draw_field(self):
         for row in range(len(self.field_arr)):
             for col in range(len(self.field_arr[row])):
                 if self.field_arr[row][col] != 0:
                     self.field_arr[row][col].draw(self.app.screen)
+    
+    def draw_side_bar(self):
+        pygame.draw.rect(self.app.screen, (100,200,0), (BOARD_WIDTH, 0, SIDEBAR_WIDTH, BOARD_HEIGHT))
 
-    # def draw_grid(self):
-    #     for row in range(FIELD_HEIGHT):
-    #         for col in range(FIELD_WIDTH):
-    #             pygame.draw.rect(self.app.screen, "black", (col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
+        nextItemTextObj = self.textFont.render(self.nextPieceText, 1, "black")
+        nextItemRect = nextItemTextObj.get_rect()
+        nextItemRect.center = (BOARD_WIDTH + SIDEBAR_WIDTH//2, BOARD_HEIGHT//2)
+
+        nextTetromino = Tetromino(self, self.next_tetromino_shape())
+        nextTetromino.move((7,13))
+        nextTetromino.draw(self.app.screen)
+        # nextTetromino.setPivotAbsPosition((nextItemRect.x - 10, nextItemRect.y + 30))
+        # nextTetromino.drawAbsolute(self.app.screen)
+        self.app.screen.blit(nextItemTextObj, nextItemRect)
     
     def draw_grid(self):
         for row in range(FIELD_HEIGHT):
             pygame.draw.line(self.app.screen, "black", (0, row * BLOCK_SIZE), (BOARD_WIDTH, row * BLOCK_SIZE), 1)
             for col in range(FIELD_WIDTH):
                 pygame.draw.line(self.app.screen, "black", (col * BLOCK_SIZE, 0), (col * BLOCK_SIZE, BOARD_HEIGHT), 1)
+        
+        pygame.draw.line(self.app.screen, "black", (10 * BLOCK_SIZE, 0), (10 * BLOCK_SIZE, BOARD_HEIGHT), 1)
