@@ -23,8 +23,11 @@ class Tetris(State):
         self.hold_piece_shape = None
         self.has_hold = False
 
-        self.nextPieceText = "Next Piece"
-        self.holdPieceText = "Hold Piece"
+        self.lines_cleared = 0
+
+        self.nextPieceText = "Next Piece:"
+        self.holdPieceText = "Hold Piece:"
+        self.score_text = "Lines cleared:"
         self.textSize = 30
         self.textFont = pygame.font.SysFont("comicsans", self.textSize)
     
@@ -84,6 +87,7 @@ class Tetris(State):
             if count < len(self.field_arr[row]):
                 line -= 1
             else:
+                self.lines_cleared += 1
                 for i in range(len(self.field_arr[row])):
                     self.field_arr[line][i] = 0
 
@@ -151,7 +155,7 @@ class Tetris(State):
         self.draw_grid()
 
         self.draw_side_bar()
-        pass
+        print(self.lines_cleared)
     
     def draw_field(self):
         for row in range(len(self.field_arr)):
@@ -162,28 +166,45 @@ class Tetris(State):
     def draw_side_bar(self):
         pygame.draw.rect(self.app.screen, (100,200,0), (BOARD_WIDTH, 0, SIDEBAR_WIDTH, BOARD_HEIGHT))
 
+        self.draw_next_piece()
+        self.draw_hold_piece()
+        self.draw_score()
+
+
+        # nextTetromino.setPivotAbsPosition((nextItemRect.x - 10, nextItemRect.y + 30))
+        # nextTetromino.drawAbsolute(self.app.screen)
+    def draw_next_piece(self):
         nextItemTextObj = self.textFont.render(self.nextPieceText, 1, "black")
         nextItemRect = nextItemTextObj.get_rect()
         nextItemRect.center = (BOARD_WIDTH + SIDEBAR_WIDTH//2, BOARD_HEIGHT//2)
         self.app.screen.blit(nextItemTextObj, nextItemRect)
 
+        next_tetromino = Tetromino(self, self.bag[0])
+        next_tetromino.move((7,13))
+        next_tetromino.draw(self.app.screen)
+    
+    def draw_hold_piece(self):
         hold_item_text_obj = self.textFont.render(self.holdPieceText, 1, "black")
         hold_item_rect = hold_item_text_obj.get_rect()
         hold_item_rect.center = (BOARD_WIDTH + SIDEBAR_WIDTH//2, BOARD_HEIGHT//5)
         self.app.screen.blit(hold_item_text_obj, hold_item_rect)
-
-        next_tetromino = Tetromino(self, self.bag[0])
-        next_tetromino.move((7,13))
-        next_tetromino.draw(self.app.screen)
 
         if self.hold_piece_shape != None:
             hold_tetromino = Tetromino(self, self.hold_piece_shape)
             hold_tetromino.move((7, 7))
             hold_tetromino.draw(self.app.screen)
 
-        # nextTetromino.setPivotAbsPosition((nextItemRect.x - 10, nextItemRect.y + 30))
-        # nextTetromino.drawAbsolute(self.app.screen)
-    
+    def draw_score(self):
+        score_text_obj = self.textFont.render(self.score_text, 1, "black")
+        score_text_rect = score_text_obj.get_rect()
+        score_text_rect.center = (BOARD_WIDTH + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.2)
+        self.app.screen.blit(score_text_obj, score_text_rect)
+
+        score_obj = self.textFont.render(str(self.lines_cleared), 1, "black")
+        score_rect = score_obj.get_rect()
+        score_rect.center = (BOARD_WIDTH + SIDEBAR_WIDTH//2, score_text_rect.bottom + 30)
+        self.app.screen.blit(score_obj, score_rect)
+
     def draw_grid(self):
         for row in range(FIELD_HEIGHT):
             pygame.draw.line(self.app.screen, "black", (0, row * BLOCK_SIZE), (BOARD_WIDTH, row * BLOCK_SIZE), 1)
