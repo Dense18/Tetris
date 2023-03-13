@@ -110,6 +110,10 @@ class Tetris(State):
     #     elif keys[pygame.K_DOWN]:
     #         self.accelerate = True
 
+    def hard_drop(self):
+        while not self.tetromino.has_landed:
+            self.tetromino.update()
+
     def handle_key_pressed(self, key):
         if key in list(self.key_dict.keys()):
             self.tetromino.update(self.key_dict[key])
@@ -117,9 +121,9 @@ class Tetris(State):
             self.tetromino.rotate()
         elif key == pygame.K_a:
             self.accelerate = True
-    
-    def next_tetromino_shape(self):
-        return self.bag[0]
+        elif key == pygame.K_SPACE:
+            self.hard_drop()
+     
     """
         Drawing Fuctions
     """
@@ -144,7 +148,7 @@ class Tetris(State):
         nextItemRect = nextItemTextObj.get_rect()
         nextItemRect.center = (BOARD_WIDTH + SIDEBAR_WIDTH//2, BOARD_HEIGHT//2)
 
-        nextTetromino = Tetromino(self, self.next_tetromino_shape())
+        nextTetromino = Tetromino(self, self.bag[0])
         nextTetromino.move((7,13))
         nextTetromino.draw(self.app.screen)
         # nextTetromino.setPivotAbsPosition((nextItemRect.x - 10, nextItemRect.y + 30))
