@@ -3,6 +3,7 @@ import pygame
 from features.State import State
 from model.Tetromino import Tetromino
 import random
+from copy import deepcopy
 
 class Tetris(State):
     """
@@ -23,38 +24,55 @@ class Tetris(State):
     def add_new_bag(self):
         self.bag += random.sample(list(Tetromino.SHAPE.keys()), len(Tetromino.SHAPE.keys()))
 
-    def check_full_line(self):
-        pass
-        # lines_cleared = 0
-        # row_index_cleared = -1
-        # has_cleared = False
-        # for row in range(len(self.field_arr) - 1, -1, -1):
-        #     flag = True
-        #     for col in range(len(self.field_arr[row])):
-        #         if not self.field_arr[row][col]: 
-        #             flag = False
-        #             break
-        #     if flag: 
-        #         if not has_cleared: 
-        #             has_cleared = True
-        #         lines_cleared += 1
-        #         if row_index_cleared == -1: 
-        #             row_index_cleared = row
+    # def check_full_line(self):
+    #     lines_cleared = 0
+    #     row_index_cleared = -1
+    #     has_cleared = False
+    #     for row in range(len(self.field_arr) - 1, -1, -1):
+    #         flag = True
+    #         for col in range(len(self.field_arr[row])):
+    #             if not self.field_arr[row][col]: 
+    #                 flag = False
+    #                 break
+    #         if flag: 
+    #             if not has_cleared: 
+    #                 has_cleared = True
+    #             lines_cleared += 1
+    #             if row_index_cleared == -1: 
+    #                 row_index_cleared = row
 
-        #         for col in range(len(self.field_arr[row])):
-        #             self.field_arr[row][col] = 0
+    #             for col in range(len(self.field_arr[row])):
+    #                 self.field_arr[row][col] = 0
 
-        # ## Move Block bottom if a line is cleared
-        # if has_cleared:
-        #     print(f"row indexed cleared: {row_index_cleared}")
-        #     print(f"lines cleared: {lines_cleared}")
+    #     ## Move Block bottom if a line is cleared
+    #     if has_cleared:
+    #         print(f"row indexed cleared: {row_index_cleared}")
+    #         print(f"lines cleared: {lines_cleared}")
             
-        #     for row in range(len(self.field_arr) - 1, -1, -1): 
-        #         for col in range(len(self.field_arr[row])):
-        #             if row < row_index_cleared:
-        #                 self.field_arr[row + lines_cleared][col] = self.field_arr[row][col]
-        #                 self.field_arr[row][col] = 0
-        
+    #         for row in range(len(self.field_arr) - 1, -1, -1): 
+    #             for col in range(len(self.field_arr[row])):
+    #                 if row < row_index_cleared:
+    #                     self.field_arr[row + lines_cleared][col] = self.field_arr[row][col]
+    #                     self.field_arr[row][col] = 0
+    
+    def check_full_line(self):
+        line = len(self.field_arr) - 1
+        print(line)
+        for row in range(len(self.field_arr) - 1, -1, -1):
+            count = 0
+            for col in range(len(self.field_arr[row])):
+                if self.field_arr[row][col]:
+                    count += 1
+                self.field_arr[line][col] = self.field_arr[row][col]
+                if self.field_arr[row][col]:
+                    self.field_arr[line][col].pos = vec(col, row)
+
+            if count < len(self.field_arr[row]):
+                line -= 1
+            else:
+                for i in range(len(self.field_arr[row])):
+                    self.field_arr[line][i] = 0
+
     def place_tetromino(self):
         for block in self.tetromino.blocks:
             x, y = int(block.pos.x), int(block.pos.y)
