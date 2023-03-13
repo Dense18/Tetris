@@ -15,4 +15,15 @@ WIDTH, HEIGHT = BOARD_WIDTH, BOARD_HEIGHT
 ANIMATION_INTERVAL = 150 #milliseconds
 ACCELERATE_INTERVAL = 15
 
+TETROMINO_COLOR = {
+        'T': (128,0,128), #Purple
+        'O': (255,255,0), #Yellow
+        'J': (0, 0, 255), #Blue
+        'L': (255,127,0), #Dark Orange
+        'I': (0,255,255), #Cyan
+        'S': (0,255,0), #Green
+        'Z': (255,0,0)#Red
+}
+
+
 

@@ -99,9 +99,9 @@ class Tetris(State):
             self.accelerate = True
 
     def draw(self):
-        self.draw_grid()
         self.tetromino.draw(self.app.screen)
         self.draw_field()
+        self.draw_grid()
         pass
 
     def draw_field(self):
@@ -110,7 +110,13 @@ class Tetris(State):
                 if self.field_arr[row][col] != 0:
                     self.field_arr[row][col].draw(self.app.screen)
 
+    # def draw_grid(self):
+    #     for row in range(FIELD_HEIGHT):
+    #         for col in range(FIELD_WIDTH):
+    #             pygame.draw.rect(self.app.screen, "black", (col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
+    
     def draw_grid(self):
         for row in range(FIELD_HEIGHT):
+            pygame.draw.line(self.app.screen, "black", (0, row * BLOCK_SIZE), (BOARD_WIDTH, row * BLOCK_SIZE), 1)
             for col in range(FIELD_WIDTH):
-                pygame.draw.rect(self.app.screen, "black", (col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
+                pygame.draw.line(self.app.screen, "black", (col * BLOCK_SIZE, 0), (col * BLOCK_SIZE, BOARD_HEIGHT), 1)

@@ -22,7 +22,7 @@ class Tetromino:
 
     def __init__(self, tetris, shape):
         self.shape = shape
-        self.blocks = [Block(self, pos) for pos in self.SHAPE[self.shape]]
+        self.blocks = [Block(self, pos, TETROMINO_COLOR[self.shape]) for pos in self.SHAPE[self.shape]]
         self.has_landed = False
         
         self.tetris = tetris
