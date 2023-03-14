@@ -6,6 +6,7 @@ import random
 from copy import deepcopy
 import os
 import time
+from features.TetrisUI import TetrisUI
 
 class Tetris(State):
     """
@@ -28,15 +29,8 @@ class Tetris(State):
         self.lines_cleared = 0
 
         self.game_over = False
-
-        self.dir = "down"
-
-        self.next_piece_text = "Next Piece:"
-        self.hold_piece_text = "Hold Piece:"
-        self.score_text = "Lines cleared:"
-        self.textSize = 30
-        self.textFont = pygame.font.SysFont("comicsans", self.textSize)
-
+        
+        self.ui = TetrisUI(self)
         """
             Delayed Autho Shift (in milliseconds)
         """
@@ -147,14 +141,12 @@ class Tetris(State):
         ## Check events
         for event in events:
             if event.type == pygame.KEYDOWN:
-                self.handle_key_pressed(event.key)
+                self.handle_key_down_pressed(event.key)
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_DOWN:
                     self.accelerate = False
-                if event.key in list(self.key_dict.keys()):
-                    self.dir = "down"
         
-        self.handle_key_pressed2(pygame.key.get_pressed())
+        self.handle_key_pressed(pygame.key.get_pressed())
 
     def hard_drop(self):
         """
@@ -171,13 +163,8 @@ class Tetris(State):
         while not tetromino.has_landed:
             tetromino.update()
 
-    def handle_key_pressed(self, key):
-        if key in list(self.key_dict.keys()):
-            pass
-            # pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
-            # self.tetromino.update(self.key_dict[key])
-            # self.dir = self.key_dict[key]
-        elif key == pygame.K_UP:
+    def handle_key_down_pressed(self, key):
+        if key == pygame.K_UP:
             self.rotate()
         elif key == pygame.K_x:
             self.rotate(-90)
@@ -188,7 +175,7 @@ class Tetris(State):
         elif key == pygame.K_c:
             self.hold()
     
-    def handle_key_pressed2(self, key_pressed):
+    def handle_key_pressed(self, key_pressed):
         if key_pressed[pygame.K_LEFT]:
             if not self.key_down_pressed:
                 self.tetromino.update("left")
@@ -248,66 +235,4 @@ class Tetris(State):
         Drawing Fuctions
     """
     def draw(self):
-        self.draw_grid()
-        self.tetromino.draw(self.app.screen)
-        self.draw_field()
-        self.draw_indication()
-
-        self.draw_side_bar()
-    
-    def draw_field(self):
-        for row in range(len(self.field_arr)):
-            for col in range(len(self.field_arr[row])):
-                if self.field_arr[row][col] != 0:
-                    self.field_arr[row][col].draw(self.app.screen)
-    
-    def draw_side_bar(self):
-        pygame.draw.rect(self.app.screen, (100,200,0), (BOARD_WIDTH, 0, SIDEBAR_WIDTH, BOARD_HEIGHT))
-
-        self.draw_next_piece()
-        self.draw_hold_piece()
-        self.draw_score()
-
-    def draw_next_piece(self):
-        nextItemTextObj = self.textFont.render(self.next_piece_text, 1, "black")
-        nextItemRect = nextItemTextObj.get_rect()
-        nextItemRect.center = (BOARD_WIDTH + SIDEBAR_WIDTH//2, BOARD_HEIGHT//2)
-        self.app.screen.blit(nextItemTextObj, nextItemRect)
-
-        next_tetromino = Tetromino(self, self.bag[0])
-        next_tetromino.move((7,13))
-        next_tetromino.draw(self.app.screen)
-    
-    def draw_hold_piece(self):
-        hold_item_text_obj = self.textFont.render(self.hold_piece_text, 1, "black")
-        hold_item_rect = hold_item_text_obj.get_rect()
-        hold_item_rect.center = (BOARD_WIDTH + SIDEBAR_WIDTH//2, BOARD_HEIGHT//6)
-        self.app.screen.blit(hold_item_text_obj, hold_item_rect)
-
-        if self.hold_piece_shape != None:
-            hold_tetromino = Tetromino(self, self.hold_piece_shape)
-            hold_tetromino.move((7, 7))
-            hold_tetromino.draw(self.app.screen)
-
-    def draw_score(self):
-        score_text_obj = self.textFont.render(self.score_text, 1, "black")
-        score_text_rect = score_text_obj.get_rect()
-        score_text_rect.center = (BOARD_WIDTH + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.2)
-        self.app.screen.blit(score_text_obj, score_text_rect)
-
-        score_obj = self.textFont.render(str(self.lines_cleared), 1, "black")
-        score_rect = score_obj.get_rect()
-        score_rect.center = (BOARD_WIDTH + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.1)
-        self.app.screen.blit(score_obj, score_rect)
-
-    def draw_indication(self):
-        tetro = self.get_hard_drop_indication()
-        tetro.draw(self.app.screen, True)
-        
-    def draw_grid(self):
-        for row in range(FIELD_HEIGHT):
-            pygame.draw.line(self.app.screen, "black", (0, row * BLOCK_SIZE), (BOARD_WIDTH, row * BLOCK_SIZE), 1)
-            for col in range(FIELD_WIDTH):
-                pygame.draw.line(self.app.screen, "black", (col * BLOCK_SIZE, 0), (col * BLOCK_SIZE, BOARD_HEIGHT), 1)
-        
-        pygame.draw.line(self.app.screen, "black", (10 * BLOCK_SIZE, 0), (10 * BLOCK_SIZE, BOARD_HEIGHT), 1)
+        self.ui.draw()
