@@ -26,10 +26,10 @@ class Block:
         pygame.draw.rect(screen, "black", ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
     
     
-    def rotate(self, pivot):
+    def rotate(self, pivot, degree = 90):
         #TODO: Implement this urself
         translated = self.pos - pivot
-        rotated = translated.rotate(90)
+        rotated = translated.rotate(degree)
         return rotated + pivot
     
     def is_collide(self, pos):

@@ -50,10 +50,25 @@ class Tetromino:
         for block in self.blocks:
             block.pos += pos
 
-    def rotate(self):
+    def rotate(self, degree = 90):
         pivot = self.blocks[0].pos
-        new_position = [block.rotate(pivot) for block in self.blocks]
+        new_position = [block.rotate(pivot, degree) for block in self.blocks]
 
+        if not self.is_collide(new_position):
+            for i, block in enumerate(self.blocks):
+                block.pos = new_position[i]
+            return
+        
+        ## Wall Kick
+
+        #Left
+        new_position = [vec(position.x - 1, position.y) for position in new_position]
+        if not self.is_collide(new_position):
+            for i, block in enumerate(self.blocks):
+                block.pos = new_position[i]
+            return
+        #Right
+        new_position = [vec(position.x + 1, position.y) for position in new_position]
         if not self.is_collide(new_position):
             for i, block in enumerate(self.blocks):
                 block.pos = new_position[i]

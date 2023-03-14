@@ -9,7 +9,7 @@ class Tetris(State):
     """
         Class handling the execution of a Tetris game
     """
-    key_dict = {pygame.K_LEFT: "left", pygame.K_RIGHT: "right", pygame.K_DOWN: "down"}
+    key_dict = {pygame.K_LEFT: "left", pygame.K_RIGHT: "right"}
 
     def __init__(self, app):
         self.app = app
@@ -123,7 +123,7 @@ class Tetris(State):
             if event.type == pygame.KEYDOWN:
                 self.handle_key_pressed(event.key)
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_a:
+                if event.key == pygame.K_DOWN:
                     self.accelerate = False
                 if event.key in list(self.key_dict.keys()):
                     self.dir = "down"
@@ -160,7 +160,9 @@ class Tetris(State):
             # self.dir = self.key_dict[key]
         elif key == pygame.K_UP:
             self.tetromino.rotate()
-        elif key == pygame.K_a:
+        elif key == pygame.K_x:
+            self.tetromino.rotate(-90)
+        elif key == pygame.K_DOWN:
             self.accelerate = True
         elif key == pygame.K_SPACE:
             self.hard_drop()
