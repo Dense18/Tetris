@@ -108,8 +108,11 @@ class Tetris(State):
                 for i in range(len(self.field_arr[row])):
                     self.field_arr[line][i] = 0
 
+        for row in range(len(self.field_arr) - 1):
+            for col in range(len(self.field_arr[row])):
+                if self.field_arr[row][col]: self.field_arr[row][col].pos = vec(col, row)
+
         if hasLineClear: 
-            # self.clear_line_sfx.play()
             pygame.mixer.Channel(SFX_CHANNEL).play(self.clear_line_sfx)
 
     def place_tetromino(self):
@@ -127,22 +130,20 @@ class Tetris(State):
     def update(self, events):
         trigger = [self.app.animation_flag, self.app.accelerate_event][self.accelerate]
         if trigger: 
-            self.tetromino.update()
+            if self.tetromino.update(): self.last_time_lock = self.current_milliseconds()
 
         if self.tetromino.has_landed:
-            # if time.time() * 1000 - self.last_time_lock < LOCK_DELAY:
-            #     self.last_time_lock = time.time() * 1000
-            #     return
-            pygame.mixer.Channel(SFX_CHANNEL).play(self.land_sfx)
-            self.accelerate = False
-            self.has_hold = False
-            if self.tetromino.blocks[0].pos.y == INITIAL_TETROMINO_OFFSET[1]:
-                self.game_over = True
-                self.reset()
-                return
-            self.place_tetromino()
-            # self.last_time_lock = time.time() * 1000
-            
+            if time.time() * 1000 - self.last_time_lock > LOCK_DELAY:
+                pygame.mixer.Channel(SFX_CHANNEL).play(self.land_sfx)
+                self.accelerate = False
+                self.has_hold = False
+                if self.tetromino.blocks[0].pos.y == INITIAL_TETROMINO_OFFSET[1]:
+                    self.game_over = True
+                    self.reset()
+                    return
+                self.place_tetromino()
+                self.last_time_lock = time.time() * 1000
+                
 
         self.check_full_line()
 
@@ -163,6 +164,7 @@ class Tetris(State):
         while not self.tetromino.has_landed:
             self.tetromino.update()
         pygame.mixer.Channel(SFX_CHANNEL).play(self.hard_drop_sfx)
+        self.last_time_lock = 0
 
     def hard_drop2(self, tetromino):
         """
@@ -173,34 +175,39 @@ class Tetris(State):
 
     def handle_key_down_pressed(self, key):
         if key == pygame.K_UP:
+            self.last_time_lock = self.current_milliseconds()
             self.rotate()
         elif key == pygame.K_x:
+            self.last_time_lock = self.current_milliseconds()
             self.rotate(-90)
         elif key == pygame.K_DOWN:
             self.accelerate = True
         elif key == pygame.K_SPACE:
             self.hard_drop()
         elif key == pygame.K_c:
+            self.last_time_lock = self.current_milliseconds()
             self.hold()
     
     def handle_key_pressed(self, key_pressed):
         if key_pressed[pygame.K_LEFT]:
             if not self.key_down_pressed:
+                self.last_time_lock = self.current_milliseconds()
                 self.tetromino.update("left")
-                self.last_time_delay = time.time() * 1000
+                self.last_time_delay = self.current_milliseconds()
                 self.key_down_pressed = True
-            elif time.time() * 1000 - self.last_time_delay > KEY_DELAY and time.time() * 1000 - self.last_time_interval > KEY_INTERVAL:
+            elif self.current_milliseconds() - self.last_time_delay > KEY_DELAY and self.current_milliseconds() - self.last_time_interval > KEY_INTERVAL:
                 self.tetromino.update("left")
-                self.last_time_interval = time.time() * 1000
+                self.last_time_interval = self.current_milliseconds()
 
         elif key_pressed[pygame.K_RIGHT]:
             if not self.key_down_pressed:
+                self.last_time_lock = self.current_milliseconds()
                 self.tetromino.update("right")
-                self.last_time_delay = time.time() * 1000
+                self.last_time_delay = self.current_milliseconds()
                 self.key_down_pressed = True
-            elif time.time() * 1000 - self.last_time_delay > KEY_DELAY and time.time() * 1000 - self.last_time_interval > KEY_INTERVAL:
+            elif self.current_milliseconds() - self.last_time_delay > KEY_DELAY and self.current_milliseconds() - self.last_time_interval > KEY_INTERVAL:
                 self.tetromino.update("right")
-                self.last_time_interval = time.time() * 1000
+                self.last_time_interval = self.current_milliseconds()
         else:
             self.last_time_interval = 0
             self.last_time_delay = 0
@@ -217,6 +224,9 @@ class Tetris(State):
         new_tetromino = Tetromino.copy(self.tetromino)
         self.hard_drop2(new_tetromino)
         return new_tetromino
+    
+    def current_milliseconds(self):
+        return time.time() *1000 
     
     def reset(self):
         self.ost.stop()

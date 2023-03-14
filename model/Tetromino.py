@@ -34,17 +34,19 @@ class Tetromino:
         
         self.tetris = tetris
 
-    def update(self, direction = "down"):
+    def update(self, direction = "down") -> bool:
         move_direction = self.MOVE_DIRECTIONS[direction]
         new_positions = [block.pos + move_direction for block in self.blocks]
 
         if not self.is_collide(new_positions):
             for block in self.blocks: 
                 block.pos += move_direction
-            return
+            return True
         
         if direction == "down":
             self.has_landed = True
+        
+        return False
     
     def move(self, pos):
         for block in self.blocks:

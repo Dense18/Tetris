@@ -39,7 +39,7 @@ KEY_DELAY = 133
 KEY_INTERVAL = 80
 
 # Das (Delayed Auto Shift) in milliseconds
-LOCK_DELAY = 20000
+LOCK_DELAY = 800
 """
 Links
 SFX: https://you.have.fail/at/tetrioplus/#sfx-25Pi25-soundpack
