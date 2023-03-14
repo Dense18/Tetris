@@ -4,6 +4,7 @@ from features.State import State
 from model.Tetromino import Tetromino
 import random
 from copy import deepcopy
+import os
 
 class Tetris(State):
     """
@@ -34,13 +35,20 @@ class Tetris(State):
         self.score_text = "Lines cleared:"
         self.textSize = 30
         self.textFont = pygame.font.SysFont("comicsans", self.textSize)
-    
+
+        self.load_sound()
+        self.ost_channel = 1
+        self.sfx_channel = 2
+
+        pygame.mixer.Channel(self.ost_channel).play(self.ost)
+
     def add_new_bag(self):
         self.bag += random.sample(list(Tetromino.SHAPE.keys()), len(Tetromino.SHAPE.keys()))
     
     def hold(self):
         if not self.has_hold:
             self.has_hold = True
+            self.hold_sfx.play()
             if not self.hold_piece_shape:
                 self.hold_piece_shape, self.tetromino = self.tetromino.shape, Tetromino(self, self.bag.pop())
                 return
@@ -78,6 +86,7 @@ class Tetris(State):
     #                     self.field_arr[row][col] = 0
     
     def check_full_line(self):
+        hasLineClear = False
         line = len(self.field_arr) - 1
         for row in range(len(self.field_arr) - 1, -1, -1):
             count = 0
@@ -91,9 +100,15 @@ class Tetris(State):
             if count < len(self.field_arr[row]):
                 line -= 1
             else:
+                hasLineClear = True
                 self.lines_cleared += 1
                 for i in range(len(self.field_arr[row])):
                     self.field_arr[line][i] = 0
+
+        if hasLineClear: 
+            print("line clear sound play")
+            # self.clear_line_sfx.play()
+            pygame.mixer.Channel(self.sfx_channel).play(self.clear_line_sfx)
 
     def place_tetromino(self):
         for block in self.tetromino.blocks:
@@ -107,6 +122,8 @@ class Tetris(State):
             self.tetromino.update()
 
         if self.tetromino.has_landed:
+            # self.land_sfx.play()
+            pygame.mixer.Channel(self.sfx_channel).play(self.land_sfx)
             self.accelerate = False
             self.has_hold = False
             if self.tetromino.blocks[0].pos.y == INITIAL_TETROMINO_OFFSET[1]:
@@ -128,24 +145,14 @@ class Tetris(State):
                 if event.key in list(self.key_dict.keys()):
                     self.dir = "down"
 
-    #     self.handle_key_pressed(pygame.key.get_pressed())
-    
-    # def handle_key_pressed(self, keys):
-    #     if keys[pygame.K_LEFT]:
-    #         self.tetromino.update("left")
-    #     elif keys[pygame.K_RIGHT]:
-    #         self.tetromino.update("right")
-    #     elif keys[pygame.K_UP]:
-    #         self.tetromino.rotate()
-    #     elif keys[pygame.K_DOWN]:
-    #         self.accelerate = True
-
     def hard_drop(self):
         """
             Move the current tetromino down until it has landed
         """
         while not self.tetromino.has_landed:
             self.tetromino.update()
+        # self.hard_drop_sfx.play()
+        pygame.mixer.Channel(self.sfx_channel).play(self.hard_drop_sfx)
 
     def hard_drop2(self, tetromino):
         """
@@ -156,12 +163,13 @@ class Tetris(State):
 
     def handle_key_pressed(self, key):
         if key in list(self.key_dict.keys()):
+            self.move_sfx.play()
             self.tetromino.update(self.key_dict[key])
             # self.dir = self.key_dict[key]
         elif key == pygame.K_UP:
-            self.tetromino.rotate()
+            self.rotate()
         elif key == pygame.K_x:
-            self.tetromino.rotate(-90)
+            self.rotate(-90)
         elif key == pygame.K_DOWN:
             self.accelerate = True
         elif key == pygame.K_SPACE:
@@ -169,6 +177,11 @@ class Tetris(State):
         elif key == pygame.K_c:
             self.hold()
     
+    def rotate(self, degree = 90):
+        self.tetromino.rotate(degree)
+        # self.rotate_sfx.play()
+        pygame.mixer.Channel(self.sfx_channel).play(self.rotate_sfx)
+
     def get_hard_drop_indication(self):
         """
             Return a new tetromino with updated position after a hard drop of current tetromino
@@ -178,7 +191,22 @@ class Tetris(State):
         return new_tetromino
     
     def reset(self):
+        self.ost.stop()
         self.__init__(self.app)
+    
+    """
+        Sound Functions
+    """
+    def load_sound(self):
+        self.ost = pygame.mixer.Sound(os.path.join(SOUND_DIR, "tetrisOst.mp3"))
+
+        self.move_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "clutch.mp3"))
+        self.land_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "floor.ogg"))
+        self.rotate_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "rotate.ogg"))
+        self.hold_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "hold.ogg"))
+
+        self.hard_drop_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "harddrop.ogg"))
+        self.clear_line_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "clearline.ogg"))
     """
         Drawing Fuctions
     """

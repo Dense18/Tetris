@@ -26,5 +26,7 @@ TETROMINO_COLOR = {
         'Z': (255,0,0)#Red
 }
 
-
+# Directory
+SOUND_DIR= "Assets\\Sound"
+TETRIS_SOUND_SFX_DIR = SOUND_DIR + "\\" + "TetrisSfx"
 

@@ -27,7 +27,6 @@ class Block:
     
     
     def rotate(self, pivot, degree = 90):
-        #TODO: Implement this urself
         translated = self.pos - pivot
         rotated = translated.rotate(degree)
         return rotated + pivot
