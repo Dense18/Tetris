@@ -41,7 +41,7 @@ KEY_INTERVAL = 80
 
 # Lock Delay in milliseconds
 LOCK_DELAY = 500 # Based on Teris Guideline
-MAX_ROTATION = 15 # Number
+MAX_LOCK_MOVES = 15 # Number
 
 # ARE (Appearance Delay)
 APPEARANCE_DELAY = 500

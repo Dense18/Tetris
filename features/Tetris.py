@@ -29,8 +29,6 @@ class Tetris(State):
         self.lines_cleared = 0
         self.combo = 0
 
-        self.game_over = False
-
         self.ui = TetrisUI(self)
 
         # Delayed Auto Shift (in milliseconds)
@@ -102,6 +100,8 @@ class Tetris(State):
             self.combo = 0
 
     def place_tetromino(self):
+        pygame.mixer.Channel(SFX_CHANNEL).play(self.land_sfx)
+
         for block in self.tetromino.blocks:
             x, y = int(block.pos.x), int(block.pos.y)
             if x in range(0, FIELD_WIDTH) and y in range(0, FIELD_HEIGHT):
@@ -119,22 +119,19 @@ class Tetris(State):
             
     def update(self, events):
         trigger = [self.app.animation_flag, self.app.accelerate_event][self.accelerate]
-        if trigger and self.current_milliseconds() - self.last_time_are >= APPEARANCE_DELAY: 
+        if trigger and self.check_are(): 
             if self.tetromino.update(): self.last_time_lock = self.current_milliseconds()
 
         if self.tetromino.has_landed:
-            if time.time() * 1000 - self.last_time_lock >= LOCK_DELAY:
-                pygame.mixer.Channel(SFX_CHANNEL).play(self.land_sfx)
+            if self.check_lock_delay():
                 self.accelerate = False
                 self.has_hold = False
                 if self.tetromino.blocks[0].pos.y == INITIAL_TETROMINO_OFFSET[1]:
-                    self.game_over = True
                     self.reset()
                     return
                 self.place_tetromino()
                 self.last_time_lock = time.time() * 1000
                 
-        # self.clear_full_line()
         ## Check events
         for event in events:
             if event.type == pygame.KEYDOWN:
@@ -184,10 +181,13 @@ class Tetris(State):
                 self.tetromino.update("left")
                 self.last_time_delay = self.current_milliseconds()
                 self.key_down_pressed = True
-            elif self.current_milliseconds() - self.last_time_delay >= KEY_DELAY and self.current_milliseconds() - self.last_time_interval >= KEY_INTERVAL:
+                self.update_lock_move()
+
+            elif self.check_das():
                 pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
                 self.tetromino.update("left")
                 self.last_time_interval = self.current_milliseconds()
+                self.update_lock_move()
 
         elif key_pressed[pygame.K_RIGHT]:
             if not self.key_down_pressed:
@@ -196,18 +196,48 @@ class Tetris(State):
                 self.tetromino.update("right")
                 self.last_time_delay = self.current_milliseconds()
                 self.key_down_pressed = True
-            elif self.current_milliseconds() - self.last_time_delay >= KEY_DELAY and self.current_milliseconds() - self.last_time_interval >= KEY_INTERVAL:
+                self.update_lock_move()
+
+            elif self.check_das():
                 pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
                 self.tetromino.update("right")
                 self.last_time_interval = self.current_milliseconds()
+                self.update_lock_move()
         else:
             self.last_time_interval = 0
             self.last_time_delay = 0
             self.key_down_pressed = False
 
+    def check_das(self):
+        """
+            Checks condition for Delay Auto Shift Rule
+        """
+        return self.current_milliseconds() - self.last_time_delay > KEY_DELAY and \
+            self.current_milliseconds() - self.last_time_interval > KEY_INTERVAL
+    
+    def check_lock_delay(self):
+        """
+            Checks condition for Lock Delay Rule
+        """
+        return self.current_milliseconds() - self.last_time_lock > LOCK_DELAY or self.lock_moves > MAX_LOCK_MOVES
+    
+    def check_are(self):
+        """
+            Check condition for Appearance Delay Rule
+        """
+        return self.current_milliseconds() - self.last_time_are >= APPEARANCE_DELAY
+    
+    def update_lock_move(self):
+        if self.tetromino.has_landed : 
+            self.lock_moves += 1 
+        else:
+            self.lock_moves = 0
+
     def rotate(self, degree = 90):
-        self.tetromino.rotate(degree)
         pygame.mixer.Channel(SFX_CHANNEL).play(self.rotate_sfx)
+        self.tetromino.rotate(degree)
+        self.update_lock_move()
+
 
     def get_hard_drop_indication(self):
         """
