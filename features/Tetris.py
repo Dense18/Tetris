@@ -39,6 +39,10 @@ class Tetris(State):
 
         # Lock delay (in milliseconds)
         self.last_time_lock = 0
+        self.lock_moves = 0
+
+        # Appearance Delay (in milliseconds)
+        self.last_time_are = 0 
 
         # Sound
         self.load_sound()
@@ -120,7 +124,9 @@ class Tetris(State):
             x, y = int(block.pos.x), int(block.pos.y)
             if x in range(0, FIELD_WIDTH) and y in range(0, FIELD_HEIGHT):
                 self.field_arr[y][x] = block
+
         self.get_new_tetromino()
+        self.last_time_are = self.current_milliseconds()
     
     def get_new_tetromino(self):
         self.tetromino = Tetromino(self, self.bag.pop(0))
@@ -129,11 +135,11 @@ class Tetris(State):
             
     def update(self, events):
         trigger = [self.app.animation_flag, self.app.accelerate_event][self.accelerate]
-        if trigger: 
+        if trigger and self.current_milliseconds() - self.last_time_are >= APPEARANCE_DELAY: 
             if self.tetromino.update(): self.last_time_lock = self.current_milliseconds()
 
         if self.tetromino.has_landed:
-            if time.time() * 1000 - self.last_time_lock > LOCK_DELAY:
+            if time.time() * 1000 - self.last_time_lock >= LOCK_DELAY:
                 pygame.mixer.Channel(SFX_CHANNEL).play(self.land_sfx)
                 self.accelerate = False
                 self.has_hold = False
@@ -174,38 +180,42 @@ class Tetris(State):
             tetromino.update()
 
     def handle_key_down_pressed(self, key):
-        if key == pygame.K_UP:
+        if key in [pygame.K_UP, pygame.K_x]:
             self.last_time_lock = self.current_milliseconds()
             self.rotate()
-        elif key == pygame.K_x:
+        elif key in [pygame.K_z, pygame.K_LCTRL, pygame.K_RCTRL]:
             self.last_time_lock = self.current_milliseconds()
             self.rotate(-90)
         elif key == pygame.K_DOWN:
             self.accelerate = True
         elif key == pygame.K_SPACE:
             self.hard_drop()
-        elif key == pygame.K_c:
+        elif key in [pygame.K_c, pygame.K_LSHIFT, pygame.K_RSHIFT]:
             self.last_time_lock = self.current_milliseconds()
             self.hold()
     
     def handle_key_pressed(self, key_pressed):
         if key_pressed[pygame.K_LEFT]:
             if not self.key_down_pressed:
+                pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
                 self.last_time_lock = self.current_milliseconds()
                 self.tetromino.update("left")
                 self.last_time_delay = self.current_milliseconds()
                 self.key_down_pressed = True
-            elif self.current_milliseconds() - self.last_time_delay > KEY_DELAY and self.current_milliseconds() - self.last_time_interval > KEY_INTERVAL:
+            elif self.current_milliseconds() - self.last_time_delay >= KEY_DELAY and self.current_milliseconds() - self.last_time_interval >= KEY_INTERVAL:
+                pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
                 self.tetromino.update("left")
                 self.last_time_interval = self.current_milliseconds()
 
         elif key_pressed[pygame.K_RIGHT]:
             if not self.key_down_pressed:
+                pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
                 self.last_time_lock = self.current_milliseconds()
                 self.tetromino.update("right")
                 self.last_time_delay = self.current_milliseconds()
                 self.key_down_pressed = True
-            elif self.current_milliseconds() - self.last_time_delay > KEY_DELAY and self.current_milliseconds() - self.last_time_interval > KEY_INTERVAL:
+            elif self.current_milliseconds() - self.last_time_delay >= KEY_DELAY and self.current_milliseconds() - self.last_time_interval >= KEY_INTERVAL:
+                pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
                 self.tetromino.update("right")
                 self.last_time_interval = self.current_milliseconds()
         else:
@@ -242,7 +252,7 @@ class Tetris(State):
     def load_sound(self):
         self.ost = pygame.mixer.Sound(os.path.join(SOUND_DIR, "tetrisOst.mp3"))
 
-        self.move_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "clutch.mp3"))
+        self.move_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "move.ogg"))
         self.land_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "floor.ogg"))
         self.rotate_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "rotate.ogg"))
         self.hold_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "hold.ogg"))

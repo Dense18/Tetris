@@ -38,12 +38,19 @@ OST_CHANNEL = 0
 KEY_DELAY = 133
 KEY_INTERVAL = 80
 
-# Das (Delayed Auto Shift) in milliseconds
-LOCK_DELAY = 800
+# Lock Delay in milliseconds
+LOCK_DELAY = 500 # Based on Teris Guideline
+MAX_ROTATION = 15 # Number
+
+# ARE (Appearance Delay)
+APPEARANCE_DELAY = 500
+
+
+# Links
 """
-Links
 SFX: https://you.have.fail/at/tetrioplus/#sfx-25Pi25-soundpack
 Ost: https://archive.org/details/TetrisThemeMusic
+Tetris GuideLine: https://tetris.fandom.com/wiki/Tetris_Guideline 
 """
 
 
