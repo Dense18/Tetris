@@ -29,15 +29,18 @@ class Tetris(State):
         self.lines_cleared = 0
 
         self.game_over = False
-        
+
         self.ui = TetrisUI(self)
-        """
-            Delayed Autho Shift (in milliseconds)
-        """
+
+        # Delayed Auto Shift (in milliseconds)
         self.last_time_interval = 0
         self.last_time_delay = 0
         self.key_down_pressed = True
 
+        # Lock delay (in milliseconds)
+        self.last_time_lock = 0
+
+        # Sound
         self.load_sound()
         self.set_sound_channel()
         pygame.mixer.Channel(OST_CHANNEL).play(self.ost, -1)
@@ -127,6 +130,9 @@ class Tetris(State):
             self.tetromino.update()
 
         if self.tetromino.has_landed:
+            # if time.time() * 1000 - self.last_time_lock < LOCK_DELAY:
+            #     self.last_time_lock = time.time() * 1000
+            #     return
             pygame.mixer.Channel(SFX_CHANNEL).play(self.land_sfx)
             self.accelerate = False
             self.has_hold = False
@@ -135,6 +141,8 @@ class Tetris(State):
                 self.reset()
                 return
             self.place_tetromino()
+            # self.last_time_lock = time.time() * 1000
+            
 
         self.check_full_line()
 
