@@ -27,6 +27,8 @@ class Tetris(State):
 
         self.game_over = False
 
+        self.dir = "down"
+
         self.nextPieceText = "Next Piece:"
         self.holdPieceText = "Hold Piece:"
         self.score_text = "Lines cleared:"
@@ -123,6 +125,8 @@ class Tetris(State):
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_a:
                     self.accelerate = False
+                if event.key in list(self.key_dict.keys()):
+                    self.dir = "down"
 
     #     self.handle_key_pressed(pygame.key.get_pressed())
     
@@ -143,9 +147,17 @@ class Tetris(State):
         while not self.tetromino.has_landed:
             self.tetromino.update()
 
+    def hard_drop2(self, tetromino):
+        """
+            Move [tetromino] down until it has landed
+        """
+        while not tetromino.has_landed:
+            tetromino.update()
+
     def handle_key_pressed(self, key):
         if key in list(self.key_dict.keys()):
             self.tetromino.update(self.key_dict[key])
+            # self.dir = self.key_dict[key]
         elif key == pygame.K_UP:
             self.tetromino.rotate()
         elif key == pygame.K_a:
@@ -155,15 +167,24 @@ class Tetris(State):
         elif key == pygame.K_c:
             self.hold()
     
+    def get_hard_drop_indication(self):
+        """
+            Return a new tetromino with updated position after a hard drop of current tetromino
+        """
+        new_tetromino = Tetromino.copy(self.tetromino)
+        self.hard_drop2(new_tetromino)
+        return new_tetromino
+    
     def reset(self):
         self.__init__(self.app)
     """
         Drawing Fuctions
     """
     def draw(self):
+        self.draw_grid()
         self.tetromino.draw(self.app.screen)
         self.draw_field()
-        self.draw_grid()
+        self.draw_indication()
 
         self.draw_side_bar()
     
@@ -193,7 +214,7 @@ class Tetris(State):
     def draw_hold_piece(self):
         hold_item_text_obj = self.textFont.render(self.holdPieceText, 1, "black")
         hold_item_rect = hold_item_text_obj.get_rect()
-        hold_item_rect.center = (BOARD_WIDTH + SIDEBAR_WIDTH//2, BOARD_HEIGHT//5)
+        hold_item_rect.center = (BOARD_WIDTH + SIDEBAR_WIDTH//2, BOARD_HEIGHT//6)
         self.app.screen.blit(hold_item_text_obj, hold_item_rect)
 
         if self.hold_piece_shape != None:
@@ -209,9 +230,13 @@ class Tetris(State):
 
         score_obj = self.textFont.render(str(self.lines_cleared), 1, "black")
         score_rect = score_obj.get_rect()
-        score_rect.center = (BOARD_WIDTH + SIDEBAR_WIDTH//2, score_text_rect.bottom + 30)
+        score_rect.center = (BOARD_WIDTH + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.1)
         self.app.screen.blit(score_obj, score_rect)
 
+    def draw_indication(self):
+        tetro = self.get_hard_drop_indication()
+        tetro.draw(self.app.screen, True)
+        
     def draw_grid(self):
         for row in range(FIELD_HEIGHT):
             pygame.draw.line(self.app.screen, "black", (0, row * BLOCK_SIZE), (BOARD_WIDTH, row * BLOCK_SIZE), 1)

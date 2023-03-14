@@ -1,8 +1,7 @@
-import pygame
 from model.Block import Block
 import random
 from settings import *
-
+from copy import deepcopy
 class Tetromino:
     """
         Manages state of tetromino (4 squares block)
@@ -19,6 +18,14 @@ class Tetromino:
     }
 
     MOVE_DIRECTIONS = {"left": vec(-1, 0), "right": vec(1, 0), "up": vec(0, -1), "down": vec(0, 1)}
+
+    @staticmethod
+    def copy(tetromino):
+        copy_tetromino = Tetromino(tetromino.tetris, tetromino.shape)
+        copy_tetromino.blocks = [Block.copy(block) for block in tetromino.blocks]
+        copy_tetromino.has_landed = tetromino.has_landed
+        return copy_tetromino
+
 
     def __init__(self, tetris, shape):
         self.shape = shape
@@ -54,5 +61,5 @@ class Tetromino:
     def is_collide(self, pos):
         return any(map(Block.is_collide, self.blocks, pos))
 
-    def draw(self, screen):
-        [block.draw(screen) for block in self.blocks]
+    def draw(self, screen, indication = False):
+        [block.draw(screen, indication) for block in self.blocks]
