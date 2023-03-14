@@ -28,5 +28,20 @@ TETROMINO_COLOR = {
 
 # Directory
 SOUND_DIR= "Assets\\Sound"
-TETRIS_SOUND_SFX_DIR = SOUND_DIR + "\\" + "TetrisSfx"
+TETRIS_SOUND_SFX_DIR = SOUND_DIR + "\\" + "TetrisSfx" 
+
+# Sound Channel
+SFX_CHANNEL = 1
+OST_CHANNEL = 0
+
+# Das (Delayed Auto Shift) in milliseconds
+KEY_DELAY = 133
+KEY_INTERVAL = 80
+
+"""
+Links
+SFX: https://you.have.fail/at/tetrioplus/#sfx-25Pi25-soundpack
+Ost: https://archive.org/details/TetrisThemeMusic
+"""
+
 

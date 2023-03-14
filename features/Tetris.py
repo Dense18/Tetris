@@ -5,6 +5,7 @@ from model.Tetromino import Tetromino
 import random
 from copy import deepcopy
 import os
+import time
 
 class Tetris(State):
     """
@@ -30,17 +31,22 @@ class Tetris(State):
 
         self.dir = "down"
 
-        self.nextPieceText = "Next Piece:"
-        self.holdPieceText = "Hold Piece:"
+        self.next_piece_text = "Next Piece:"
+        self.hold_piece_text = "Hold Piece:"
         self.score_text = "Lines cleared:"
         self.textSize = 30
         self.textFont = pygame.font.SysFont("comicsans", self.textSize)
 
-        self.load_sound()
-        self.ost_channel = 1
-        self.sfx_channel = 2
+        """
+            Delayed Autho Shift (in milliseconds)
+        """
+        self.last_time_interval = 0
+        self.last_time_delay = 0
+        self.key_down_pressed = True
 
-        pygame.mixer.Channel(self.ost_channel).play(self.ost)
+        self.load_sound()
+        self.set_sound_channel()
+        pygame.mixer.Channel(OST_CHANNEL).play(self.ost, -1)
 
     def add_new_bag(self):
         self.bag += random.sample(list(Tetromino.SHAPE.keys()), len(Tetromino.SHAPE.keys()))
@@ -48,7 +54,7 @@ class Tetris(State):
     def hold(self):
         if not self.has_hold:
             self.has_hold = True
-            self.hold_sfx.play()
+            pygame.mixer.Channel(SFX_CHANNEL).play(self.hold_sfx)
             if not self.hold_piece_shape:
                 self.hold_piece_shape, self.tetromino = self.tetromino.shape, Tetromino(self, self.bag.pop())
                 return
@@ -106,15 +112,20 @@ class Tetris(State):
                     self.field_arr[line][i] = 0
 
         if hasLineClear: 
-            print("line clear sound play")
             # self.clear_line_sfx.play()
-            pygame.mixer.Channel(self.sfx_channel).play(self.clear_line_sfx)
+            pygame.mixer.Channel(SFX_CHANNEL).play(self.clear_line_sfx)
 
     def place_tetromino(self):
         for block in self.tetromino.blocks:
             x, y = int(block.pos.x), int(block.pos.y)
             if x in range(0, FIELD_WIDTH) and y in range(0, FIELD_HEIGHT):
                 self.field_arr[y][x] = block
+        self.get_new_tetromino()
+    
+    def get_new_tetromino(self):
+        self.tetromino = Tetromino(self, self.bag.pop(0))
+        if len(self.bag) <= 1:
+            self.add_new_bag()
             
     def update(self, events):
         trigger = [self.app.animation_flag, self.app.accelerate_event][self.accelerate]
@@ -122,8 +133,7 @@ class Tetris(State):
             self.tetromino.update()
 
         if self.tetromino.has_landed:
-            # self.land_sfx.play()
-            pygame.mixer.Channel(self.sfx_channel).play(self.land_sfx)
+            pygame.mixer.Channel(SFX_CHANNEL).play(self.land_sfx)
             self.accelerate = False
             self.has_hold = False
             if self.tetromino.blocks[0].pos.y == INITIAL_TETROMINO_OFFSET[1]:
@@ -131,11 +141,10 @@ class Tetris(State):
                 self.reset()
                 return
             self.place_tetromino()
-            self.tetromino = Tetromino(self, self.bag.pop(0))
-            if len(self.bag) <= 1:
-                self.add_new_bag()
 
         self.check_full_line()
+
+        ## Check events
         for event in events:
             if event.type == pygame.KEYDOWN:
                 self.handle_key_pressed(event.key)
@@ -144,6 +153,8 @@ class Tetris(State):
                     self.accelerate = False
                 if event.key in list(self.key_dict.keys()):
                     self.dir = "down"
+        
+        self.handle_key_pressed2(pygame.key.get_pressed())
 
     def hard_drop(self):
         """
@@ -151,8 +162,7 @@ class Tetris(State):
         """
         while not self.tetromino.has_landed:
             self.tetromino.update()
-        # self.hard_drop_sfx.play()
-        pygame.mixer.Channel(self.sfx_channel).play(self.hard_drop_sfx)
+        pygame.mixer.Channel(SFX_CHANNEL).play(self.hard_drop_sfx)
 
     def hard_drop2(self, tetromino):
         """
@@ -163,8 +173,9 @@ class Tetris(State):
 
     def handle_key_pressed(self, key):
         if key in list(self.key_dict.keys()):
-            self.move_sfx.play()
-            self.tetromino.update(self.key_dict[key])
+            pass
+            # pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
+            # self.tetromino.update(self.key_dict[key])
             # self.dir = self.key_dict[key]
         elif key == pygame.K_UP:
             self.rotate()
@@ -177,10 +188,32 @@ class Tetris(State):
         elif key == pygame.K_c:
             self.hold()
     
+    def handle_key_pressed2(self, key_pressed):
+        if key_pressed[pygame.K_LEFT]:
+            if not self.key_down_pressed:
+                self.tetromino.update("left")
+                self.last_time_delay = time.time() * 1000
+                self.key_down_pressed = True
+            elif time.time() * 1000 - self.last_time_delay > KEY_DELAY and time.time() * 1000 - self.last_time_interval > KEY_INTERVAL:
+                self.tetromino.update("left")
+                self.last_time_interval = time.time() * 1000
+
+        elif key_pressed[pygame.K_RIGHT]:
+            if not self.key_down_pressed:
+                self.tetromino.update("right")
+                self.last_time_delay = time.time() * 1000
+                self.key_down_pressed = True
+            elif time.time() * 1000 - self.last_time_delay > KEY_DELAY and time.time() * 1000 - self.last_time_interval > KEY_INTERVAL:
+                self.tetromino.update("right")
+                self.last_time_interval = time.time() * 1000
+        else:
+            self.last_time_interval = 0
+            self.last_time_delay = 0
+            self.key_down_pressed = False
+
     def rotate(self, degree = 90):
         self.tetromino.rotate(degree)
-        # self.rotate_sfx.play()
-        pygame.mixer.Channel(self.sfx_channel).play(self.rotate_sfx)
+        pygame.mixer.Channel(SFX_CHANNEL).play(self.rotate_sfx)
 
     def get_hard_drop_indication(self):
         """
@@ -197,6 +230,10 @@ class Tetris(State):
     """
         Sound Functions
     """
+    def set_sound_channel(self):
+        pygame.mixer.Channel(SFX_CHANNEL).set_volume(0.7)
+        pygame.mixer.Channel(OST_CHANNEL).set_volume(0.1)
+
     def load_sound(self):
         self.ost = pygame.mixer.Sound(os.path.join(SOUND_DIR, "tetrisOst.mp3"))
 
@@ -232,7 +269,7 @@ class Tetris(State):
         self.draw_score()
 
     def draw_next_piece(self):
-        nextItemTextObj = self.textFont.render(self.nextPieceText, 1, "black")
+        nextItemTextObj = self.textFont.render(self.next_piece_text, 1, "black")
         nextItemRect = nextItemTextObj.get_rect()
         nextItemRect.center = (BOARD_WIDTH + SIDEBAR_WIDTH//2, BOARD_HEIGHT//2)
         self.app.screen.blit(nextItemTextObj, nextItemRect)
@@ -242,7 +279,7 @@ class Tetris(State):
         next_tetromino.draw(self.app.screen)
     
     def draw_hold_piece(self):
-        hold_item_text_obj = self.textFont.render(self.holdPieceText, 1, "black")
+        hold_item_text_obj = self.textFont.render(self.hold_piece_text, 1, "black")
         hold_item_rect = hold_item_text_obj.get_rect()
         hold_item_rect.center = (BOARD_WIDTH + SIDEBAR_WIDTH//2, BOARD_HEIGHT//6)
         self.app.screen.blit(hold_item_text_obj, hold_item_rect)
