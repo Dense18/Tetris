@@ -31,6 +31,7 @@ SOUND_DIR= "Assets\\Sound"
 TETRIS_SOUND_SFX_DIR = SOUND_DIR + "\\" + "TetrisSfx" 
 
 # Sound Channel
+COMBO_CHANNEL = 2
 SFX_CHANNEL = 1
 OST_CHANNEL = 0
 

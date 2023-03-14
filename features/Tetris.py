@@ -27,6 +27,7 @@ class Tetris(State):
         self.has_hold = False
 
         self.lines_cleared = 0
+        self.combo = 0
 
         self.game_over = False
 
@@ -61,63 +62,44 @@ class Tetris(State):
                 return
             self.hold_piece_shape, self.tetromino = self.tetromino.shape, Tetromino(self, self.hold_piece_shape)
 
-    # def check_full_line(self):
-    #     lines_cleared = 0
-    #     row_index_cleared = -1
-    #     has_cleared = False
-    #     for row in range(len(self.field_arr) - 1, -1, -1):
-    #         flag = True
-    #         for col in range(len(self.field_arr[row])):
-    #             if not self.field_arr[row][col]: 
-    #                 flag = False
-    #                 break
-    #         if flag: 
-    #             if not has_cleared: 
-    #                 has_cleared = True
-    #             lines_cleared += 1
-    #             if row_index_cleared == -1: 
-    #                 row_index_cleared = row
-
-    #             for col in range(len(self.field_arr[row])):
-    #                 self.field_arr[row][col] = 0
-
-    #     ## Move Block bottom if a line is cleared
-    #     if has_cleared:
-    #         print(f"row indexed cleared: {row_index_cleared}")
-    #         print(f"lines cleared: {lines_cleared}")
-            
-    #         for row in range(len(self.field_arr) - 1, -1, -1): 
-    #             for col in range(len(self.field_arr[row])):
-    #                 if row < row_index_cleared:
-    #                     self.field_arr[row + lines_cleared][col] = self.field_arr[row][col]
-    #                     self.field_arr[row][col] = 0
+    def is_row_full(self, row_index):
+        for col in range(len(self.field_arr[row_index])):
+            if not self.field_arr[row_index][col]:
+                return False
+        return True
     
-    def check_full_line(self):
-        hasLineClear = False
-        line = len(self.field_arr) - 1
+    def move_row_down(self, row_index, num_down):
+        for col in range(len(self.field_arr[row_index])):
+            self.field_arr[row_index + num_down][col] = self.field_arr[row_index][col]
+            self.field_arr[row_index][col] = 0
+
+    def clear_row(self, row_index):
+        for col in range(len(self.field_arr[row_index])):
+            self.field_arr[row_index][col] = 0
+
+    def clear_full_line(self):
+        cleared = 0
         for row in range(len(self.field_arr) - 1, -1, -1):
-            count = 0
+            if self.is_row_full(row):
+                self.clear_row(row)
+                cleared += 1
+            elif cleared > 0:
+                self.move_row_down(row, cleared)
+
+        for row in range(len(self.field_arr) - 1, -1, -1):
             for col in range(len(self.field_arr[row])):
                 if self.field_arr[row][col]:
-                    count += 1
-                self.field_arr[line][col] = self.field_arr[row][col]
-                if self.field_arr[row][col]:
-                    self.field_arr[line][col].pos = vec(col, row)
-
-            if count < len(self.field_arr[row]):
-                line -= 1
-            else:
-                hasLineClear = True
-                self.lines_cleared += 1
-                for i in range(len(self.field_arr[row])):
-                    self.field_arr[line][i] = 0
-
-        for row in range(len(self.field_arr) - 1):
-            for col in range(len(self.field_arr[row])):
-                if self.field_arr[row][col]: self.field_arr[row][col].pos = vec(col, row)
-
-        if hasLineClear: 
-            pygame.mixer.Channel(SFX_CHANNEL).play(self.clear_line_sfx)
+                    self.field_arr[row][col].pos = vec(col, row)
+        
+        self.lines_cleared += cleared
+        if cleared > 0:
+            self.combo += 1
+            combo = min(self.combo, 16)
+            pygame.mixer.Channel(COMBO_CHANNEL).play(self.combos_sfx[combo])
+        else:
+            if self.combo != 0:
+                pygame.mixer.Channel(COMBO_CHANNEL).play(self.combo_break_sfx)
+            self.combo = 0
 
     def place_tetromino(self):
         for block in self.tetromino.blocks:
@@ -127,6 +109,8 @@ class Tetris(State):
 
         self.get_new_tetromino()
         self.last_time_are = self.current_milliseconds()
+        
+        self.clear_full_line()
     
     def get_new_tetromino(self):
         self.tetromino = Tetromino(self, self.bag.pop(0))
@@ -150,9 +134,7 @@ class Tetris(State):
                 self.place_tetromino()
                 self.last_time_lock = time.time() * 1000
                 
-
-        self.check_full_line()
-
+        # self.clear_full_line()
         ## Check events
         for event in events:
             if event.type == pygame.KEYDOWN:
@@ -247,6 +229,7 @@ class Tetris(State):
     """
     def set_sound_channel(self):
         pygame.mixer.Channel(SFX_CHANNEL).set_volume(0.7)
+        pygame.mixer.Channel(COMBO_CHANNEL).set_volume(0.7)
         pygame.mixer.Channel(OST_CHANNEL).set_volume(0.1)
 
     def load_sound(self):
@@ -259,6 +242,12 @@ class Tetris(State):
 
         self.hard_drop_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "harddrop.ogg"))
         self.clear_line_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "clearline.ogg"))
+
+        self.combo_break_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "combo_break_2.ogg"))
+        self.combos_sfx = {}
+        combos = (i for i in range(1, 17))
+        for combo in combos:
+            self.combos_sfx[combo] = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, f"combo_{combo}.mp3"))
     """
         Drawing Fuctions
     """
