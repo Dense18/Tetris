@@ -54,7 +54,12 @@ class TetrisUI:
             hold_tetromino = Tetromino(self, self.tetris.hold_piece_shape)
             hold_tetromino.move((7, 7))
             mode  = Block_Draw_Mode.BORDER_INDICATION_COLOR if self.tetris.has_hold else Block_Draw_Mode.FUll_COLOR
-            hold_tetromino.draw(self.tetris.app.screen, mode) 
+            if self.tetris.has_hold:
+                temp_tetromino = Tetromino(self.tetris, self.tetris.tetromino.shape)
+                temp_tetromino.move((7,7))
+                temp_tetromino.draw(self.tetris.app.screen, mode) 
+            else:
+                hold_tetromino.draw(self.tetris.app.screen, mode) 
 
     def draw_score(self):
         score_text_obj = self.textFont.render(self.score_text, 1, self.textColor)
