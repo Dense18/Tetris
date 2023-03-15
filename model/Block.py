@@ -43,12 +43,15 @@ class Block:
         elif mode == Block.MODE_BORDER_INDICATION_COLOR:    
             pygame.draw.rect(screen, self.color, ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
     
-    def draw_custom_position(self, screen, rect, mode = MODE_FULL_COLOR):
+    @staticmethod
+    def draw_custom(screen, abs_pos, block_size, color ,mode = MODE_FULL_COLOR):
+        rect= pygame.Rect(abs_pos, (block_size, block_size))
+
         if mode == Block.MODE_FULL_COLOR:
-            pygame.draw.rect(screen, self.color, ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)),border_radius=8)
-            pygame.draw.rect(screen, "black", ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
+            pygame.draw.rect(screen, color, rect, border_radius=8)
+            pygame.draw.rect(screen, "black", rect, 1, border_radius=8)
         elif mode == Block.MODE_BORDER_INDICATION:
-            pygame.draw.rect(screen, "gray", ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
+            pygame.draw.rect(screen, "gray", rect, 1, border_radius=8)
         elif mode == Block.MODE_BORDER_INDICATION_COLOR:    
-            pygame.draw.rect(screen, self.color, ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
+            pygame.draw.rect(screen, color, rect, 1, border_radius=8)
     

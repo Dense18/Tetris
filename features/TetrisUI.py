@@ -44,9 +44,13 @@ class TetrisUI:
         nextItemRect.center = (BOARD_WIDTH + SIDEBAR_WIDTH//2, BOARD_HEIGHT//2)
         self.tetris.app.screen.blit(nextItemTextObj, nextItemRect)
 
-        next_tetromino = Tetromino(self, self.tetris.bag[0])
-        next_tetromino.move((7,13))
-        next_tetromino.draw(self.tetris.app.screen)
+        next_tetromino_rect = pygame.Rect(0,0, BLOCK_SIZE, BLOCK_SIZE)
+        next_tetromino_rect.centerx = (BOARD_WIDTH + SIDEBAR_WIDTH//2)
+        next_tetromino_rect.top = nextItemRect.bottom + 100
+        Tetromino.draw_custom_position(self.tetris.app.screen, 
+                                            self.tetris.bag[0],
+                                            (next_tetromino_rect.x, next_tetromino_rect.y), 
+                                            BLOCK_SIZE)
     
     def draw_hold_piece(self):
         hold_item_text_obj = self.textFont.render(self.hold_piece_text, 1, self.textColor)
@@ -55,15 +59,16 @@ class TetrisUI:
         self.tetris.app.screen.blit(hold_item_text_obj, hold_item_rect)
 
         if self.tetris.hold_piece_shape != None:
-            hold_tetromino = Tetromino(self, self.tetris.hold_piece_shape)
-            hold_tetromino.move((7, 7))
-            mode  = Block.MODE_BORDER_INDICATION_COLOR if self.tetris.has_hold else Block.MODE_FULL_COLOR
-            if self.tetris.has_hold:
-                temp_tetromino = Tetromino(self.tetris, self.tetris.tetromino.shape)
-                temp_tetromino.move((7,7))
-                temp_tetromino.draw(self.tetris.app.screen, mode) 
-            else:
-                hold_tetromino.draw(self.tetris.app.screen, mode) 
+            hold_tetromino_rect = pygame.Rect(0,0, BLOCK_SIZE, BLOCK_SIZE)
+            hold_tetromino_rect.centerx = (BOARD_WIDTH + SIDEBAR_WIDTH//2)
+            hold_tetromino_rect.top = hold_item_rect.bottom + 100
+            Tetromino.draw_custom_position(
+                self.tetris.app.screen,
+                self.tetris.tetromino.shape if self.tetris.has_hold else self.tetris.hold_piece_shape,
+                (hold_tetromino_rect.x, hold_tetromino_rect.y),
+                BLOCK_SIZE,
+                Block.MODE_BORDER_INDICATION_COLOR if self.tetris.has_hold else Block.MODE_FULL_COLOR
+            )
 
     def draw_score(self):
         score_text_obj = self.textFont.render(self.score_text, 1, self.textColor)

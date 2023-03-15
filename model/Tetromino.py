@@ -152,3 +152,15 @@ class Tetromino:
 
     def draw(self, screen, mode = Block.MODE_FULL_COLOR):
         [block.draw(screen, mode) for block in self.blocks]
+
+    @staticmethod
+    def draw_custom_position(screen, shape, abs_pos, block_size, mode = Block.MODE_FULL_COLOR):
+        for block_pos in Tetromino.SHAPE[shape]:
+            new_abs_pos = vec(abs_pos) + (block_size * vec(block_pos))
+
+            ##perhaps make this static
+            Block.draw_custom(screen, 
+                              (new_abs_pos[0], new_abs_pos[1]), 
+                              block_size,
+                              TETROMINO_COLOR[shape],
+                              mode)
