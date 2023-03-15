@@ -1,4 +1,4 @@
-from model.Block import Block, Block_Draw_Mode
+from model.Block import Block
 import random
 from settings import *
 from copy import deepcopy
@@ -78,5 +78,5 @@ class Tetromino:
     def is_collide(self, pos):
         return any(map(Block.is_collide, self.blocks, pos))
 
-    def draw(self, screen, mode = Block_Draw_Mode.FUll_COLOR):
+    def draw(self, screen, mode = Block.MODE_FULL_COLOR):
         [block.draw(screen, mode) for block in self.blocks]

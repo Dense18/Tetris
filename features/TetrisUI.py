@@ -1,7 +1,8 @@
 from settings import *
 import pygame
 from model.Tetromino import Tetromino
-from model.Block import Block_Draw_Mode
+from model.Block import Block
+
 class TetrisUI:
     def __init__(self, tetris) -> None:
         self.tetris = tetris
@@ -53,7 +54,7 @@ class TetrisUI:
         if self.tetris.hold_piece_shape != None:
             hold_tetromino = Tetromino(self, self.tetris.hold_piece_shape)
             hold_tetromino.move((7, 7))
-            mode  = Block_Draw_Mode.BORDER_INDICATION_COLOR if self.tetris.has_hold else Block_Draw_Mode.FUll_COLOR
+            mode  = Block.MODE_BORDER_INDICATION_COLOR if self.tetris.has_hold else Block.MODE_FULL_COLOR
             if self.tetris.has_hold:
                 temp_tetromino = Tetromino(self.tetris, self.tetris.tetromino.shape)
                 temp_tetromino.move((7,7))
@@ -74,7 +75,7 @@ class TetrisUI:
 
     def draw_indication(self):
         tetro = self.tetris.get_hard_drop_indication()
-        tetro.draw(self.tetris.app.screen, Block_Draw_Mode.BORDER_INDICATION)
+        tetro.draw(self.tetris.app.screen, Block.MODE_BORDER_INDICATION)
         
     def draw_grid(self):
         for row in range(FIELD_HEIGHT):
