@@ -11,7 +11,7 @@ from SoundManager import SoundManager
 
 class Tetris(State):
     """
-        Class handling the execution of a Tetris game
+        Class handling the execution of a Tetris.py game
     """
     key_dict = {pygame.K_LEFT: "left", pygame.K_RIGHT: "right"}
 
@@ -46,7 +46,6 @@ class Tetris(State):
         self.last_time_are = 0 
 
         self.sound_manager.play_ost()
-        # self.sound_manager.mute()
 
     def add_new_bag(self):
         self.bag += random.sample(list(Tetromino.SHAPE.keys()), len(Tetromino.SHAPE.keys()))
@@ -164,10 +163,10 @@ class Tetris(State):
             Handle key events from pygame.KEYDOWN (fired when key is first pressed)
         """
         if key in [pygame.K_UP, pygame.K_x]:
-            self.last_time_lock = self.current_milliseconds()
+            # self.last_time_lock = self.current_milliseconds()
             self.rotate()
         elif key in [pygame.K_z, pygame.K_LCTRL, pygame.K_RCTRL]:
-            self.last_time_lock = self.current_milliseconds()
+            # self.last_time_lock = self.current_milliseconds()
             self.rotate(False)
         elif key == pygame.K_DOWN:
             self.accelerate = True
@@ -176,6 +175,8 @@ class Tetris(State):
         elif key in [pygame.K_c, pygame.K_LSHIFT, pygame.K_RSHIFT]:
             self.last_time_lock = self.current_milliseconds()
             self.hold()
+        elif key == pygame.K_m:
+            self.sound_manager.toggle_mute()
     
     def handle_key_pressed(self, key_pressed):
         """
@@ -196,19 +197,21 @@ class Tetris(State):
         if not self.key_down_pressed:
             self.sound_manager.play_sfx(SoundManager.MOVE_SFX)
 
-            self.tetromino.update(direction)
-            self.update_lock_move()
+            is_move_success = self.tetromino.update(direction)
+            if is_move_success: 
+                self.last_time_lock = self.current_milliseconds()
+                self.update_lock_move()
 
             self.key_down_pressed = True
 
-            self.last_time_lock = self.current_milliseconds()
+            # self.last_time_lock = self.current_milliseconds()
             self.last_time_delay = self.current_milliseconds()
 
         elif self.check_das():
             self.sound_manager.play_sfx(SoundManager.MOVE_SFX)
 
-            self.tetromino.update(direction)
-            self.update_lock_move()
+            is_move_success = self.tetromino.update(direction)
+            if is_move_success: self.update_lock_move()
 
             self.last_time_interval = self.current_milliseconds()
 
@@ -216,14 +219,14 @@ class Tetris(State):
         """
             Checks condition for Delay Auto Shift Rule
         """
-        return self.current_milliseconds() - self.last_time_delay > KEY_DELAY and \
-            self.current_milliseconds() - self.last_time_interval > KEY_INTERVAL
+        return self.current_milliseconds() - self.last_time_delay >= KEY_DELAY and \
+            self.current_milliseconds() - self.last_time_interval >= KEY_INTERVAL
     
     def check_lock_delay(self):
         """
             Checks condition for Lock Delay Rule
         """
-        return self.current_milliseconds() - self.last_time_lock > LOCK_DELAY or self.lock_moves > MAX_LOCK_MOVES
+        return self.current_milliseconds() - self.last_time_lock >= LOCK_DELAY or self.lock_moves >= MAX_LOCK_MOVES
     
     def check_are(self):
         """
@@ -239,8 +242,10 @@ class Tetris(State):
 
     def rotate(self, clockwise = True):
         self.sound_manager.play_sfx(SoundManager.ROTATE_SFX)
-        self.tetromino.rotate(clockwise)
-        self.update_lock_move()
+        is_rotate_success = self.tetromino.rotate(clockwise)
+        if is_rotate_success: 
+            self.last_time_lock = self.current_milliseconds()
+            self.update_lock_move()
 
     def get_hard_drop_indication(self):
         """

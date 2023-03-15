@@ -21,16 +21,6 @@ class Block:
         self.tetromino = tetromino
         self.pos = vec(pos) + INITIAL_TETROMINO_OFFSET
         self.color = color
-        
-    def draw(self, screen, mode = MODE_FULL_COLOR):
-        if mode == Block.MODE_FULL_COLOR:
-            pygame.draw.rect(screen, self.color, ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)),border_radius=8)
-            pygame.draw.rect(screen, "black", ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
-        elif mode == Block.MODE_BORDER_INDICATION:
-            pygame.draw.rect(screen, "gray", ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
-        elif mode == Block.MODE_BORDER_INDICATION_COLOR:    
-            pygame.draw.rect(screen, self.color, ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
-    
     
     def rotate(self, pivot, clockwise = True):
         translated = self.pos - pivot
@@ -43,3 +33,22 @@ class Block:
             if y < 0 or not self.tetromino.tetris.field_arr[y][x]: # Collision with other block
                 return False
         return True
+    
+    def draw(self, screen, mode = MODE_FULL_COLOR):
+        if mode == Block.MODE_FULL_COLOR:
+            pygame.draw.rect(screen, self.color, ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)),border_radius=8)
+            pygame.draw.rect(screen, "black", ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
+        elif mode == Block.MODE_BORDER_INDICATION:
+            pygame.draw.rect(screen, "gray", ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
+        elif mode == Block.MODE_BORDER_INDICATION_COLOR:    
+            pygame.draw.rect(screen, self.color, ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
+    
+    def draw_custom_position(self, screen, rect, mode = MODE_FULL_COLOR):
+        if mode == Block.MODE_FULL_COLOR:
+            pygame.draw.rect(screen, self.color, ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)),border_radius=8)
+            pygame.draw.rect(screen, "black", ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
+        elif mode == Block.MODE_BORDER_INDICATION:
+            pygame.draw.rect(screen, "gray", ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
+        elif mode == Block.MODE_BORDER_INDICATION_COLOR:    
+            pygame.draw.rect(screen, self.color, ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
+    

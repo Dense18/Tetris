@@ -105,7 +105,7 @@ class Tetromino:
         for block in self.blocks:
             block.pos += pos
     
-    def rotate(self, clockwise = True):
+    def rotate(self, clockwise = True) -> bool:
         pivot = self.blocks[0].pos
         new_position = [block.rotate(pivot, clockwise) for block in self.blocks]
 
@@ -117,7 +117,9 @@ class Tetromino:
                 for i, block in enumerate(self.blocks):
                     block.pos = new_position_kick[i]
                 self.set_next_rotation_state(clockwise)
-                return
+                return True
+        
+        return False
             
     def get_offset(self, clockwise):
         initial_offset = self.SHAPE_OFFSET[self.shape][self.rotation_state]
