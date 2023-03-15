@@ -48,6 +48,11 @@ class SoundManager:
         self.stop_ost()
         self.stop_sfx()
         self.stop_combo()
+
+    def mute(self):
+        pygame.mixer.Channel(SFX_CHANNEL).set_volume(0)
+        pygame.mixer.Channel(COMBO_CHANNEL).set_volume(0)
+        pygame.mixer.Channel(OST_CHANNEL).set_volume(0)
         
     def load_sounds(self):
         self.ost = pygame.mixer.Sound(os.path.join(SOUND_DIR, "tetrisOst.mp3"))

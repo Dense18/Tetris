@@ -10,58 +10,59 @@ class Tetromino:
     # Positive x indicated updawards,  Positive y indicated downwards and vice versa
     SHAPE = {
         #Note that the first position is considered as the pivot point for rotation
-        'T': [(0, 0), (-1, 0), (1, 0), (0, -1)], # Done
-        'O': [(0, 0), (0, -1), (1, 0), (1, -1)], # Done
-        'J': [(0, 0), (-1, 0), (1, 0), (-1, -1)], #Done
-        'L': [(0, 0), (-1, 0), (1, 0), (1, -1)], #Done 
-        'I': [(0, 0), (0, 1), (0, 2), (0, -1)], # Done
-        'S': [(0, 0), (-1, 0), (0, -1), (1, -1)], # Done
-        'Z': [(0, 0), (1, 0), (0, -1), (-1, -1)] # Done
+        'T': [(0, 0), (-1, 0), (1, 0), (0, -1)], 
+        'O': [(0, 0), (0, -1), (1, 0), (1, -1)], 
+        'J': [(0, 0), (-1, 0), (1, 0), (-1, -1)], 
+        'L': [(0, 0), (-1, 0), (1, 0), (1, -1)], 
+        'I': [(0, 0), (-1, 0), (1, 0), (2, 0)], 
+        'S': [(0, 0), (-1, 0), (0, -1), (1, -1)], 
+        'Z': [(0, 0), (1, 0), (0, -1), (-1, -1)] 
     }
 
-    
+    # Rotation based of Basic rotation for SRS
+
     # Notation: 
         # {0: spawn state}, a.k.a rotation_state = 0
         # {R: rotate right from spawn},  a.k.a rotation_state = 1
         # {2: two same successive rotation from spawn } a.k.a rotation_state = 2
         # {L: rotate left from spawn}, a.k.a rotation_state = 3
-        
-    # Wall kick data for shape [J, L, S, T, Z]
-    WALL_KICK_1 = [ 
-                [(0, 0), (-1, 0), (-1, -1), (0, 2), (-1, 2)], # 0 -> R
-                [(0, 0), (1, 0), (1, 1), (0, -2), (1, -2)], # R -> 0
-                [(0, 0), (1, 0), (1, 1), (0, -2), (1, -2)], # R -> 2
-                [(0, 0), (-1, 0), (-1, -1), (0, 2), (-1, 2)], # 2 -> R
-                [(0, 0), (1, 0), (1, -1), (0, 2), (1, 2)], # 2 -> L
-                [(0, 0), (-1, 0), (-1, 1), (0, -2), (-1, -2)], # L -> 2
-                [(0, 0), (-1, 0), (-1, 1), (0, -2), (-1, -2)], # L -> 0
-                [(0, 0), (1, 0), (1, -1), (0, 2), (1, 2)], # 0 -> L
-             ]
-    
-    # Wall kick data for shape [I]
-    WALL_KICK_2 = [ 
-                [(0, 0), (-2, 0), (1, 0), (-2, 1), (1, -2)], # 0 -> R  // 0 -> 1
-                [(0, 0), (2, 0), (-1, 0), (2, -1), (-1, 2)], # R -> 0  // 1 -> 0
-                [(0, 0), (-1, 0), (2, 0), (-1, -2), (2, 1)], # R -> 2  // 1 -> 2
-                [(0, 0), (1, 0), (-2, 0), (1, 2), (-2, -1)], # 2 -> R  // 2 -> 1
-                [(0, 0), (2, 0), (-1, 0), (2, -1), (-1, 2)], # 2 -> L  // 2 -> 3
-                [(0, 0), (-2, 0), (1, 0), (-2, 1), (1, -2)], # L -> 2  // 3 -> 2
-                [(0, 0), (1, 0), (-2, 0), (1, 2), (-2, -1)], # L -> 0  // 3 -> 0
-                [(0, 0), (-1, 0), (2, 0), (-1, -2), (2, 1)], # 0 -> L  // 0 -> 3
-             ]
-    
-    
-    SHAPE_WALL_KICK= {
-        'T': WALL_KICK_1,
-        'J': WALL_KICK_1,
-        'L': WALL_KICK_1,
-        'S': WALL_KICK_1,
-        'Z': WALL_KICK_1,
 
-        'I': WALL_KICK_2,
-        'O': None
+    # Offset data for shape [J, L, S, T, Z]
+    OFFSET_1 = [
+        [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0)], # 0
+        [(0, 0), (1, 0), (1, 1), (0, -2), (1, -2)], # R
+        [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0)], # 2
+        [(0, 0), (-1, 0), (-1, 1), (0, -2), (-1, -2)], # L
+
+    ]
+
+    # Offset data for shape [I]
+    OFFSET_2 = [
+        [(0, 0), (-1, 0), (2, 0), (-1, 0), (2, 0)], # 0
+        [(-1, 0), (0, 0), (0, 0), (0, -1), (0, 2)], # R
+        [(-1, -1), (1, -1), (-2, -1), (1, 0), (-2, 0)], # 2
+        [(0, -1), (0, -1), (0, -1), (0, 1), (0, -2)], #L
+    ]
+
+    # Offset data for shape [O]
+    OFFSET_3 = [
+        [(0, 0)], # 0
+        [(0, 1)], # R
+        [(-1, 1)], # 2
+        [(-1, 0)], #L
+    ]
+
+    SHAPE_OFFSET= {
+        'T': OFFSET_1,
+        'J': OFFSET_1,
+        'L': OFFSET_1,
+        'S': OFFSET_1,
+        'Z': OFFSET_1,
+
+        'I': OFFSET_2,
+
+        'O': OFFSET_3
     }
-
 
     DIRECTIONS_LEFT = "left"
     DIRECTIONS_RIGHT = "right"
@@ -103,30 +104,31 @@ class Tetromino:
     def move(self, pos):
         for block in self.blocks:
             block.pos += pos
-
+    
     def rotate(self, clockwise = True):
-        if self.shape == "O":
-            return
-        
         pivot = self.blocks[0].pos
         new_position = [block.rotate(pivot, clockwise) for block in self.blocks]
 
-        if not self.is_collide(new_position):
-            for i, block in enumerate(self.blocks):
-                block.pos = new_position[i]
-                self.set_next_rotation_state(clockwise)
-            return
-        
-        for offset in Tetromino.SHAPE_WALL_KICK[self.shape][self.get_index_wall_kick(clockwise)]:
+        for offset in self.get_offset(clockwise):
             offset = vec(offset)
             new_position_kick = [position + offset for position in new_position]
 
             if not self.is_collide(new_position_kick):
                 for i, block in enumerate(self.blocks):
                     block.pos = new_position_kick[i]
-                    self.set_next_rotation_state(clockwise)
+                self.set_next_rotation_state(clockwise)
                 return
+            
+    def get_offset(self, clockwise):
+        initial_offset = self.SHAPE_OFFSET[self.shape][self.rotation_state]
+        next_offset = self.SHAPE_OFFSET[self.shape][self.get_next_rotation_state(clockwise)]
 
+        offset = [vec(initial_offset[i]) - vec(next_offset[i]) for i in range(len(initial_offset))]
+        return offset
+
+    def get_next_rotation_state(self, clockwise) -> int:
+        return  (self.rotation_state + 1) % 4 if clockwise else (self.rotation_state - 1) % 4
+    
     def get_index_wall_kick(self, clockwise) -> int:
         if self.rotation_state == 0:
             return 0 if clockwise else 7
@@ -142,8 +144,6 @@ class Tetromino:
             self.rotation_state = (self.rotation_state + 1) % 4
         else:
             self.rotation_state = (self.rotation_state - 1) % 4
-
-        # self.rotation_state = self.rotation_state + 1 % 4 if clockwise else self.rotation_state - 1 % 4
     
     def is_collide(self, pos):
         return any(map(Block.is_collide, self.blocks, pos))

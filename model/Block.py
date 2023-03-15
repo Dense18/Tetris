@@ -33,7 +33,6 @@ class Block:
     
     
     def rotate(self, pivot, clockwise = True):
-        print(clockwise)
         translated = self.pos - pivot
         rotated = translated.rotate(90) if clockwise else translated.rotate(-90)
         return rotated + pivot

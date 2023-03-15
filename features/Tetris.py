@@ -46,6 +46,7 @@ class Tetris(State):
         self.last_time_are = 0 
 
         self.sound_manager.play_ost()
+        # self.sound_manager.mute()
 
     def add_new_bag(self):
         self.bag += random.sample(list(Tetromino.SHAPE.keys()), len(Tetromino.SHAPE.keys()))
