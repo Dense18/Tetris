@@ -3,6 +3,9 @@ from settings import *
 import os
 
 class SoundManager:
+    """
+        Manages the sound for the Tetris Game
+    """
     MAIN_OST_SFX = "tetrisOst"
 
     MOVE_SFX = "move"
@@ -16,17 +19,26 @@ class SoundManager:
     COMBO_BREAK_SFX = "combo_break_2"
     
     
-    def __init__(self) -> None:
+    def __init__(self):
+        self.channels = [SFX_CHANNEL, COMBO_CHANNEL, OST_CHANNEL]
+
+        self.ost_volume = 0.1
+        self.combo_volume = 0.7
+        self.sfx_volume = 0.7
+
+        self.is_muted = False
+
         self.set_sound_channel()
         self.load_sounds()
 
+
     def set_sound_channel(self):
-        pygame.mixer.Channel(SFX_CHANNEL).set_volume(0.7)
-        pygame.mixer.Channel(COMBO_CHANNEL).set_volume(0.7)
-        pygame.mixer.Channel(OST_CHANNEL).set_volume(0.1)
+        pygame.mixer.Channel(SFX_CHANNEL).set_volume(self.sfx_volume)
+        pygame.mixer.Channel(COMBO_CHANNEL).set_volume(self.combo_volume)
+        pygame.mixer.Channel(OST_CHANNEL).set_volume(self.ost_volume)
     
     def play_ost(self, loops = -1):
-        pygame.mixer.Channel(OST_CHANNEL).play(self.ost, - 1)
+        pygame.mixer.Channel(OST_CHANNEL).play(self.ost, loops)
     
     def play_sfx(self, id):
         pygame.mixer.Channel(SFX_CHANNEL).play(self.sfx_dict[id])
@@ -49,11 +61,23 @@ class SoundManager:
         self.stop_sfx()
         self.stop_combo()
 
+    def toggle_mute(self):
+        self.unmute() if self.is_muted else self.mute()
+
     def mute(self):
-        pygame.mixer.Channel(SFX_CHANNEL).set_volume(0)
-        pygame.mixer.Channel(COMBO_CHANNEL).set_volume(0)
-        pygame.mixer.Channel(OST_CHANNEL).set_volume(0)
+        for channel in self.channels:
+            pygame.mixer.Channel(channel).set_volume(0) 
+        self.is_muted = True
+
+    def unmute(self):
+        if not self.is_muted:
+            return
         
+        pygame.mixer.Channel(OST_CHANNEL).set_volume(self.ost_volume)
+        pygame.mixer.Channel(SFX_CHANNEL).set_volume(self.sfx_volume)
+        pygame.mixer.Channel(COMBO_CHANNEL).set_volume(self.combo_volume)
+        self.is_muted = False
+
     def load_sounds(self):
         self.ost = pygame.mixer.Sound(os.path.join(SOUND_DIR, "tetrisOst.mp3"))
 
