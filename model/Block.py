@@ -34,14 +34,14 @@ class Block:
                 return False
         return True
     
-    def draw(self, screen, mode = MODE_FULL_COLOR):
+    def draw(self, screen, offset = (0, 0), mode = MODE_FULL_COLOR):
         if mode == Block.MODE_FULL_COLOR:
-            pygame.draw.rect(screen, self.color, ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)),border_radius=8)
-            pygame.draw.rect(screen, "black", ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
+            pygame.draw.rect(screen, self.color, ((self.pos * BLOCK_SIZE) + offset ,(BLOCK_SIZE, BLOCK_SIZE)),border_radius=8)
+            pygame.draw.rect(screen, "black", ((self.pos * BLOCK_SIZE) + offset,(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
         elif mode == Block.MODE_BORDER_INDICATION:
-            pygame.draw.rect(screen, "gray", ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
+            pygame.draw.rect(screen, "gray", ((self.pos * BLOCK_SIZE) + offset,(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
         elif mode == Block.MODE_BORDER_INDICATION_COLOR:    
-            pygame.draw.rect(screen, self.color, ((self.pos * BLOCK_SIZE),(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
+            pygame.draw.rect(screen, self.color, ((self.pos * BLOCK_SIZE) + offset,(BLOCK_SIZE, BLOCK_SIZE)), 1, border_radius=8)
     
     @staticmethod
     def draw_custom(screen, abs_pos, block_size, color ,mode = MODE_FULL_COLOR):

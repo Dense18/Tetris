@@ -22,8 +22,9 @@ class Tetris(State):
         self.accelerate = False
 
         self.bag = random.sample(list(Tetromino.SHAPE.keys()), len(Tetromino.SHAPE.keys()))
-        self.bag_min_item = 5
-        self.tetromino = Tetromino(self, self.bag.pop(0))
+        self.bag_min_items = 5
+        self.tetromino = None
+        self.get_new_tetromino()
 
         self.hold_piece_shape = None
         self.has_hold = False
@@ -57,8 +58,16 @@ class Tetris(State):
             self.sound_manager.play_sfx(SoundManager.HOLD_SFX)
             if not self.hold_piece_shape:
                 self.hold_piece_shape, self.tetromino = self.tetromino.shape, Tetromino(self, self.bag.pop())
+                self.check_bag()
                 return
             self.hold_piece_shape, self.tetromino = self.tetromino.shape, Tetromino(self, self.hold_piece_shape)
+    
+    def check_bag(self):
+        """
+            Checks and update if a new tetris bag should be added
+        """
+        if len(self.bag) < self.bag_min_items:
+            self.add_new_bag()
 
     def is_row_full(self, row_index):
         for col in range(len(self.field_arr[row_index])):
@@ -114,8 +123,7 @@ class Tetris(State):
     
     def get_new_tetromino(self):
         self.tetromino = Tetromino(self, self.bag.pop(0))
-        if len(self.bag) <= self.bag_min_item:
-            self.add_new_bag()
+        self.check_bag()
             
     def update(self, events):
         trigger = [self.app.animation_flag, self.app.accelerate_event][self.accelerate]

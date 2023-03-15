@@ -150,8 +150,8 @@ class Tetromino:
     def is_collide(self, pos):
         return any(map(Block.is_collide, self.blocks, pos))
 
-    def draw(self, screen, mode = Block.MODE_FULL_COLOR):
-        [block.draw(screen, mode) for block in self.blocks]
+    def draw(self, screen, offset = (0, 0), mode = Block.MODE_FULL_COLOR):
+        [block.draw(screen, offset = offset, mode = mode) for block in self.blocks]
 
     @staticmethod
     def draw_custom_position(screen, shape, abs_pos, block_size, mode = Block.MODE_FULL_COLOR):
