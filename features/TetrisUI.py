@@ -4,6 +4,9 @@ from model.Tetromino import Tetromino
 from model.Block import Block
 
 class TetrisUI:
+    """
+        Manages the UI elements for the Tetris game
+    """
     def __init__(self, tetris) -> None:
         self.tetris = tetris
 
