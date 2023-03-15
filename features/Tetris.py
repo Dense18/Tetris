@@ -7,6 +7,7 @@ from copy import deepcopy
 import os
 import time
 from features.TetrisUI import TetrisUI
+from SoundManager import SoundManager
 
 class Tetris(State):
     """
@@ -30,6 +31,7 @@ class Tetris(State):
         self.combo = 0
 
         self.ui = TetrisUI(self)
+        self.sound_manager = SoundManager()
 
         # Delayed Auto Shift (in milliseconds)
         self.last_time_interval = 0
@@ -43,10 +45,7 @@ class Tetris(State):
         # Appearance Delay (in milliseconds)
         self.last_time_are = 0 
 
-        # Sound
-        self.load_sound()
-        self.set_sound_channel()
-        pygame.mixer.Channel(OST_CHANNEL).play(self.ost, -1)
+        self.sound_manager.play_ost()
 
     def add_new_bag(self):
         self.bag += random.sample(list(Tetromino.SHAPE.keys()), len(Tetromino.SHAPE.keys()))
@@ -54,7 +53,8 @@ class Tetris(State):
     def hold(self):
         if not self.has_hold:
             self.has_hold = True
-            pygame.mixer.Channel(SFX_CHANNEL).play(self.hold_sfx)
+            # pygame.mixer.Channel(SFX_CHANNEL).play(self.hold_sfx)
+            self.sound_manager.play_sfx(SoundManager.HOLD_SFX)
             if not self.hold_piece_shape:
                 self.hold_piece_shape, self.tetromino = self.tetromino.shape, Tetromino(self, self.bag.pop())
                 return
@@ -93,14 +93,21 @@ class Tetris(State):
         if cleared > 0:
             self.combo += 1
             combo = min(self.combo, 16)
-            pygame.mixer.Channel(COMBO_CHANNEL).play(self.combos_sfx[combo])
+            # pygame.mixer.Channel(COMBO_CHANNEL).play(self.combos_sfx[combo])
+            self.sound_manager.play_combo(combo)
         else:
+            # if self.combo != 0:
+            #     pygame.mixer.Channel(COMBO_CHANNEL).play(self.combo_break_sfx)
+            # self.combo = 0
+            
             if self.combo != 0:
-                pygame.mixer.Channel(COMBO_CHANNEL).play(self.combo_break_sfx)
+                # pygame.mixer.Channel(COMBO_CHANNEL).play(self.combos_sfx[0])
+                self.sound_manager.play_combo(0)
             self.combo = 0
 
     def place_tetromino(self):
-        pygame.mixer.Channel(SFX_CHANNEL).play(self.land_sfx)
+        # pygame.mixer.Channel(SFX_CHANNEL).play(self.land_sfx)
+        self.sound_manager.play_sfx(SoundManager.LAND_SFX)
 
         for block in self.tetromino.blocks:
             x, y = int(block.pos.x), int(block.pos.y)
@@ -148,7 +155,8 @@ class Tetris(State):
         """
         while not self.tetromino.has_landed:
             self.tetromino.update()
-        pygame.mixer.Channel(SFX_CHANNEL).play(self.hard_drop_sfx)
+        # pygame.mixer.Channel(SFX_CHANNEL).play(self.hard_drop_sfx)
+        self.sound_manager.play_sfx(SoundManager.HARD_DROP_SFX)
         self.last_time_lock = 0
 
     def hard_drop2(self, tetromino):
@@ -187,7 +195,8 @@ class Tetris(State):
         if direction not in [Tetromino.DIRECTIONS_RIGHT, Tetromino.DIRECTIONS_LEFT]: 
             return
         if not self.key_down_pressed:
-            pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
+            # pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
+            self.sound_manager.play_sfx(SoundManager.MOVE_SFX)
 
             self.tetromino.update(direction)
             self.update_lock_move()
@@ -198,7 +207,8 @@ class Tetris(State):
             self.last_time_delay = self.current_milliseconds()
 
         elif self.check_das():
-            pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
+            # pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
+            self.sound_manager.play_sfx(SoundManager.MOVE_SFX)
 
             self.tetromino.update(direction)
             self.update_lock_move()
@@ -231,7 +241,8 @@ class Tetris(State):
             self.lock_moves = 0
 
     def rotate(self, degree = 90):
-        pygame.mixer.Channel(SFX_CHANNEL).play(self.rotate_sfx)
+        # pygame.mixer.Channel(SFX_CHANNEL).play(self.rotate_sfx)
+        self.sound_manager.play_sfx(SoundManager.ROTATE_SFX)
         self.tetromino.rotate(degree)
         self.update_lock_move()
 
@@ -250,30 +261,7 @@ class Tetris(State):
         self.ost.stop()
         self.__init__(self.app)
     
-    """
-        Sound Functions
-    """
-    def set_sound_channel(self):
-        pygame.mixer.Channel(SFX_CHANNEL).set_volume(0.7)
-        pygame.mixer.Channel(COMBO_CHANNEL).set_volume(0.7)
-        pygame.mixer.Channel(OST_CHANNEL).set_volume(0.1)
 
-    def load_sound(self):
-        self.ost = pygame.mixer.Sound(os.path.join(SOUND_DIR, "tetrisOst.mp3"))
-
-        self.move_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "move.ogg"))
-        self.land_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "floor.ogg"))
-        self.rotate_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "rotate.ogg"))
-        self.hold_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "hold.ogg"))
-
-        self.hard_drop_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "harddrop.ogg"))
-        self.clear_line_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "clearline.ogg"))
-
-        self.combo_break_sfx = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "combo_break_2.ogg"))
-        self.combos_sfx = {}
-        combos = (i for i in range(1, 17))
-        for combo in combos:
-            self.combos_sfx[combo] = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, f"combo_{combo}.mp3"))
     """
         Drawing Fuctions
     """
