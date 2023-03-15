@@ -130,7 +130,7 @@ class Tetris(State):
                     self.reset()
                     return
                 self.place_tetromino()
-                self.last_time_lock = time.time() * 1000
+                self.last_time_lock = self.current_milliseconds()
                 
         ## Check events
         for event in events:
@@ -175,16 +175,16 @@ class Tetris(State):
     
     def handle_key_pressed(self, key_pressed):
         if key_pressed[pygame.K_LEFT]:
-            self.move("left")
+            self.move(Tetromino.DIRECTIONS_LEFT)
         elif key_pressed[pygame.K_RIGHT]:
-            self.move("right")
+            self.move(Tetromino.DIRECTIONS_RIGHT)
         else:
             self.last_time_interval = 0
             self.last_time_delay = 0
             self.key_down_pressed = False
     
     def move(self, direction):
-        if direction not in ["right", "left"]: 
+        if direction not in [Tetromino.DIRECTIONS_RIGHT, Tetromino.DIRECTIONS_LEFT]: 
             return
         if not self.key_down_pressed:
             pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)

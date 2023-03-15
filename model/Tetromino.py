@@ -17,7 +17,12 @@ class Tetromino:
         'Z': [(0, 0), (1, 0), (0, -1), (-1, -1)]
     }
 
-    MOVE_DIRECTIONS = {"left": vec(-1, 0), "right": vec(1, 0), "up": vec(0, -1), "down": vec(0, 1)}
+    DIRECTIONS_LEFT = "left"
+    DIRECTIONS_RIGHT = "right"
+    DIRECTIONS_UP  = "up"
+    DIRECTIONS_DOWN = "down"
+
+    MOVE_DIRECTIONS = {DIRECTIONS_LEFT: vec(-1, 0), DIRECTIONS_RIGHT: vec(1, 0), DIRECTIONS_UP: vec(0, -1), DIRECTIONS_DOWN: vec(0, 1)}
 
     @staticmethod
     def copy(tetromino):
@@ -34,7 +39,7 @@ class Tetromino:
         
         self.tetris = tetris
 
-    def update(self, direction = "down") -> bool:
+    def update(self, direction = DIRECTIONS_DOWN) -> bool:
         move_direction = self.MOVE_DIRECTIONS[direction]
         new_positions = [block.pos + move_direction for block in self.blocks]
 
@@ -43,7 +48,7 @@ class Tetromino:
                 block.pos += move_direction
             return True
         
-        if direction == "down":
+        if direction == Tetromino.DIRECTIONS_DOWN:
             self.has_landed = True
         
         return False
