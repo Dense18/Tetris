@@ -28,7 +28,7 @@ class Tetromino:
         # {L: rotate left from spawn}, a.k.a rotation_state = 3
 
     # Offset data for shape [J, L, S, T, Z]
-    OFFSET_1 = [
+    OFFSET_JLSTZ = [
         [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0)], # 0
         [(0, 0), (1, 0), (1, 1), (0, -2), (1, -2)], # R
         [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0)], # 2
@@ -37,7 +37,7 @@ class Tetromino:
     ]
 
     # Offset data for shape [I]
-    OFFSET_2 = [
+    OFFSET_I = [
         [(0, 0), (-1, 0), (2, 0), (-1, 0), (2, 0)], # 0
         [(-1, 0), (0, 0), (0, 0), (0, -1), (0, 2)], # R
         [(-1, -1), (1, -1), (-2, -1), (1, 0), (-2, 0)], # 2
@@ -45,7 +45,7 @@ class Tetromino:
     ]
 
     # Offset data for shape [O]
-    OFFSET_3 = [
+    OFFSET_O = [
         [(0, 0)], # 0
         [(0, 1)], # R
         [(-1, 1)], # 2
@@ -53,15 +53,15 @@ class Tetromino:
     ]
 
     SHAPE_OFFSET= {
-        'T': OFFSET_1,
-        'J': OFFSET_1,
-        'L': OFFSET_1,
-        'S': OFFSET_1,
-        'Z': OFFSET_1,
+        'T': OFFSET_JLSTZ,
+        'J': OFFSET_JLSTZ,
+        'L': OFFSET_JLSTZ,
+        'S': OFFSET_JLSTZ,
+        'Z': OFFSET_JLSTZ,
 
-        'I': OFFSET_2,
+        'I': OFFSET_I,
 
-        'O': OFFSET_3
+        'O': OFFSET_O
     }
 
     DIRECTIONS_LEFT = "left"
