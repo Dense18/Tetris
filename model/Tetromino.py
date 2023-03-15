@@ -6,7 +6,8 @@ class Tetromino:
     """
         Manages state of tetromino (4 squares block)
     """
-    # Available Tetromino Shapes. All tetromino initial posiiton (x, y) is horizontal
+    # Available Tetromino Shapes. All tetromino initial posiiton (x, y) is horizontal.
+    # Positive x indicated updawards,  Positive y indicated downwards and vice versa
     SHAPE = {
         #Note that the first position is considered as the pivot point for rotation
         'T': [(0, 0), (-1, 0), (1, 0), (0, -1)], # Done
@@ -24,30 +25,31 @@ class Tetromino:
         # {R: rotate right from spawn},  a.k.a rotation_state = 1
         # {2: two same successive rotation from spawn } a.k.a rotation_state = 2
         # {L: rotate left from spawn}, a.k.a rotation_state = 3
-    
+        
     # Wall kick data for shape [J, L, S, T, Z]
     WALL_KICK_1 = [ 
-                [(0, 0), (-1, 0), (-1, 1), (0, -2), (-1, -2)], # 0 -> R
-                [(0, 0), (1, 0), (1, -1), (0, 2), (1, 2)], # R -> 0
-                [(0, 0), (1, 0), (1, -1), (0, 2), (1, 2)], # R -> 2
-                [(0, 0), (-1, 0), (-1, 1), (0, -2), (-1, -2)], # 2 -> R
-                [(0, 0), (1, 0), (1, 1), (0, -2), (1, -2)], # 2 -> L
-                [(0, 0), (-1, 0), (-1, -1), (0, 2), (-1, 2)], # L -> 2
-                [(0, 0), (-1, 0), (-1, -1), (0, 2), (-1, 2)], # L -> 0
-                [(0, 0), (-1, 0), (-1, -1), (0, 2), (-1, 2)], # 0 -> L
+                [(0, 0), (-1, 0), (-1, -1), (0, 2), (-1, 2)], # 0 -> R
+                [(0, 0), (1, 0), (1, 1), (0, -2), (1, -2)], # R -> 0
+                [(0, 0), (1, 0), (1, 1), (0, -2), (1, -2)], # R -> 2
+                [(0, 0), (-1, 0), (-1, -1), (0, 2), (-1, 2)], # 2 -> R
+                [(0, 0), (1, 0), (1, -1), (0, 2), (1, 2)], # 2 -> L
+                [(0, 0), (-1, 0), (-1, 1), (0, -2), (-1, -2)], # L -> 2
+                [(0, 0), (-1, 0), (-1, 1), (0, -2), (-1, -2)], # L -> 0
+                [(0, 0), (1, 0), (1, -1), (0, 2), (1, 2)], # 0 -> L
              ]
     
     # Wall kick data for shape [I]
     WALL_KICK_2 = [ 
-                [(0, 0), (-2, 0), (1, 0), (-2, -1), (1, 2)], # 0 -> R  // 0 -> 1
-                [(0, 0), (2, 0), (-1, 0), (2, 1), (-1, -2)], # R -> 0  // 1 -> 0
-                [(0, 0), (-1, 0), (2, 0), (-1, 2), (2, -1)], # R -> 2  // 1 -> 2
-                [(0, 0), (1, 0), (-2, 0), (1, -2), (-2, 1)], # 2 -> R  // 2 -> 1
-                [(0, 0), (2, 0), (-1, 0), (2, 1), (-1, -2)], # 2 -> L  // 2 -> 3
-                [(0, 0), (-2, 0), (1, 0), (-2, -1), (1, 2)], # L -> 2  // 3 -> 2
-                [(0, 0), (1, 0), (-2, 0), (1, -2), (-2, 1)], # L -> 0  // 3 -> 0
-                [(0, 0), (-1, 0), (2, 0), (-1, 2), (2, -1)], # 0 -> L  // 0 -> 3
+                [(0, 0), (-2, 0), (1, 0), (-2, 1), (1, -2)], # 0 -> R  // 0 -> 1
+                [(0, 0), (2, 0), (-1, 0), (2, -1), (-1, 2)], # R -> 0  // 1 -> 0
+                [(0, 0), (-1, 0), (2, 0), (-1, -2), (2, 1)], # R -> 2  // 1 -> 2
+                [(0, 0), (1, 0), (-2, 0), (1, 2), (-2, -1)], # 2 -> R  // 2 -> 1
+                [(0, 0), (2, 0), (-1, 0), (2, -1), (-1, 2)], # 2 -> L  // 2 -> 3
+                [(0, 0), (-2, 0), (1, 0), (-2, 1), (1, -2)], # L -> 2  // 3 -> 2
+                [(0, 0), (1, 0), (-2, 0), (1, 2), (-2, -1)], # L -> 0  // 3 -> 0
+                [(0, 0), (-1, 0), (2, 0), (-1, -2), (2, 1)], # 0 -> L  // 0 -> 3
              ]
+    
     
     SHAPE_WALL_KICK= {
         'T': WALL_KICK_1,
@@ -103,6 +105,9 @@ class Tetromino:
             block.pos += pos
 
     def rotate(self, clockwise = True):
+        if self.shape == "O":
+            return
+        
         pivot = self.blocks[0].pos
         new_position = [block.rotate(pivot, clockwise) for block in self.blocks]
 
@@ -112,7 +117,6 @@ class Tetromino:
                 self.set_next_rotation_state(clockwise)
             return
         
-        ## Wall Kick
         for offset in Tetromino.SHAPE_WALL_KICK[self.shape][self.get_index_wall_kick(clockwise)]:
             offset = vec(offset)
             new_position_kick = [position + offset for position in new_position]

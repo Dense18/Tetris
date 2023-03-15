@@ -119,7 +119,8 @@ class Tetris(State):
     def update(self, events):
         trigger = [self.app.animation_flag, self.app.accelerate_event][self.accelerate]
         if trigger and self.check_are(): 
-            if self.tetromino.update(): self.last_time_lock = self.current_milliseconds()
+            is_success = self.tetromino.update()
+            if is_success: self.last_time_lock = self.current_milliseconds()
 
         if self.tetromino.has_landed:
             if self.check_lock_delay():
