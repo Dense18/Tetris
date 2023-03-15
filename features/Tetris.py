@@ -22,6 +22,7 @@ class Tetris(State):
         self.accelerate = False
 
         self.bag = random.sample(list(Tetromino.SHAPE.keys()), len(Tetromino.SHAPE.keys()))
+        self.bag_min_item = 5
         self.tetromino = Tetromino(self, self.bag.pop(0))
 
         self.hold_piece_shape = None
@@ -113,7 +114,7 @@ class Tetris(State):
     
     def get_new_tetromino(self):
         self.tetromino = Tetromino(self, self.bag.pop(0))
-        if len(self.bag) <= 1:
+        if len(self.bag) <= self.bag_min_item:
             self.add_new_bag()
             
     def update(self, events):
@@ -163,10 +164,8 @@ class Tetris(State):
             Handle key events from pygame.KEYDOWN (fired when key is first pressed)
         """
         if key in [pygame.K_UP, pygame.K_x]:
-            # self.last_time_lock = self.current_milliseconds()
             self.rotate()
         elif key in [pygame.K_z, pygame.K_LCTRL, pygame.K_RCTRL]:
-            # self.last_time_lock = self.current_milliseconds()
             self.rotate(False)
         elif key == pygame.K_DOWN:
             self.accelerate = True
