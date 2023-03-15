@@ -26,6 +26,7 @@ TETROMINO_COLOR = {
         'Z': (255,0,0)#Red
 }
 
+
 # Directory
 SOUND_DIR= "Assets\\Sound"
 TETRIS_SOUND_SFX_DIR = SOUND_DIR + "\\" + "TetrisSfx" 
@@ -52,6 +53,7 @@ APPEARANCE_DELAY = 500
 SFX: https://you.have.fail/at/tetrioplus/#sfx-25Pi25-soundpack
 Ost: https://archive.org/details/TetrisThemeMusic
 Tetris GuideLine: https://tetris.fandom.com/wiki/Tetris_Guideline 
+Rotation System: https://tetris.wiki/Super_Rotation_System
 """
 
 

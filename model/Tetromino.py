@@ -6,16 +6,60 @@ class Tetromino:
     """
         Manages state of tetromino (4 squares block)
     """
-    # Available shapes of the tetromino. posisition is (x, y)
+    # Available Tetromino Shapes. All tetromino initial posiiton (x, y) is horizontal
     SHAPE = {
-        'T': [(0, 0), (-1, 0), (1, 0), (0, -1)],
-        'O': [(0, 0), (0, -1), (1, 0), (1, -1)],
-        'J': [(0, 0), (-1, 0), (0, -1), (0, -2)],
-        'L': [(0, 0), (1, 0), (0, -1), (0, -2)],
-        'I': [(0, 0), (0, 1), (0, -1), (0, -2)],
-        'S': [(0, 0), (-1, 0), (0, -1), (1, -1)],
-        'Z': [(0, 0), (1, 0), (0, -1), (-1, -1)]
+        #Note that the first position is considered as the pivot point for rotation
+        'T': [(0, 0), (-1, 0), (1, 0), (0, -1)], # Done
+        'O': [(0, 0), (0, -1), (1, 0), (1, -1)], # Done
+        'J': [(0, 0), (-1, 0), (1, 0), (-1, -1)], #Done
+        'L': [(0, 0), (-1, 0), (1, 0), (1, -1)], #Done 
+        'I': [(0, 0), (0, 1), (0, 2), (0, -1)], # Done
+        'S': [(0, 0), (-1, 0), (0, -1), (1, -1)], # Done
+        'Z': [(0, 0), (1, 0), (0, -1), (-1, -1)] # Done
     }
+
+    
+    # Notation: 
+        # {0: spawn state}, a.k.a rotation_state = 0
+        # {R: rotate right from spawn},  a.k.a rotation_state = 1
+        # {2: two same successive rotation from spawn } a.k.a rotation_state = 2
+        # {L: rotate left from spawn}, a.k.a rotation_state = 3
+    
+    # Wall kick data for shape [J, L, S, T, Z]
+    WALL_KICK_1 = [ 
+                [(0, 0), (-1, 0), (-1, 1), (0, -2), (-1, -2)], # 0 -> R
+                [(0, 0), (1, 0), (1, -1), (0, 2), (1, 2)], # R -> 0
+                [(0, 0), (1, 0), (1, -1), (0, 2), (1, 2)], # R -> 2
+                [(0, 0), (-1, 0), (-1, 1), (0, -2), (-1, -2)], # 2 -> R
+                [(0, 0), (1, 0), (1, 1), (0, -2), (1, -2)], # 2 -> L
+                [(0, 0), (-1, 0), (-1, -1), (0, 2), (-1, 2)], # L -> 2
+                [(0, 0), (-1, 0), (-1, -1), (0, 2), (-1, 2)], # L -> 0
+                [(0, 0), (-1, 0), (-1, -1), (0, 2), (-1, 2)], # 0 -> L
+             ]
+    
+    # Wall kick data for shape [I]
+    WALL_KICK_2 = [ 
+                [(0, 0), (-2, 0), (1, 0), (-2, -1), (1, 2)], # 0 -> R  // 0 -> 1
+                [(0, 0), (2, 0), (-1, 0), (2, 1), (-1, -2)], # R -> 0  // 1 -> 0
+                [(0, 0), (-1, 0), (2, 0), (-1, 2), (2, -1)], # R -> 2  // 1 -> 2
+                [(0, 0), (1, 0), (-2, 0), (1, -2), (-2, 1)], # 2 -> R  // 2 -> 1
+                [(0, 0), (2, 0), (-1, 0), (2, 1), (-1, -2)], # 2 -> L  // 2 -> 3
+                [(0, 0), (-2, 0), (1, 0), (-2, -1), (1, 2)], # L -> 2  // 3 -> 2
+                [(0, 0), (1, 0), (-2, 0), (1, -2), (-2, 1)], # L -> 0  // 3 -> 0
+                [(0, 0), (-1, 0), (2, 0), (-1, 2), (2, -1)], # 0 -> L  // 0 -> 3
+             ]
+    
+    SHAPE_WALL_KICK= {
+        'T': WALL_KICK_1,
+        'J': WALL_KICK_1,
+        'L': WALL_KICK_1,
+        'S': WALL_KICK_1,
+        'Z': WALL_KICK_1,
+
+        'I': WALL_KICK_2,
+        'O': None
+    }
+
 
     DIRECTIONS_LEFT = "left"
     DIRECTIONS_RIGHT = "right"
@@ -38,6 +82,7 @@ class Tetromino:
         self.has_landed = False
         
         self.tetris = tetris
+        self.rotation_state = 0
 
     def update(self, direction = DIRECTIONS_DOWN) -> bool:
         move_direction = self.MOVE_DIRECTIONS[direction]
@@ -57,28 +102,44 @@ class Tetromino:
         for block in self.blocks:
             block.pos += pos
 
-    def rotate(self, degree = 90):
+    def rotate(self, clockwise = True):
         pivot = self.blocks[0].pos
-        new_position = [block.rotate(pivot, degree) for block in self.blocks]
+        new_position = [block.rotate(pivot, clockwise) for block in self.blocks]
 
         if not self.is_collide(new_position):
             for i, block in enumerate(self.blocks):
                 block.pos = new_position[i]
+                self.set_next_rotation_state(clockwise)
             return
         
         ## Wall Kick
+        for offset in Tetromino.SHAPE_WALL_KICK[self.shape][self.get_index_wall_kick(clockwise)]:
+            offset = vec(offset)
+            new_position_kick = [position + offset for position in new_position]
 
-        #Left
-        new_position = [vec(position.x - 1, position.y) for position in new_position]
-        if not self.is_collide(new_position):
-            for i, block in enumerate(self.blocks):
-                block.pos = new_position[i]
-            return
-        #Right
-        new_position = [vec(position.x + 1, position.y) for position in new_position]
-        if not self.is_collide(new_position):
-            for i, block in enumerate(self.blocks):
-                block.pos = new_position[i]
+            if not self.is_collide(new_position_kick):
+                for i, block in enumerate(self.blocks):
+                    block.pos = new_position_kick[i]
+                    self.set_next_rotation_state(clockwise)
+                return
+
+    def get_index_wall_kick(self, clockwise) -> int:
+        if self.rotation_state == 0:
+            return 0 if clockwise else 7
+        elif self.rotation_state == 1:
+            return 2 if clockwise else 1
+        elif self.rotation_state == 2:
+            return 3 if clockwise else 4
+        elif self.rotation_state == 3:
+            return 6 if clockwise else 5
+        
+    def set_next_rotation_state(self, clockwise):
+        if clockwise:
+            self.rotation_state = (self.rotation_state + 1) % 4
+        else:
+            self.rotation_state = (self.rotation_state - 1) % 4
+
+        # self.rotation_state = self.rotation_state + 1 % 4 if clockwise else self.rotation_state - 1 % 4
     
     def is_collide(self, pos):
         return any(map(Block.is_collide, self.blocks, pos))

@@ -25,8 +25,8 @@ class SoundManager:
         pygame.mixer.Channel(COMBO_CHANNEL).set_volume(0.7)
         pygame.mixer.Channel(OST_CHANNEL).set_volume(0.1)
     
-    def play_ost(self):
-        pygame.mixer.Channel(OST_CHANNEL).play(self.ost)
+    def play_ost(self, loops = -1):
+        pygame.mixer.Channel(OST_CHANNEL).play(self.ost, - 1)
     
     def play_sfx(self, id):
         pygame.mixer.Channel(SFX_CHANNEL).play(self.sfx_dict[id])
@@ -34,7 +34,21 @@ class SoundManager:
     def play_combo(self, num_combo):
         combo = min(16, num_combo)
         pygame.mixer.Channel(COMBO_CHANNEL).play(self.combos_sfx_dict[combo])
+    
+    def stop_ost(self):
+        pygame.mixer.Channel(OST_CHANNEL).stop()
 
+    def stop_sfx(self):
+        pygame.mixer.Channel(SFX_CHANNEL).stop()
+
+    def stop_combo(self):
+        pygame.mixer.Channel(COMBO_CHANNEL).stop()
+    
+    def stop(self):
+        self.stop_ost()
+        self.stop_sfx()
+        self.stop_combo()
+        
     def load_sounds(self):
         self.ost = pygame.mixer.Sound(os.path.join(SOUND_DIR, "tetrisOst.mp3"))
 

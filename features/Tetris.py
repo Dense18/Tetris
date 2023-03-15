@@ -53,7 +53,6 @@ class Tetris(State):
     def hold(self):
         if not self.has_hold:
             self.has_hold = True
-            # pygame.mixer.Channel(SFX_CHANNEL).play(self.hold_sfx)
             self.sound_manager.play_sfx(SoundManager.HOLD_SFX)
             if not self.hold_piece_shape:
                 self.hold_piece_shape, self.tetromino = self.tetromino.shape, Tetromino(self, self.bag.pop())
@@ -93,20 +92,13 @@ class Tetris(State):
         if cleared > 0:
             self.combo += 1
             combo = min(self.combo, 16)
-            # pygame.mixer.Channel(COMBO_CHANNEL).play(self.combos_sfx[combo])
             self.sound_manager.play_combo(combo)
         else:
-            # if self.combo != 0:
-            #     pygame.mixer.Channel(COMBO_CHANNEL).play(self.combo_break_sfx)
-            # self.combo = 0
-            
             if self.combo != 0:
-                # pygame.mixer.Channel(COMBO_CHANNEL).play(self.combos_sfx[0])
                 self.sound_manager.play_combo(0)
             self.combo = 0
 
     def place_tetromino(self):
-        # pygame.mixer.Channel(SFX_CHANNEL).play(self.land_sfx)
         self.sound_manager.play_sfx(SoundManager.LAND_SFX)
 
         for block in self.tetromino.blocks:
@@ -155,7 +147,6 @@ class Tetris(State):
         """
         while not self.tetromino.has_landed:
             self.tetromino.update()
-        # pygame.mixer.Channel(SFX_CHANNEL).play(self.hard_drop_sfx)
         self.sound_manager.play_sfx(SoundManager.HARD_DROP_SFX)
         self.last_time_lock = 0
 
@@ -167,12 +158,15 @@ class Tetris(State):
             tetromino.update()
 
     def handle_key_down_pressed(self, key):
+        """
+            Handle key events from pygame.KEYDOWN (fired when key is first pressed)
+        """
         if key in [pygame.K_UP, pygame.K_x]:
             self.last_time_lock = self.current_milliseconds()
             self.rotate()
         elif key in [pygame.K_z, pygame.K_LCTRL, pygame.K_RCTRL]:
             self.last_time_lock = self.current_milliseconds()
-            self.rotate(-90)
+            self.rotate(False)
         elif key == pygame.K_DOWN:
             self.accelerate = True
         elif key == pygame.K_SPACE:
@@ -182,6 +176,9 @@ class Tetris(State):
             self.hold()
     
     def handle_key_pressed(self, key_pressed):
+        """
+            Handle key events from pygame.key.get_pressed(). Fired when key is pressed during each frame 
+        """
         if key_pressed[pygame.K_LEFT]:
             self.move(Tetromino.DIRECTIONS_LEFT)
         elif key_pressed[pygame.K_RIGHT]:
@@ -195,7 +192,6 @@ class Tetris(State):
         if direction not in [Tetromino.DIRECTIONS_RIGHT, Tetromino.DIRECTIONS_LEFT]: 
             return
         if not self.key_down_pressed:
-            # pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
             self.sound_manager.play_sfx(SoundManager.MOVE_SFX)
 
             self.tetromino.update(direction)
@@ -207,7 +203,6 @@ class Tetris(State):
             self.last_time_delay = self.current_milliseconds()
 
         elif self.check_das():
-            # pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
             self.sound_manager.play_sfx(SoundManager.MOVE_SFX)
 
             self.tetromino.update(direction)
@@ -240,10 +235,9 @@ class Tetris(State):
         else:
             self.lock_moves = 0
 
-    def rotate(self, degree = 90):
-        # pygame.mixer.Channel(SFX_CHANNEL).play(self.rotate_sfx)
+    def rotate(self, clockwise = True):
         self.sound_manager.play_sfx(SoundManager.ROTATE_SFX)
-        self.tetromino.rotate(degree)
+        self.tetromino.rotate(clockwise)
         self.update_lock_move()
 
     def get_hard_drop_indication(self):
@@ -258,7 +252,7 @@ class Tetris(State):
         return time.time() *1000 
     
     def reset(self):
-        self.ost.stop()
+        self.sound_manager.stop()
         self.__init__(self.app)
     
 
