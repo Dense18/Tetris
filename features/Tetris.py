@@ -175,38 +175,35 @@ class Tetris(State):
     
     def handle_key_pressed(self, key_pressed):
         if key_pressed[pygame.K_LEFT]:
-            if not self.key_down_pressed:
-                pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
-                self.last_time_lock = self.current_milliseconds()
-                self.tetromino.update("left")
-                self.last_time_delay = self.current_milliseconds()
-                self.key_down_pressed = True
-                self.update_lock_move()
-
-            elif self.check_das():
-                pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
-                self.tetromino.update("left")
-                self.last_time_interval = self.current_milliseconds()
-                self.update_lock_move()
-
+            self.move("left")
         elif key_pressed[pygame.K_RIGHT]:
-            if not self.key_down_pressed:
-                pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
-                self.last_time_lock = self.current_milliseconds()
-                self.tetromino.update("right")
-                self.last_time_delay = self.current_milliseconds()
-                self.key_down_pressed = True
-                self.update_lock_move()
-
-            elif self.check_das():
-                pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
-                self.tetromino.update("right")
-                self.last_time_interval = self.current_milliseconds()
-                self.update_lock_move()
+            self.move("right")
         else:
             self.last_time_interval = 0
             self.last_time_delay = 0
             self.key_down_pressed = False
+    
+    def move(self, direction):
+        if direction not in ["right", "left"]: 
+            return
+        if not self.key_down_pressed:
+            pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
+
+            self.tetromino.update(direction)
+            self.update_lock_move()
+
+            self.key_down_pressed = True
+
+            self.last_time_lock = self.current_milliseconds()
+            self.last_time_delay = self.current_milliseconds()
+
+        elif self.check_das():
+            pygame.mixer.Channel(SFX_CHANNEL).play(self.move_sfx)
+
+            self.tetromino.update(direction)
+            self.update_lock_move()
+
+            self.last_time_interval = self.current_milliseconds()
 
     def check_das(self):
         """
@@ -237,7 +234,6 @@ class Tetris(State):
         pygame.mixer.Channel(SFX_CHANNEL).play(self.rotate_sfx)
         self.tetromino.rotate(degree)
         self.update_lock_move()
-
 
     def get_hard_drop_indication(self):
         """
