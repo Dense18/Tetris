@@ -57,6 +57,41 @@ APPEARANCE_DELAY = 500
 
 #SCORE
 B2B_MULTIPLIER = 1.5
+
+
+#ACTIONS
+LINE_0 = 1
+LINE_1 = 2
+LINE_2 = 3
+LINE_3 = 4
+LINE_4 = 5
+
+T_SPIN_0 = 6
+T_SPIN_1 = 7
+T_SPIN_2 = 8
+T_SPIN_3 = 9
+
+MINI_T_SPIN_0 = 10
+MINI_T_SPIN_1 = 11
+MINI_T_SPIN_2 = 12
+
+ACTION_TO_TEXT = {
+    LINE_0 : "",
+    LINE_1 : "Single",
+    LINE_2 : "Double",
+    LINE_3 : "Triple",
+    LINE_4 : "Tetris",
+
+    T_SPIN_0 : "T Spin",
+    T_SPIN_1 : "T Spin Single",
+    T_SPIN_2 : "T Spin Double",
+    T_SPIN_3 : "T Spin Triple",
+
+    MINI_T_SPIN_0 : "Mini T Spin",
+    MINI_T_SPIN_1 : "Mini T Spin Single",
+    MINI_T_SPIN_2 : "Mini T Spin Double"
+}
+
 # Links
 """
 SFX: https://you.have.fail/at/tetrioplus/#sfx-25Pi25-soundpack

@@ -42,11 +42,11 @@ class Tetris(State):
         # Key is based on score type
         self.score_dict = { 0: self.basic_score_system, 1: self.t_spin_score_system, 2: self.mini_t_spin_score_system}
 
-        self.action = ""
+        self.action = LINE_0
         # Key is based on lines cleared
-        self.action_basic = {0: "", 1: "Single!", 2: "Double!", 3: "Triple!", 4: "Tetris!"}
-        self.action_t_spin = {0: "T Spin!", 1: "T Spin Single!", 2: "T Spin Double!", 3: "T Spin Triple!"}
-        self.action_mini_t_spin = {0: "Mini T Spin", 1: "Mini T Spin Single!", 2: "Mini T Spin Double!"}
+        self.action_basic = {0: LINE_0, 1: LINE_1, 2: LINE_2, 3: LINE_3, 4: LINE_4}
+        self.action_t_spin = {0: T_SPIN_0, 1: T_SPIN_1, 2: T_SPIN_2, 3: T_SPIN_3}
+        self.action_mini_t_spin = {0: MINI_T_SPIN_0, 1: MINI_T_SPIN_1, 2: MINI_T_SPIN_2}
         # Key is based on score type
         self.action_dict = { 0: self.action_basic, 1: self.action_t_spin, 2: self.action_mini_t_spin}
 
