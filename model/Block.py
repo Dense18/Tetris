@@ -34,6 +34,14 @@ class Block:
                 return False
         return True
     
+    def drop_distance(self) -> int:
+        drop = 0
+        while( (int(self.pos.y) + drop + 1)  < FIELD_HEIGHT) and\
+               not self.tetromino.tetris.field_arr[int(self.pos.y) + drop + 1][int(self.pos.x)]:
+            drop += 1
+        
+        return drop 
+    
     def draw(self, screen, offset = (0, 0), mode = MODE_FULL_COLOR):
         if mode == Block.MODE_FULL_COLOR:
             pygame.draw.rect(screen, self.color, ((self.pos * BLOCK_SIZE) + offset ,(BLOCK_SIZE, BLOCK_SIZE)),border_radius=8)

@@ -107,10 +107,6 @@ class Tetromino:
         
         return False
     
-    def move(self, pos):
-        for block in self.blocks:
-            block.pos += pos
-    
     def rotate(self, clockwise = True) -> bool:
         pivot = self.blocks[0].pos
         new_position = [block.rotate(pivot, clockwise) for block in self.blocks]
@@ -131,7 +127,6 @@ class Tetromino:
         
         return False
     
-            
     def get_offset(self, clockwise):
         initial_offset = self.SHAPE_OFFSET[self.shape][self.rotation_state]
         next_offset = self.SHAPE_OFFSET[self.shape][self.get_next_rotation_state(clockwise)]
@@ -184,6 +179,8 @@ class Tetromino:
                 corner_list.append(self.tetris.field_arr[new_pos_y][new_pos_x] )
         return corner_list
 
+    def drop_distance(self):
+        return min(map(Block.drop_distance, self.blocks))
 
     def draw(self, screen, offset = (0, 0), mode = Block.MODE_FULL_COLOR):
         [block.draw(screen, offset = offset, mode = mode) for block in self.blocks]
