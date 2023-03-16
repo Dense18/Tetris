@@ -94,6 +94,7 @@ class Tetromino:
         if not self.is_collide(new_positions):
             for block in self.blocks: 
                 block.pos += move_direction
+            self.has_landed = False
             return True
         
         if direction == Tetromino.DIRECTIONS_DOWN:
