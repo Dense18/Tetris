@@ -174,7 +174,7 @@ class Tetris(State):
             
     def update(self, events):
         trigger = [self.app.animation_flag, self.app.accelerate_event][self.accelerate]
-        if trigger and self.check_are(): 
+        if trigger and self.check_are():             
             is_success = self.tetromino.update()
             if is_success: 
                 if self.accelerate:  self.score += 1
@@ -192,7 +192,7 @@ class Tetris(State):
                 
         ## Check events
         for event in events:
-            if event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN:    
                 self.handle_key_down_pressed(event.key)
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_DOWN:

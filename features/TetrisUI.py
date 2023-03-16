@@ -61,7 +61,7 @@ class TetrisUI:
             )
     
     def draw_action_score(self):
-        b2b_text = "B2B!" if self.tetris.is_b2b else "B2B!"
+        b2b_text = "B2B!" if self.tetris.is_b2b else ""
         b2b_text_obj = self.textFont.render(b2b_text, 1, self.textColor)
         
         action_text = self.tetris.action
