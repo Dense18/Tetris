@@ -1,7 +1,10 @@
-from model.Block import Block
 import random
-from settings import *
 from copy import deepcopy
+
+from model.Block import Block
+from settings import *
+
+
 class Tetromino:
     """
         Manages state of tetromino (4 squares block)
@@ -189,11 +192,9 @@ class Tetromino:
 
     @staticmethod
     def draw_custom_position(screen, shape, abs_pos, block_size, mode = Block.MODE_FULL_COLOR):
-        # print(f"debug Tetromino.py: shape = {shape}")
         for block_pos in Tetromino.SHAPE[shape]:
             new_abs_pos = vec(abs_pos) + (block_size * vec(block_pos))
 
-            ##perhaps make this static
             Block.draw_custom(screen, 
                               (new_abs_pos[0], new_abs_pos[1]), 
                               block_size,
