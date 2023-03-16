@@ -21,7 +21,7 @@ INITIAL_TETROMINO_OFFSET = vec(FIELD_WIDTH//2 , 0)
 
 WIDTH, HEIGHT = BOARD_WIDTH + SIDEBAR_WIDTH + SIDEBAR_WIDTH, BOARD_HEIGHT
 
-ANIMATION_INTERVAL = 200 # milliseconds
+ANIMATION_INTERVAL = 1000 # milliseconds
 ACCELERATE_INTERVAL = 150 # milliseconds
 
 TETROMINO_COLOR = {
@@ -34,7 +34,7 @@ TETROMINO_COLOR = {
         'Z': (255,0,0)#Red
 }
 
-
+LINES_TO_ADVANCE_LEVEL = 10 #Uses fixed goal levelling system
 # Directory
 SOUND_DIR= "Assets\\Sound"
 TETRIS_SOUND_SFX_DIR = SOUND_DIR + "\\" + "TetrisSfx" 

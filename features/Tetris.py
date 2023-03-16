@@ -31,8 +31,9 @@ class Tetris(State):
 
         self.lines_cleared = 0
         self.combo = -1
-        self.level = 1
 
+
+        self.level = 1
         self.score = 0
         # Key is based on lines cleared
         self.basic_score_system = {0: 0, 1: 100, 2: 200, 3: 500, 4: 800 }
@@ -123,6 +124,11 @@ class Tetris(State):
         self.lines_cleared += cleared
         return cleared
 
+    def check_next_nevel(self):
+        if self.lines_cleared >= self.level * LINES_TO_ADVANCE_LEVEL:
+            self.level += 1
+            self.update_time_speed()
+
     def place_tetromino(self):
         self.sound_manager.play_sfx(SoundManager.LAND_SFX)
 
@@ -160,6 +166,8 @@ class Tetris(State):
         self.get_new_tetromino()
         self.last_time_are = self.current_milliseconds()
 
+        self.check_next_nevel()
+
     def get_new_tetromino(self):
         self.tetromino = Tetromino(self, self.bag.pop(0))
         self.check_bag()
@@ -167,11 +175,10 @@ class Tetris(State):
     def update(self, events):
         trigger = [self.app.animation_flag, self.app.accelerate_event][self.accelerate]
         if trigger and self.check_are(): 
-            pass
-            # is_success = self.tetromino.update()
-            # if is_success: 
-            #     if self.accelerate:  self.score += 1
-            #     self.last_time_lock = self.current_milliseconds()
+            is_success = self.tetromino.update()
+            if is_success: 
+                if self.accelerate:  self.score += 1
+                self.last_time_lock = self.current_milliseconds()
 
         if self.tetromino.has_landed:
             if self.check_lock_delay():
@@ -203,7 +210,6 @@ class Tetris(State):
         while not self.tetromino.has_landed:
             # num_move_down += 1
             self.tetromino.update()
-    
 
         self.sound_manager.play_sfx(SoundManager.HARD_DROP_SFX)
         self.last_time_lock = 0
@@ -251,10 +257,10 @@ class Tetris(State):
         if direction not in [Tetromino.DIRECTIONS_RIGHT, Tetromino.DIRECTIONS_LEFT]: 
             return
         if not self.key_down_pressed:
-            self.sound_manager.play_sfx(SoundManager.MOVE_SFX)
 
             is_move_success = self.tetromino.update(direction)
             if is_move_success: 
+                self.sound_manager.play_sfx(SoundManager.MOVE_SFX)
                 self.last_time_lock = self.current_milliseconds()
                 self.update_lock_move()
 
@@ -264,10 +270,11 @@ class Tetris(State):
             self.last_time_delay = self.current_milliseconds()
 
         elif self.check_das():
-            self.sound_manager.play_sfx(SoundManager.MOVE_SFX)
 
             is_move_success = self.tetromino.update(direction)
-            if is_move_success: self.update_lock_move()
+            if is_move_success: 
+                self.sound_manager.play_sfx(SoundManager.MOVE_SFX)
+                self.update_lock_move()
 
             self.last_time_interval = self.current_milliseconds()
 
@@ -322,8 +329,15 @@ class Tetris(State):
     def current_milliseconds(self):
         return time.time() *1000 
     
+
+    def update_time_speed(self):
+        # return
+        speed = pow((0.8 - ((self.level-1) * 0.007)), self.level - 1) #https://tetris.fandom.com/wiki/Tetris_Worlds
+        pygame.time.set_timer(self.app.animation_event, int(speed * 1000))
+    
     def reset(self):
         self.sound_manager.stop()
+        pygame.time.set_timer(self.app.animation_event, ANIMATION_INTERVAL)
         self.__init__(self.app)
     
     """

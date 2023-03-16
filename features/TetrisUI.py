@@ -15,6 +15,7 @@ class TetrisUI:
         self.next_piece_text = "Next Piece:"
         self.hold_piece_text = "Hold Piece:"
         self.lines_cleared_text = "Lines cleared:"
+        self.level_label_text = "Level:"
         self.score_text = "Score:"
 
         self.textSize = 30
@@ -38,6 +39,7 @@ class TetrisUI:
         self.draw_hold_piece()
         self.draw_action_score()
         self.draw_score()
+        self.draw_level()
     
     def draw_hold_piece(self):
         hold_item_text_obj = self.textFont.render(self.hold_piece_text, 1, self.textColor)
@@ -49,7 +51,7 @@ class TetrisUI:
 
             hold_tetromino_rect = pygame.Rect(0,0, block_size, block_size)
             hold_tetromino_rect.centerx = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2)
-            hold_tetromino_rect.top = hold_item_rect.bottom + 50
+            hold_tetromino_rect.top = hold_item_rect.bottom + (block_size * 3)
             Tetromino.draw_custom_position(
                 self.tetris.app.screen,
                 self.tetris.tetromino.shape if self.tetris.has_hold else self.tetris.hold_piece_shape,
@@ -59,7 +61,7 @@ class TetrisUI:
             )
     
     def draw_action_score(self):
-        b2b_text = "B2B!" if self.tetris.is_b2b else ""
+        b2b_text = "B2B!" if self.tetris.is_b2b else "B2B!"
         b2b_text_obj = self.textFont.render(b2b_text, 1, self.textColor)
         
         action_text = self.tetris.action
@@ -69,7 +71,7 @@ class TetrisUI:
         combo_text = f"x {self.tetris.combo}" if self.tetris.combo >= 1 else ""
         combo_text_obj = self.textFont.render(combo_text, 1, self.textColor)
         
-        b2b_text_rect = b2b_text_obj.get_rect(center = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//2 - action_obj.get_height()))
+        b2b_text_rect = b2b_text_obj.get_rect(center = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//2.2 - action_obj.get_height()))
         action_rect = action_obj.get_rect(centerx = INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, top = b2b_text_rect.bottom + 10)
         combo_text_rect = combo_text_obj.get_rect(centerx = INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, top = action_rect.bottom + 10)
 
@@ -86,7 +88,11 @@ class TetrisUI:
         score_text_obj = self.textFont.render(str(round(self.tetris.score)), 1, self.textColor)
         score_text_rect = score_text_obj.get_rect(centerx = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2), top = score_label_rect.bottom + 30)
         self.tetris.app.screen.blit(score_text_obj, score_text_rect)
-
+    
+    def draw_level(self):
+        level_label_obj = self.textFont.render(self.level_label_text + " "+str(self.tetris.level), 1, self.textColor)
+        level_label_rect = level_label_obj.get_rect(center = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.15))
+        self.tetris.app.screen.blit(level_label_obj, level_label_rect)
 
     def draw_field(self):
         for row in range(len(self.tetris.field_arr)):
