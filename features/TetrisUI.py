@@ -28,7 +28,7 @@ class TetrisUI:
         self.draw_grid()
         self.tetris.tetromino.draw(self.tetris.app.screen, offset = (SIDEBAR_WIDTH, 0))
         self.draw_field()
-        self.draw_indication()
+        self.draw_ghost_tetromino()
 
         self.draw_right_side_bar()
     
@@ -115,8 +115,8 @@ class TetrisUI:
         line_cleared_rect.center = (INITIAL_RIGHT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.1)
         self.tetris.app.screen.blit(line_cleared_obj, line_cleared_rect)
 
-    def draw_indication(self):
-        tetro = self.tetris.get_hard_drop_indication()
+    def draw_ghost_tetromino(self):
+        tetro = self.tetris.get_ghost_tetromino()
         tetro.draw(self.tetris.app.screen, offset = (SIDEBAR_WIDTH, 0), mode = Block.MODE_BORDER_INDICATION)
         
     def draw_grid(self):

@@ -275,13 +275,17 @@ class Tetris(State):
             self.last_time_lock = self.current_milliseconds()
             self.update_lock_move()
 
-    def get_hard_drop_indication(self):
+    def get_ghost_tetromino(self):
         """
             Return a new tetromino with updated position after a hard drop of current tetromino
         """
         new_tetromino = Tetromino.copy(self.tetromino)
         self.hard_drop2(new_tetromino)
         return new_tetromino
+    
+    def check_t_spin(self):
+        if self.tetromino.shape == "T":
+            pass
     
     def current_milliseconds(self):
         return time.time() *1000 
