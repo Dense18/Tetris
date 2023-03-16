@@ -30,7 +30,16 @@ class Tetris(State):
         self.has_hold = False
 
         self.lines_cleared = 0
-        self.combo = 0
+        self.combo = -1
+        self.score = 0
+
+        self.score_system = {
+            0: 0,
+            1: 100,
+            2: 200,
+            3: 500,
+            4: 800
+        }
 
         self.ui = TetrisUI(self)
         self.sound_manager = SoundManager()
@@ -84,7 +93,7 @@ class Tetris(State):
         for col in range(len(self.field_arr[row_index])):
             self.field_arr[row_index][col] = 0
 
-    def clear_full_line(self):
+    def clear_full_line(self) -> int:
         cleared = 0
         for row in range(len(self.field_arr) - 1, -1, -1):
             if self.is_row_full(row):
@@ -99,14 +108,7 @@ class Tetris(State):
                     self.field_arr[row][col].pos = vec(col, row)
         
         self.lines_cleared += cleared
-        if cleared > 0:
-            self.combo += 1
-            combo = min(self.combo, 16)
-            self.sound_manager.play_combo(combo)
-        else:
-            if self.combo != 0:
-                self.sound_manager.play_combo(0)
-            self.combo = 0
+        return cleared
 
     def place_tetromino(self):
         self.sound_manager.play_sfx(SoundManager.LAND_SFX)
@@ -119,7 +121,20 @@ class Tetris(State):
         self.get_new_tetromino()
         self.last_time_are = self.current_milliseconds()
         
-        self.clear_full_line()
+        lines_cleared = self.clear_full_line()
+
+        if lines_cleared > 0:
+            self.combo += 1
+            combo = min(self.combo, 16)
+            self.sound_manager.play_combo(combo)
+        else:
+            if self.combo != -1:
+                self.sound_manager.play_combo(-1)
+            self.combo = -1
+
+        self.score += self.score_system[lines_cleared]
+        self.score += max(0, self.combo) * 50
+        
     
     def get_new_tetromino(self):
         self.tetromino = Tetromino(self, self.bag.pop(0))
@@ -129,7 +144,9 @@ class Tetris(State):
         trigger = [self.app.animation_flag, self.app.accelerate_event][self.accelerate]
         if trigger and self.check_are(): 
             is_success = self.tetromino.update()
-            if is_success: self.last_time_lock = self.current_milliseconds()
+            if is_success: 
+                if self.accelerate:  self.score += 1
+                self.last_time_lock = self.current_milliseconds()
 
         if self.tetromino.has_landed:
             if self.check_lock_delay():
@@ -155,10 +172,14 @@ class Tetris(State):
         """
             Move the current tetromino down until it has landed
         """
+        num_move_down = 0
         while not self.tetromino.has_landed:
+            num_move_down += 1
             self.tetromino.update()
+
         self.sound_manager.play_sfx(SoundManager.HARD_DROP_SFX)
         self.last_time_lock = 0
+        self.score += num_move_down * 2
 
     def hard_drop2(self, tetromino):
         """

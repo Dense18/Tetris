@@ -62,6 +62,8 @@ SFX: https://you.have.fail/at/tetrioplus/#sfx-25Pi25-soundpack
 Ost: https://archive.org/details/TetrisThemeMusic
 Tetris GuideLine: https://tetris.fandom.com/wiki/Tetris_Guideline 
 Rotation System: https://tetris.wiki/Super_Rotation_System
+Score System:  https://tetris.fandom.com/wiki/Scoring#Guideline_scoring_system  
+Combo System: https://tetris.wiki/Combo#:~:text=Combo%20system%20(consecutive%20line%20clears)&text=The%20combo%20counter%20starts%20at,clears%20equals%20a%201%2Dcombo. 
 """
 
 

@@ -14,7 +14,9 @@ class TetrisUI:
 
         self.next_piece_text = "Next Piece:"
         self.hold_piece_text = "Hold Piece:"
-        self.score_text = "Lines cleared:"
+        self.lines_cleared_text = "Lines cleared:"
+        self.score_text = "Score:"
+
         self.textSize = 30
         self.textColor = (255,255,255)
         self.textFont = pygame.font.SysFont("comicsans", self.textSize)
@@ -33,6 +35,7 @@ class TetrisUI:
     def draw_left_side_bar(self):
         pygame.draw.rect(self.tetris.app.screen, SIDEBAR_BG_COLOR, (INITIAL_LEFT_SIDEBAR_X, 0, SIDEBAR_WIDTH, BOARD_HEIGHT))
         self.draw_hold_piece()
+        self.draw_score()
     
     def draw_hold_piece(self):
         hold_item_text_obj = self.textFont.render(self.hold_piece_text, 1, self.textColor)
@@ -54,6 +57,20 @@ class TetrisUI:
                 Block.MODE_BORDER_INDICATION_COLOR if self.tetris.has_hold else Block.MODE_FULL_COLOR
             )
     
+    
+    def draw_score(self):
+        score_label_obj = self.textFont.render(self.score_text, 1, self.textColor)
+        score_label_rect = score_label_obj.get_rect()
+        score_label_rect.center = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.5)
+        self.tetris.app.screen.blit(score_label_obj, score_label_rect)
+
+        score_text_obj = self.textFont.render(str(self.tetris.score), 1, self.textColor)
+        score_text_rect = score_text_obj.get_rect()
+        score_text_rect.centerx = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2)
+        score_text_rect.top = score_label_rect.bottom + 70
+        self.tetris.app.screen.blit(score_text_obj, score_text_rect)
+
+
     def draw_field(self):
         for row in range(len(self.tetris.field_arr)):
             for col in range(len(self.tetris.field_arr[row])):
@@ -65,19 +82,19 @@ class TetrisUI:
 
         self.draw_next_piece()
         self.draw_hold_piece()
-        self.draw_score()
+        self.draw_lines_cleared()
 
     def draw_next_piece(self):
-        nextItemTextObj = self.textFont.render(self.next_piece_text, 1, self.textColor)
-        nextItemRect = nextItemTextObj.get_rect()
-        nextItemRect.center = (INITIAL_RIGHT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//7)
-        self.tetris.app.screen.blit(nextItemTextObj, nextItemRect)
+        next_item_label_obj = self.textFont.render(self.next_piece_text, 1, self.textColor)
+        next_item_label_rect = next_item_label_obj.get_rect()
+        next_item_label_rect.center = (INITIAL_RIGHT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//7)
+        self.tetris.app.screen.blit(next_item_label_obj, next_item_label_rect)
 
         block_size = 30
 
         next_tetromino_rect = pygame.Rect(0,0, block_size, block_size)
         next_tetromino_rect.centerx = (INITIAL_RIGHT_SIDEBAR_X + SIDEBAR_WIDTH//2)
-        next_tetromino_rect.top = nextItemRect.bottom + 70
+        next_tetromino_rect.top = next_item_label_rect.bottom + 70
 
         y_offset = 0
         for i in range(self.num_next_piece):
@@ -87,17 +104,16 @@ class TetrisUI:
                                                 block_size)
             y_offset += block_size * 3
 
+    def draw_lines_cleared(self):
+        cleared_label_obj = self.textFont.render(self.lines_cleared_text, 1, self.textColor)
+        cleared_label_rect = cleared_label_obj.get_rect()
+        cleared_label_rect.center = (INITIAL_RIGHT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.2)
+        self.tetris.app.screen.blit(cleared_label_obj, cleared_label_rect)
 
-    def draw_score(self):
-        score_text_obj = self.textFont.render(self.score_text, 1, self.textColor)
-        score_text_rect = score_text_obj.get_rect()
-        score_text_rect.center = (INITIAL_RIGHT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.2)
-        self.tetris.app.screen.blit(score_text_obj, score_text_rect)
-
-        score_obj = self.textFont.render(str(self.tetris.lines_cleared), 1, self.textColor)
-        score_rect = score_obj.get_rect()
-        score_rect.center = (INITIAL_RIGHT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.1)
-        self.tetris.app.screen.blit(score_obj, score_rect)
+        line_cleared_obj = self.textFont.render(str(self.tetris.lines_cleared), 1, self.textColor)
+        line_cleared_rect = line_cleared_obj.get_rect()
+        line_cleared_rect.center = (INITIAL_RIGHT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.1)
+        self.tetris.app.screen.blit(line_cleared_obj, line_cleared_rect)
 
     def draw_indication(self):
         tetro = self.tetris.get_hard_drop_indication()
@@ -110,18 +126,9 @@ class TetrisUI:
                              (INITIAL_BOARD_X, row * BLOCK_SIZE), 
                              (BOARD_WIDTH + SIDEBAR_WIDTH, row * BLOCK_SIZE), 
                              1)
-            # draw verticall line
+            # draw vertical  line
             for col in range(FIELD_WIDTH):
                 pygame.draw.line(self.tetris.app.screen, "black", 
                                  (col * BLOCK_SIZE + INITIAL_BOARD_X, 0), 
                                  (col * BLOCK_SIZE + SIDEBAR_WIDTH, BOARD_HEIGHT), 
                                  1)
-        
-        # pygame.draw.line(self.tetris.app.screen, "red", 
-        #                      (INITIAL_BOARD_X, 20 * BLOCK_SIZE), 
-        #                      (BOARD_WIDTH + SIDEBAR_WIDTH, 20 * BLOCK_SIZE), 
-        #                      8)
-        
-        # pygame.draw.line(self.tetris.app.screen, "red", 
-        #                  (10 * BLOCK_SIZE + INITIAL_BOARD_X, 0), 
-        #                  (10 * BLOCK_SIZE + INITIAL_BOARD_X, BOARD_HEIGHT), 8)
