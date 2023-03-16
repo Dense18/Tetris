@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+
+
 class State(ABC):
     """
         Abstract Interface of each State of the Game
@@ -8,8 +10,17 @@ class State(ABC):
     
     @abstractmethod
     def update(self, events):
+        """
+            Update state in each frame 
+            
+            Args:
+                events: list of pygame events
+        """
         pass
 
     @abstractmethod    
     def draw(self):
+        """
+            Draw the current state onto the screen
+        """
         pass

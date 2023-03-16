@@ -1,7 +1,9 @@
-from settings import *
 import pygame
-from model.Tetromino import Tetromino
+
 from model.Block import Block
+from model.Tetromino import Tetromino
+from settings import *
+
 
 class TetrisUI:
     """
@@ -23,25 +25,36 @@ class TetrisUI:
         self.textFont = pygame.font.SysFont("comicsans", self.textSize)
 
     def draw(self):
-
+        """
+            Draws all UI elements onto the screen
+        """
         self.draw_left_side_bar()
-
-        self.draw_grid()
-        self.tetris.tetromino.draw(self.tetris.app.screen, offset = (SIDEBAR_WIDTH, 0))
-        self.draw_field()
-        self.draw_ghost_tetromino()
-
+        self.draw_middle()
         self.draw_right_side_bar()
     
+    #* Left side bar *#
+    
     def draw_left_side_bar(self):
+        """
+            Draw the left side bar UI with its corresponding elements
+            
+            UI includes:
+                -Hold Piece\n
+                -Action\n
+                -Score\n
+                -Level
+        """
         pygame.draw.rect(self.tetris.app.screen, SIDEBAR_BG_COLOR, (INITIAL_LEFT_SIDEBAR_X, 0, SIDEBAR_WIDTH, BOARD_HEIGHT))
 
         self.draw_hold_piece()
-        self.draw_action_score()
+        self.draw_action()
         self.draw_score()
         self.draw_level()
     
     def draw_hold_piece(self):
+        """
+        Draws the hold piece UI
+        """
         hold_item_text_obj = self.textFont.render(self.hold_piece_text, 1, self.textColor)
         hold_item_rect = hold_item_text_obj.get_rect(center = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//7))
         self.tetris.app.screen.blit(hold_item_text_obj, hold_item_rect)
@@ -60,7 +73,10 @@ class TetrisUI:
                 Block.MODE_BORDER_INDICATION_COLOR if self.tetris.has_hold else Block.MODE_FULL_COLOR
             )
     
-    def draw_action_score(self):
+    def draw_action(self):
+        """
+        Draws the action UI
+        """
         b2b_text = "B2B!" if self.tetris.is_b2b else ""
         b2b_text_obj = self.textFont.render(b2b_text, 1, self.textColor)
         
@@ -79,8 +95,10 @@ class TetrisUI:
         self.tetris.app.screen.blit(action_obj, action_rect)
         self.tetris.app.screen.blit(combo_text_obj, combo_text_rect)
 
-
     def draw_score(self):
+        """
+        Draw the score UI
+        """
         score_label_obj = self.textFont.render(self.score_text, 1, self.textColor)
         score_label_rect = score_label_obj.get_rect(center = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.5))
         self.tetris.app.screen.blit(score_label_obj, score_label_rect)
@@ -90,24 +108,80 @@ class TetrisUI:
         self.tetris.app.screen.blit(score_text_obj, score_text_rect)
     
     def draw_level(self):
+        """
+        Draw the level UI
+        """
         level_label_obj = self.textFont.render(self.level_label_text + " "+str(self.tetris.level), 1, self.textColor)
         level_label_rect = level_label_obj.get_rect(center = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.15))
         self.tetris.app.screen.blit(level_label_obj, level_label_rect)
 
+    #* Middle *#
+    
+    def draw_middle(self):
+        """
+        Draw the all the UI elements for the middle of the screen
+        
+        UI include:
+            Tetris Field\n
+            Tetrominos on the field\n
+            Ghost Tetromino \n
+        """
+        self.draw_grid()
+        self.tetris.tetromino.draw(self.tetris.app.screen, offset = (SIDEBAR_WIDTH, 0))
+        self.draw_field()
+        self.draw_ghost_tetromino()
+        
+    
     def draw_field(self):
+        """
+        Draw the Tetris field UI
+        """
         for row in range(len(self.tetris.field_arr)):
             for col in range(len(self.tetris.field_arr[row])):
                 if self.tetris.field_arr[row][col] != 0:
                     self.tetris.field_arr[row][col].draw(self.tetris.app.screen, offset = (SIDEBAR_WIDTH, 0))
     
+    def draw_ghost_tetromino(self):
+        """
+        Draw the ghost tetromino UI
+        """
+        tetro = self.tetris.get_ghost_tetromino()
+        tetro.draw(self.tetris.app.screen, offset = (SIDEBAR_WIDTH, 0), mode = Block.MODE_BORDER_INDICATION)
+    
+    def draw_grid(self):
+        """
+        Draw the grid UI for the Tetris Field
+        """
+        for row in range(FIELD_HEIGHT):
+            # draw horizontal line
+            pygame.draw.line(self.tetris.app.screen, "black", 
+                             (INITIAL_BOARD_X, row * BLOCK_SIZE), 
+                             (BOARD_WIDTH + SIDEBAR_WIDTH, row * BLOCK_SIZE), 
+                             1)
+            # draw vertical  line
+            for col in range(FIELD_WIDTH):
+                pygame.draw.line(self.tetris.app.screen, "black", 
+                                 (col * BLOCK_SIZE + INITIAL_BOARD_X, 0), 
+                                 (col * BLOCK_SIZE + SIDEBAR_WIDTH, BOARD_HEIGHT), 
+                                 1)
+    #* Left side bar *#
     def draw_right_side_bar(self):
+        """
+            Draw the right side bar UI with its corresponding elements
+            
+            UI includes:
+                Next Piece\n
+                Lines cleared
+        """
         pygame.draw.rect(self.tetris.app.screen, SIDEBAR_BG_COLOR, (INITIAL_RIGHT_SIDEBAR_X, 0, SIDEBAR_WIDTH, BOARD_HEIGHT))
 
         self.draw_next_piece()
-        self.draw_hold_piece()
         self.draw_lines_cleared()
 
     def draw_next_piece(self):
+        """
+        Draw the next tetromino piece UI
+        """
         next_item_label_obj = self.textFont.render(self.next_piece_text, 1, self.textColor)
         next_item_label_rect = next_item_label_obj.get_rect(center = (INITIAL_RIGHT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//7))
         self.tetris.app.screen.blit(next_item_label_obj, next_item_label_rect)
@@ -127,6 +201,9 @@ class TetrisUI:
             y_offset += block_size * 3
 
     def draw_lines_cleared(self):
+        """
+        Draw the lines cleared UI
+        """
         cleared_label_obj = self.textFont.render(self.lines_cleared_text, 1, self.textColor)
         cleared_label_rect = cleared_label_obj.get_rect(center = (INITIAL_RIGHT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.2))
         self.tetris.app.screen.blit(cleared_label_obj, cleared_label_rect)
@@ -134,21 +211,3 @@ class TetrisUI:
         line_cleared_obj = self.textFont.render(str(self.tetris.lines_cleared), 1, self.textColor)
         line_cleared_rect = line_cleared_obj.get_rect(center = (INITIAL_RIGHT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.1))
         self.tetris.app.screen.blit(line_cleared_obj, line_cleared_rect)
-
-    def draw_ghost_tetromino(self):
-        tetro = self.tetris.get_ghost_tetromino()
-        tetro.draw(self.tetris.app.screen, offset = (SIDEBAR_WIDTH, 0), mode = Block.MODE_BORDER_INDICATION)
-        
-    def draw_grid(self):
-        for row in range(FIELD_HEIGHT):
-            # draw horizontal line
-            pygame.draw.line(self.tetris.app.screen, "black", 
-                             (INITIAL_BOARD_X, row * BLOCK_SIZE), 
-                             (BOARD_WIDTH + SIDEBAR_WIDTH, row * BLOCK_SIZE), 
-                             1)
-            # draw vertical  line
-            for col in range(FIELD_WIDTH):
-                pygame.draw.line(self.tetris.app.screen, "black", 
-                                 (col * BLOCK_SIZE + INITIAL_BOARD_X, 0), 
-                                 (col * BLOCK_SIZE + SIDEBAR_WIDTH, BOARD_HEIGHT), 
-                                 1)

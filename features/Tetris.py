@@ -23,7 +23,6 @@ class Tetris(State):
         self.field_arr = [[0 for col in range(FIELD_WIDTH)] for row in range(FIELD_HEIGHT)]
         self.accelerate = False
 
-
         self.bag_min_items = 5
         self.bag = TetrominoBag(self.bag_min_items)
         
@@ -72,97 +71,7 @@ class Tetris(State):
         self.last_time_are = 0 
 
         self.sound_manager.play_ost()
-    
-    def hold(self):
-        if not self.has_hold:
-            self.has_hold = True
-            self.sound_manager.play_sfx(SoundManager.HOLD_SFX)
-            if not self.hold_piece_shape:
-                self.hold_piece_shape, self.tetromino = self.tetromino.shape, Tetromino(self, self.bag.pop(0))
-                return
-            self.hold_piece_shape, self.tetromino = self.tetromino.shape, Tetromino(self, self.hold_piece_shape)
-
-    def is_row_full(self, row_index):
-        for col in range(len(self.field_arr[row_index])):
-            if not self.field_arr[row_index][col]:
-                return False
-        return True
-    
-    def move_row_down(self, row_index, num_down):
-        for col in range(len(self.field_arr[row_index])):
-            self.field_arr[row_index + num_down][col] = self.field_arr[row_index][col]
-            self.field_arr[row_index][col] = 0
-            ##Update Block position
-            if self.field_arr[row_index + num_down][col]: self.field_arr[row_index + num_down][col].pos = vec(col, row_index + num_down)
-
-    def clear_row(self, row_index):
-        for col in range(len(self.field_arr[row_index])):
-            self.field_arr[row_index][col] = 0
-
-    def clear_full_line(self) -> int:
-        cleared = 0
-        for row in range(len(self.field_arr) - 1, -1, -1):
-            if self.is_row_full(row):
-                self.clear_row(row)
-                cleared += 1
-            elif cleared > 0:
-                self.move_row_down(row, cleared)
-
-        for row in range(len(self.field_arr) - 1, -1, -1):
-            for col in range(len(self.field_arr[row])):
-                if self.field_arr[row][col]:
-                    self.field_arr[row][col].pos = vec(col, row)
-        
-        self.lines_cleared += cleared
-        return cleared
-
-    def check_next_nevel(self):
-        if self.lines_cleared >= self.level * LINES_TO_ADVANCE_LEVEL:
-            self.level += 1
-            self.update_time_speed()
-
-    def place_tetromino(self):
-        self.sound_manager.play_sfx(SoundManager.LAND_SFX)
-
-        for block in self.tetromino.blocks:
-            x, y = int(block.pos.x), int(block.pos.y)
-            if x in range(0, FIELD_WIDTH) and y in range(0, FIELD_HEIGHT):
-                self.field_arr[y][x] = block
-        
-        is_t_spin = self.is_t_spin()
-        is_mini_t_spin = self.is_mini_t_spin()
-
-        lines_cleared = self.clear_full_line()
-        if lines_cleared > 0:
-            self.combo += 1
-            combo = min(self.combo, 16)
-            self.sound_manager.play_combo(combo)
-        else:
-            if self.combo != -1:
-                self.sound_manager.play_combo(-1)
-            self.combo = -1
-
-        ##Check B2B
-        is_current_action_difficult = lines_cleared == 4 or \
-            (lines_cleared > 1 and (is_t_spin or is_mini_t_spin))
-
-        self.is_b2b = self.is_last_action_difficult and is_current_action_difficult
-        self.is_last_action_difficult = is_current_action_difficult
-        
-        dict_index = 1 if is_t_spin else 2 if is_mini_t_spin else 0
-        ## Update score
-        self.score += self.score_dict[dict_index][lines_cleared] * self.level + (self.is_b2b * B2B_MULTIPLIER)
-        self.score += max(0, self.combo) * 50 * self.level
-        self.action = self.action_dict[dict_index][lines_cleared]
-        
-        self.get_new_tetromino()
-        self.last_time_are = self.current_milliseconds()
-
-        self.check_next_nevel()
-
-    def get_new_tetromino(self):
-        self.tetromino = Tetromino(self, self.bag.pop(0))
-            
+       
     def update(self, events):
         trigger = [self.app.animation_flag, self.app.accelerate_event][self.accelerate]
         if trigger and self.check_are():             
@@ -191,6 +100,100 @@ class Tetris(State):
         
         self.handle_key_pressed(pygame.key.get_pressed())
 
+    #* Update Tetromino state *#
+    
+    def rotate(self, clockwise = True):
+        """
+        Rotates the current tetromino based on the given [clockwise] rotation
+
+        Args:
+            clockwise: True if the rotation is clockwise, False if the rotation is counterclockwise
+        """
+        self.sound_manager.play_sfx(SoundManager.ROTATE_SFX)
+        is_rotate_success = self.tetromino.rotate(clockwise)
+        if is_rotate_success: 
+            self.last_time_lock = self.current_milliseconds()
+            self.update_lock_move()
+
+    def move(self, direction):
+        """
+            Move the current tetromino on a given [direction]
+        """
+        if direction not in [Tetromino.DIRECTIONS_RIGHT, Tetromino.DIRECTIONS_LEFT]: 
+            return
+        if not self.key_down_pressed:
+
+            is_move_success = self.tetromino.update(direction)
+            if is_move_success: 
+                self.sound_manager.play_sfx(SoundManager.MOVE_SFX)
+                self.last_time_lock = self.current_milliseconds()
+                self.update_lock_move()
+
+            self.key_down_pressed = True
+
+            # self.last_time_lock = self.current_milliseconds()
+            self.last_time_delay = self.current_milliseconds()
+
+        elif self.check_das():
+
+            is_move_success = self.tetromino.update(direction)
+            if is_move_success: 
+                self.sound_manager.play_sfx(SoundManager.MOVE_SFX)
+                self.update_lock_move()
+
+            self.last_time_interval = self.current_milliseconds()
+    
+    #* Tetromino Information Retreieval*#
+    
+    def get_ghost_tetromino(self):
+        """
+            Return a new tetromino with updated position after a hard drop of current tetromino
+        """
+        new_tetromino = Tetromino.copy(self.tetromino)
+        self.hard_drop2(new_tetromino)
+        return new_tetromino
+
+    #* Update Field state *#
+    
+    def place_tetromino(self):
+        self.sound_manager.play_sfx(SoundManager.LAND_SFX)
+
+        for block in self.tetromino.blocks:
+            x, y = int(block.pos.x), int(block.pos.y)
+            if x in range(0, FIELD_WIDTH) and y in range(0, FIELD_HEIGHT):
+                self.field_arr[y][x] = block
+        
+        is_t_spin = self.is_t_spin()
+        is_mini_t_spin = self.is_mini_t_spin()
+
+        lines_cleared = self.clear_full_line()
+        if lines_cleared > 0:
+            self.combo += 1
+            combo = min(self.combo, 16)
+            self.sound_manager.play_combo(combo)
+        else:
+            if self.combo != -1:
+                self.sound_manager.play_combo(num_combo= -1)
+            self.combo = -1
+
+        ##Check B2B
+        is_current_action_difficult = lines_cleared == 4 or \
+            (lines_cleared > 1 and (is_t_spin or is_mini_t_spin))
+
+        self.is_b2b = self.is_last_action_difficult and is_current_action_difficult
+        self.is_last_action_difficult = is_current_action_difficult
+        
+        dict_index = 1 if is_t_spin else 2 if is_mini_t_spin else 0
+        ## Update score
+        self.score += self.score_dict[dict_index][lines_cleared] * self.level + (self.is_b2b * B2B_MULTIPLIER)
+        self.score += max(0, self.combo) * 50 * self.level
+        self.action = self.action_dict[dict_index][lines_cleared]
+        
+        self.get_new_tetromino()
+        self.last_time_are = self.current_milliseconds()
+
+        self.check_next_nevel()
+
     def hard_drop(self):
         """
             Move the current tetromino down until it has landed
@@ -212,7 +215,100 @@ class Tetris(State):
         """
         while not tetromino.has_landed:
             tetromino.update()
+   
+    # *Clear Full lines* #
+    
+    def is_row_full(self, row_index):
+        """
+        Checks if the given row [row_index] is a full line on the Tetris field
+        """
+        for col in range(len(self.field_arr[row_index])):
+            if not self.field_arr[row_index][col]:
+                return False
+        return True
+    
+    def move_row_down(self, row_index, num_down):
+        """
+        Move all elements in the row [row_index] down [num_down] times on the Tetris field
+        """
+        for col in range(len(self.field_arr[row_index])):
+            self.field_arr[row_index + num_down][col] = self.field_arr[row_index][col]
+            self.field_arr[row_index][col] = 0
+            
+            # Update Block position
+            if self.field_arr[row_index + num_down][col]:
+                self.field_arr[row_index + num_down][col].pos = vec(col, row_index + num_down)
 
+    def clear_row(self, row_index):
+        """
+        Clears all elements the row from the field based on the given [row_index]
+        """
+        for col in range(len(self.field_arr[row_index])):
+            self.field_arr[row_index][col] = 0
+
+    def clear_full_line(self) -> int:
+        """
+        Clear all full lines on the Tetris field
+        """
+        cleared = 0
+        for row in range(len(self.field_arr) - 1, -1, -1):
+            if self.is_row_full(row):
+                self.clear_row(row)
+                cleared += 1
+            elif cleared > 0:
+                self.move_row_down(row, cleared)
+
+        for row in range(len(self.field_arr) - 1, -1, -1):
+            for col in range(len(self.field_arr[row])):
+                if self.field_arr[row][col]:
+                    self.field_arr[row][col].pos = vec(col, row)
+        
+        self.lines_cleared += cleared
+        return cleared
+
+    
+    #* Update Tetris state *#
+    
+    def get_new_tetromino(self):
+        self.tetromino = Tetromino(self, self.bag.pop(0))
+    
+    def hold(self):
+        """
+        Holds the current tetromino piece and updates the current tetromino to a new tetromino if needed
+        """
+        if not self.has_hold:
+            self.has_hold = True
+            self.sound_manager.play_sfx(SoundManager.HOLD_SFX)
+            if not self.hold_piece_shape:
+                self.hold_piece_shape, self.tetromino = self.tetromino.shape, Tetromino(self, self.bag.pop(0))
+                return
+            self.hold_piece_shape, self.tetromino = self.tetromino.shape, Tetromino(self, self.hold_piece_shape)
+    
+    def update_time_speed(self):
+        """
+        Update the speed of the Tetris game based on the current level
+        """
+        speed = pow((0.8 - ((self.level-1) * 0.007)), self.level - 1) #https://tetris.fandom.com/wiki/Tetris_Worlds
+        pygame.time.set_timer(self.app.animation_event, int(speed * 1000))
+    
+    def check_next_nevel(self):
+        """
+        Checks and updates the level of the game if necessary
+        """
+        if self.lines_cleared >= self.level * LINES_TO_ADVANCE_LEVEL:
+            self.level += 1
+            self.update_time_speed()
+
+    def reset(self):
+        """
+        Reset the game and start a new level
+        """
+        self.sound_manager.stop()
+        pygame.time.set_timer(self.app.animation_event, ANIMATION_INTERVAL)
+        self.__init__(self.app)
+    
+    #* Handle events *#
+    
     def handle_key_down_pressed(self, key):
         """
             Handle key events from pygame.KEYDOWN (fired when key is first pressed)
@@ -244,31 +340,8 @@ class Tetris(State):
             self.last_time_delay = 0
             self.key_down_pressed = False
     
-    def move(self, direction):
-        if direction not in [Tetromino.DIRECTIONS_RIGHT, Tetromino.DIRECTIONS_LEFT]: 
-            return
-        if not self.key_down_pressed:
-
-            is_move_success = self.tetromino.update(direction)
-            if is_move_success: 
-                self.sound_manager.play_sfx(SoundManager.MOVE_SFX)
-                self.last_time_lock = self.current_milliseconds()
-                self.update_lock_move()
-
-            self.key_down_pressed = True
-
-            # self.last_time_lock = self.current_milliseconds()
-            self.last_time_delay = self.current_milliseconds()
-
-        elif self.check_das():
-
-            is_move_success = self.tetromino.update(direction)
-            if is_move_success: 
-                self.sound_manager.play_sfx(SoundManager.MOVE_SFX)
-                self.update_lock_move()
-
-            self.last_time_interval = self.current_milliseconds()
-
+    #* Special conditions *#
+    
     def check_das(self):
         """
             Checks condition for Delay Auto Shift Rule
@@ -282,53 +355,47 @@ class Tetris(State):
         """
         return self.current_milliseconds() - self.last_time_lock >= LOCK_DELAY or self.lock_moves >= MAX_LOCK_MOVES
     
+    def update_lock_move(self):
+        """
+            Updates the number of moves while during the lock delay
+        """
+        if self.tetromino.has_landed : 
+            self.lock_moves += 1 
+        else:
+            self.lock_moves = 0
+    
     def check_are(self):
         """
             Check condition for Appearance Delay Rule
         """
         return self.current_milliseconds() - self.last_time_are >= APPEARANCE_DELAY
     
-    def update_lock_move(self):
-        if self.tetromino.has_landed : 
-            self.lock_moves += 1 
-        else:
-            self.lock_moves = 0
-
-    def rotate(self, clockwise = True):
-        self.sound_manager.play_sfx(SoundManager.ROTATE_SFX)
-        is_rotate_success = self.tetromino.rotate(clockwise)
-        if is_rotate_success: 
-            self.last_time_lock = self.current_milliseconds()
-            self.update_lock_move()
-
-    def get_ghost_tetromino(self):
-        """
-            Return a new tetromino with updated position after a hard drop of current tetromino
-        """
-        new_tetromino = Tetromino.copy(self.tetromino)
-        self.hard_drop2(new_tetromino)
-        return new_tetromino
+    #* Check actions *#
     
     def is_t_spin(self) -> bool:
+        """
+        Checks if the current action is a T-Spin
+        """
         # return self.tetromino.shape == "T" and self.tetromino.get_num_occupied_corner_blocks() == 3 and self.tetromino.is_rotate
         return self.tetromino.shape == "T" and self.tetromino.get_num_unoccupied_corner_blocks() <= 1 and self.tetromino.is_rotate
 
     def is_mini_t_spin(self): 
+        """
+        Checks if the current action is a mini T-Spin
+        """
         # return self.is_t_spin() and self.tetromino.is_wall_kick
         return self.tetromino.shape == "T" and self.tetromino.get_num_unoccupied_corner_blocks() <= 1 and self.tetromino.is_wall_kick  
     
+
+
+    
     def current_milliseconds(self):
+        """
+            Returns the current time in milliseconds
+        """
         return time.time() *1000 
 
-    def update_time_speed(self):
-        speed = pow((0.8 - ((self.level-1) * 0.007)), self.level - 1) #https://tetris.fandom.com/wiki/Tetris_Worlds
-        pygame.time.set_timer(self.app.animation_event, int(speed * 1000))
-    
-    def reset(self):
-        self.sound_manager.stop()
-        pygame.time.set_timer(self.app.animation_event, ANIMATION_INTERVAL)
-        self.__init__(self.app)
-    
+
     """
         Drawing Fuctions
     """

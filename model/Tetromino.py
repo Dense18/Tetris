@@ -1,4 +1,3 @@
-import random
 from copy import deepcopy
 
 from model.Block import Block
@@ -9,8 +8,10 @@ class Tetromino:
     """
         Manages state of tetromino (4 squares block)
     """
-    # Available Tetromino Shapes. All tetromino initial posiiton (x, y) is horizontal.
-    # Positive x indicated updawards,  Positive y indicated downwards and vice versa
+    
+    """
+        Initial block position for a given tetromino shape
+    """
     SHAPE = {
         #Note that the first position is considered as the pivot point for rotation
         'T': [(0, 0), (-1, 0), (1, 0), (0, -1)], 
@@ -55,6 +56,7 @@ class Tetromino:
         [(-1, 0)], #L
     ]
 
+    # Offset data dictionary  
     SHAPE_OFFSET= {
         'T': OFFSET_JLSTZ,
         'J': OFFSET_JLSTZ,
@@ -67,15 +69,18 @@ class Tetromino:
         'O': OFFSET_O
     }
 
+    # Variables for Directions
     DIRECTIONS_LEFT = "left"
     DIRECTIONS_RIGHT = "right"
     DIRECTIONS_UP  = "up"
     DIRECTIONS_DOWN = "down"
-
     MOVE_DIRECTIONS = {DIRECTIONS_LEFT: vec(-1, 0), DIRECTIONS_RIGHT: vec(1, 0), DIRECTIONS_UP: vec(0, -1), DIRECTIONS_DOWN: vec(0, 1)}
 
     @staticmethod
     def copy(tetromino):
+        """
+            Returns a copy of the [tetromino] object
+        """
         copy_tetromino = Tetromino(tetromino.tetris, tetromino.shape)
         copy_tetromino.blocks = [Block.copy(block) for block in tetromino.blocks]
         copy_tetromino.has_landed = tetromino.has_landed
@@ -93,7 +98,12 @@ class Tetromino:
         self.is_rotate = False
         self.is_wall_kick = False
 
+    #* Update State functions*#
+    
     def update(self, direction = DIRECTIONS_DOWN) -> bool:
+        """
+            Updates the tetromino state based on the given [direction]
+        """
         move_direction = self.MOVE_DIRECTIONS[direction]
         new_positions = [block.pos + move_direction for block in self.blocks]
 
@@ -111,6 +121,9 @@ class Tetromino:
         return False
     
     def rotate(self, clockwise = True) -> bool:
+        """
+           Rotates the tetromino [clockwise] and returns a boolean indicating if the rotation was successful
+        """
         pivot = self.blocks[0].pos
         new_position = [block.rotate(pivot, clockwise) for block in self.blocks]
 
@@ -127,12 +140,35 @@ class Tetromino:
 
                 for i, block in enumerate(self.blocks):
                     block.pos = new_position_kick[i]
-                self.set_next_rotation_state(clockwise)
+                self.update_rotation_state(clockwise)
                 return True
         
         return False
     
-    def get_offset(self, clockwise):
+    def update_rotation_state(self, clockwise: bool):
+        """
+        Updates the rotation state after the given [clockwise] rotation
+
+        Args:
+            clockwise: True if the rotation is clockwise, False if the rotation is counterclockwise
+        """
+        if clockwise:
+            self.rotation_state = (self.rotation_state + 1) % 4
+        else:
+            self.rotation_state = (self.rotation_state - 1) % 4
+    
+    #* Information Retrieval*#
+    
+    def drop_distance(self) -> int:
+        """
+            Returns the number of blocks the tetromino needs to drop to reach until a collision is detected
+        """
+        return min(map(Block.drop_distance, self.blocks))
+
+    def get_offset(self, clockwise: bool):
+        """
+        Returns the list of offsets for the given [clockwise] rotation
+        """
         initial_offset = self.SHAPE_OFFSET[self.shape][self.rotation_state]
         next_offset = self.SHAPE_OFFSET[self.shape][self.get_next_rotation_state(clockwise)]
 
@@ -140,28 +176,29 @@ class Tetromino:
         return offset
 
     def get_next_rotation_state(self, clockwise) -> int:
-        return  (self.rotation_state + 1) % 4 if clockwise else (self.rotation_state - 1) % 4
-    
-    def get_index_wall_kick(self, clockwise) -> int:
-        if self.rotation_state == 0:
-            return 0 if clockwise else 7
-        elif self.rotation_state == 1:
-            return 2 if clockwise else 1
-        elif self.rotation_state == 2:
-            return 3 if clockwise else 4
-        elif self.rotation_state == 3:
-            return 6 if clockwise else 5
+        """
+         Returns the tetromino rotation state after the given rotation [clockwise]
         
-    def set_next_rotation_state(self, clockwise):
-        if clockwise:
-            self.rotation_state = (self.rotation_state + 1) % 4
-        else:
-            self.rotation_state = (self.rotation_state - 1) % 4
+        Args:
+            clockwise: True if the rotation is clockwise, False if the rotation is counterclockwise
+        """
+        return  (self.rotation_state + 1) % 4 if clockwise else (self.rotation_state - 1) % 4
+        
+    #* Collision functions *#
     
-    def is_collide(self, pos):
-        return any(map(Block.is_collide, self.blocks, pos))
+    def is_collide(self, position) -> bool:
+        """
+        Checks if the tetromino is colliding with the given [position]
+        """
+        return any(map(Block.is_collide, self.blocks, position))
     
-    def get_num_occupied_corner_blocks(self):
+    
+    #* Corner Blocks *#
+    
+    def get_num_occupied_corner_blocks(self) -> int:
+        """
+            Returns the number of occupied corner blocks in the tetromino
+        """
         count = 0
         for elem in self.get_corner_blocks():
             if elem: 
@@ -169,9 +206,18 @@ class Tetromino:
         return count
     
     def get_num_unoccupied_corner_blocks(self):
+        """
+            Returns the number of unoccupied corner blocks in the tetromino
+        """
         return len(self.get_corner_blocks()) - self.get_num_occupied_corner_blocks()
     
     def get_corner_blocks(self):
+        """
+            Returns a list of all corner blocks in the tetromino
+
+        Returns:
+            _type_: _description_
+        """
         offsets = [(-1, -1), (1, -1), (-1, 1), (1, 1)] #Up-Left, Up-Right, Down_Left, Down-Right. (x, y)
         pivot_pos = self.blocks[0].pos
 
@@ -183,15 +229,33 @@ class Tetromino:
             if new_pos_x in range(0, FIELD_WIDTH) and new_pos_y in range(0, FIELD_HEIGHT):
                 corner_list.append(self.tetris.field_arr[new_pos_y][new_pos_x] )
         return corner_list
+    
 
-    def drop_distance(self):
-        return min(map(Block.drop_distance, self.blocks))
-
+    #* Drawing functions *#
+    
     def draw(self, screen, offset = (0, 0), mode = Block.MODE_FULL_COLOR):
+        """
+        Draws the tetromino on the [screen]
+
+        Args:
+            screen: the screen to display
+            offset: the coordinates to offset the tetromino
+            mode: the type of drawing mode to draw the blocks. Defaults to Block.MODE_FULL_COLOR.
+        """
         [block.draw(screen, offset = offset, mode = mode) for block in self.blocks]
 
     @staticmethod
     def draw_custom_position(screen, shape, abs_pos, block_size, mode = Block.MODE_FULL_COLOR):
+        """
+        Draws a tetromino based on the given[shape] onto the [screen] with the given position [abs_pos]
+
+        Args:
+            screen: the screen to display
+            shape: shape of the tetromino
+            abs_pos: the absolute position of the tetromino
+            block_size: the size of each block
+            mode: the type of drawing mode to draw the blocks. 
+        """
         for block_pos in Tetromino.SHAPE[shape]:
             new_abs_pos = vec(abs_pos) + (block_size * vec(block_pos))
 

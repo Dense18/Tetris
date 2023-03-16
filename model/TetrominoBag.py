@@ -12,10 +12,15 @@ class TetrominoBag(MutableSequence):
         self.check_bag()
         
     def _add_new_bag(self):
+        """
+            Add a random permutation of Tetromino shapes to the current bag.
+        """
         self += random.sample(list(Tetromino.SHAPE.keys()), len(Tetromino.SHAPE.keys()))
-        print(f"bag item = {len(self)}")
     
     def check_bag(self):
+        """
+            Checks and updates the bag if needed based on min_item.
+        """
         if len(self) < self.min_item:
             self._add_new_bag()
     
