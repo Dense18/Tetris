@@ -9,6 +9,7 @@ from model.Tetromino import Tetromino
 from model.TetrominoBag import TetrominoBag
 from settings import *
 from SoundManager import SoundManager
+from utils import *
 
 
 class Tetris(State):
@@ -78,7 +79,7 @@ class Tetris(State):
             is_success = self.tetromino.update()
             if is_success: 
                 if self.accelerate:  self.score += 1
-                self.last_time_lock = self.current_milliseconds()
+                self.last_time_lock = current_millis()
 
         if self.tetromino.has_landed:
             if self.check_lock_delay():
@@ -88,7 +89,7 @@ class Tetris(State):
                     self.reset()
                     return
                 self.place_tetromino()
-                self.last_time_lock = self.current_milliseconds()
+                self.last_time_lock = current_millis()
                 
         ## Check events
         for event in events:
@@ -112,7 +113,7 @@ class Tetris(State):
         self.sound_manager.play_sfx(SoundManager.ROTATE_SFX)
         is_rotate_success = self.tetromino.rotate(clockwise)
         if is_rotate_success: 
-            self.last_time_lock = self.current_milliseconds()
+            self.last_time_lock = current_millis()
             self.update_lock_move()
 
     def move(self, direction):
@@ -126,13 +127,13 @@ class Tetris(State):
             is_move_success = self.tetromino.update(direction)
             if is_move_success: 
                 self.sound_manager.play_sfx(SoundManager.MOVE_SFX)
-                self.last_time_lock = self.current_milliseconds()
+                self.last_time_lock = current_millis()
                 self.update_lock_move()
 
             self.key_down_pressed = True
 
-            # self.last_time_lock = self.current_milliseconds()
-            self.last_time_delay = self.current_milliseconds()
+            # self.last_time_lock = current_millis()
+            self.last_time_delay = current_millis()
 
         elif self.check_das():
 
@@ -141,7 +142,7 @@ class Tetris(State):
                 self.sound_manager.play_sfx(SoundManager.MOVE_SFX)
                 self.update_lock_move()
 
-            self.last_time_interval = self.current_milliseconds()
+            self.last_time_interval = current_millis()
     
     #* Tetromino Information Retreieval*#
     
@@ -190,7 +191,7 @@ class Tetris(State):
         self.action = self.action_dict[dict_index][lines_cleared]
         
         self.get_new_tetromino()
-        self.last_time_are = self.current_milliseconds()
+        self.last_time_are = current_millis()
 
         self.check_next_nevel()
 
@@ -322,7 +323,7 @@ class Tetris(State):
         elif key == pygame.K_SPACE:
             self.hard_drop()
         elif key in [pygame.K_c, pygame.K_LSHIFT, pygame.K_RSHIFT]:
-            self.last_time_lock = self.current_milliseconds()
+            self.last_time_lock = current_millis()
             self.hold()
         elif key == pygame.K_m:
             self.sound_manager.toggle_mute()
@@ -346,14 +347,14 @@ class Tetris(State):
         """
             Checks condition for Delay Auto Shift Rule
         """
-        return self.current_milliseconds() - self.last_time_delay >= KEY_DELAY and \
-            self.current_milliseconds() - self.last_time_interval >= KEY_INTERVAL
+        return current_millis() - self.last_time_delay >= KEY_DELAY and \
+            current_millis() - self.last_time_interval >= KEY_INTERVAL
     
     def check_lock_delay(self):
         """
             Checks condition for Lock Delay Rule
         """
-        return self.current_milliseconds() - self.last_time_lock >= LOCK_DELAY or self.lock_moves >= MAX_LOCK_MOVES
+        return current_millis() - self.last_time_lock >= LOCK_DELAY or self.lock_moves >= MAX_LOCK_MOVES
     
     def update_lock_move(self):
         """
@@ -368,7 +369,7 @@ class Tetris(State):
         """
             Check condition for Appearance Delay Rule
         """
-        return self.current_milliseconds() - self.last_time_are >= APPEARANCE_DELAY
+        return current_millis() - self.last_time_are >= APPEARANCE_DELAY
     
     #* Check actions *#
     
@@ -386,15 +387,6 @@ class Tetris(State):
         # return self.is_t_spin() and self.tetromino.is_wall_kick
         return self.tetromino.shape == "T" and self.tetromino.get_num_unoccupied_corner_blocks() <= 1 and self.tetromino.is_wall_kick  
     
-
-
-    
-    def current_milliseconds(self):
-        """
-            Returns the current time in milliseconds
-        """
-        return time.time() *1000 
-
 
     """
         Drawing Fuctions
