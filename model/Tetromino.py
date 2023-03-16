@@ -189,6 +189,7 @@ class Tetromino:
 
     @staticmethod
     def draw_custom_position(screen, shape, abs_pos, block_size, mode = Block.MODE_FULL_COLOR):
+        # print(f"debug Tetromino.py: shape = {shape}")
         for block_pos in Tetromino.SHAPE[shape]:
             new_abs_pos = vec(abs_pos) + (block_size * vec(block_pos))
 

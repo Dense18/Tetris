@@ -64,7 +64,6 @@ class TetrisUI:
         b2b_text = "B2B!" if self.tetris.is_b2b else ""
         b2b_text_obj = self.textFont.render(b2b_text, 1, self.textColor)
         
-        print(self.tetris.action)
         action_text = ACTION_TO_TEXT[self.tetris.action]
         action_obj = self.textFont.render(action_text, 1, self.textColor)
         action_rect = action_obj.get_rect()

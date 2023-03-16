@@ -1,0 +1,6 @@
+{
+    "python.analysis.typeCheckingMode": "off",
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+    }
+}
