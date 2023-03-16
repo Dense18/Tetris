@@ -31,31 +31,26 @@ class Tetris(State):
 
         self.lines_cleared = 0
         self.combo = -1
-        self.score = 0
         self.level = 1
 
-        self.basic_score_system = {
-            0: 0,
-            1: 100,
-            2: 200,
-            3: 500,
-            4: 800
-        }
+        self.score = 0
+        # Key is based on lines cleared
+        self.basic_score_system = {0: 0, 1: 100, 2: 200, 3: 500, 4: 800 }
+        self.t_spin_score_system = {0: 400, 1: 800, 2: 1200, 3: 1600,}
+        self.mini_t_spin_score_system = {0: 100, 1: 200, 2: 400}
+        # Key is based on score type
+        self.score_dict = { 0: self.basic_score_system, 1: self.t_spin_score_system, 2: self.mini_t_spin_score_system}
 
-        self.t_spin_score_system = {
-            0: 400,
-            1: 800,
-            2: 1200,
-            3: 1600,
-        }
-
-        self.mini_t_spin_score_system = {
-            0: 100,
-            1: 200,
-            2: 400
-        }
+        self.action = ""
+        # Key is based on lines cleared
+        self.action_basic = {0: "", 1: "Single!", 2: "Double!", 3: "Triple!", 4: "Tetris!"}
+        self.action_t_spin = {0: "T Spin!", 1: "T Spin Single!", 2: "T Spin Double!", 3: "T Spin Triple!"}
+        self.action_mini_t_spin = {0: "Mini T Spin", 1: "Mini T Spin Single!", 2: "Mini T Spin Double!"}
+        # Key is based on score type
+        self.action_dict = { 0: self.action_basic, 1: self.action_t_spin, 2: self.action_mini_t_spin}
 
         self.is_last_action_difficult = False
+        self.is_b2b = False
 
         self.ui = TetrisUI(self)
         self.sound_manager = SoundManager()
@@ -71,6 +66,7 @@ class Tetris(State):
 
         # Appearance Delay (in milliseconds)
         self.last_time_are = 0 
+
         self.sound_manager.play_ost()
 
     def add_new_bag(self):
@@ -151,24 +147,24 @@ class Tetris(State):
             if self.combo != -1:
                 self.sound_manager.play_combo(-1)
             self.combo = -1
-        
 
-        ##Update score
+        ##Check B2B
         is_current_action_difficult = lines_cleared == 4 or \
             (lines_cleared > 1 and (is_t_spin or is_mini_t_spin))
 
         self.is_b2b = self.is_last_action_difficult and is_current_action_difficult
         self.is_last_action_difficult = is_current_action_difficult
         
-        print(f"is b2b: {self.is_b2b}")
-        self.score += self.t_spin_score_system[lines_cleared] * self.level + (self.is_b2b * B2B_MULTIPLIER) if is_t_spin \
-            else self.mini_t_spin_score_system[lines_cleared] * self.level + (self.is_b2b * B2B_MULTIPLIER) if is_mini_t_spin\
-            else self.basic_score_system[lines_cleared] * self.level + (self.is_b2b * B2B_MULTIPLIER)
-        self.score += max(0, self.combo) * 50 * self.level
 
-        ##Check B2B
-        self.is_b2b = self.lines_cleared == 4 or \
-            (lines_cleared > 1 and (is_t_spin or is_mini_t_spin))
+        ##Update score
+        dict_index = 1 if is_t_spin else 2 if is_mini_t_spin else 0
+
+        self.score += self.score_dict[dict_index][lines_cleared] * self.level + (self.is_b2b * B2B_MULTIPLIER)
+        self.score += max(0, self.combo) * 50 * self.level
+        self.action = self.action_dict[dict_index][lines_cleared]
+    
+
+        
         self.get_new_tetromino()
         self.last_time_are = self.current_milliseconds()
 
@@ -320,11 +316,12 @@ class Tetris(State):
         return new_tetromino
     
     def is_t_spin(self) -> bool:
-        return self.tetromino.shape == "T" and self.tetromino.get_num_occupied_corner_blocks() == 3 and self.tetromino.is_rotate
+        # return self.tetromino.shape == "T" and self.tetromino.get_num_occupied_corner_blocks() == 3 and self.tetromino.is_rotate
+        return self.tetromino.shape == "T" and self.tetromino.get_num_unoccupied_corner_blocks() == 1 and self.tetromino.is_rotate
 
     def is_mini_t_spin(self): 
         # return self.is_t_spin() and self.tetromino.is_wall_kick
-        return self.tetromino.shape == "T" and self.tetromino.get_num_occupied_corner_blocks() >= 1 and self.tetromino.is_wall_kick  
+        return self.tetromino.shape == "T" and self.tetromino.get_num_unoccupied_corner_blocks() == 1 and self.tetromino.is_wall_kick  
     
     def current_milliseconds(self):
         return time.time() *1000 
@@ -333,7 +330,6 @@ class Tetris(State):
         self.sound_manager.stop()
         self.__init__(self.app)
     
-
     """
         Drawing Fuctions
     """

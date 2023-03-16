@@ -168,10 +168,12 @@ class Tetromino:
                 count += 1
         return count
     
+    def get_num_unoccupied_corner_blocks(self):
+        return len(self.get_corner_blocks()) - self.get_num_occupied_corner_blocks()
+    
     def get_corner_blocks(self):
         offsets = [(-1, -1), (1, -1), (-1, 1), (1, 1)] #Up-Left, Up-Right, Down_Left, Down-Right. (x, y)
         pivot_pos = self.blocks[0].pos
-        # print(pivot_pos)
 
         corner_list = []
         for offset in offsets:
