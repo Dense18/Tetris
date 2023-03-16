@@ -87,6 +87,9 @@ class Tetromino:
         self.tetris = tetris
         self.rotation_state = 0
 
+        self.is_rotate = False
+        self.is_wall_kick = False
+
     def update(self, direction = DIRECTIONS_DOWN) -> bool:
         move_direction = self.MOVE_DIRECTIONS[direction]
         new_positions = [block.pos + move_direction for block in self.blocks]
@@ -94,6 +97,8 @@ class Tetromino:
         if not self.is_collide(new_positions):
             for block in self.blocks: 
                 block.pos += move_direction
+            self.is_wall_kick = False
+            self.is_rotate = False
             self.has_landed = False
             return True
         
@@ -110,17 +115,22 @@ class Tetromino:
         pivot = self.blocks[0].pos
         new_position = [block.rotate(pivot, clockwise) for block in self.blocks]
 
-        for offset in self.get_offset(clockwise):
+        for i, offset in enumerate(self.get_offset(clockwise)):
             offset = vec(offset)
             new_position_kick = [position + offset for position in new_position]
 
             if not self.is_collide(new_position_kick):
+                self.is_rotate = True
+                if i != 0:
+                    self.is_wall_kick = True
+
                 for i, block in enumerate(self.blocks):
                     block.pos = new_position_kick[i]
                 self.set_next_rotation_state(clockwise)
                 return True
         
         return False
+    
             
     def get_offset(self, clockwise):
         initial_offset = self.SHAPE_OFFSET[self.shape][self.rotation_state]
@@ -150,6 +160,28 @@ class Tetromino:
     
     def is_collide(self, pos):
         return any(map(Block.is_collide, self.blocks, pos))
+    
+    def get_num_occupied_corner_blocks(self):
+        count = 0
+        for elem in self.get_corner_blocks():
+            if elem: 
+                count += 1
+        return count
+    
+    def get_corner_blocks(self):
+        offsets = [(-1, -1), (1, -1), (-1, 1), (1, 1)] #Up-Left, Up-Right, Down_Left, Down-Right. (x, y)
+        pivot_pos = self.blocks[0].pos
+        # print(pivot_pos)
+
+        corner_list = []
+        for offset in offsets:
+            new_pos_x = int(pivot_pos.x) + offset[0]
+            new_pos_y = int(pivot_pos.y) + offset[1]
+
+            if new_pos_x in range(0, FIELD_WIDTH) and new_pos_y in range(0, FIELD_HEIGHT):
+                corner_list.append(self.tetris.field_arr[new_pos_y][new_pos_x] )
+        return corner_list
+
 
     def draw(self, screen, offset = (0, 0), mode = Block.MODE_FULL_COLOR):
         [block.draw(screen, offset = offset, mode = mode) for block in self.blocks]
