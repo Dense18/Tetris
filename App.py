@@ -1,10 +1,12 @@
 import pygame
+
 from features.Tetris import Tetris
 from settings import *
 
+
 class App:
     """
-        Main Application of the program
+        Main Application state of the program
     """
     def __init__(self, screen) -> None:
         self.screen = screen
@@ -12,12 +14,20 @@ class App:
         self.tetris = Tetris(self)
         self.clock = pygame.time.Clock()
 
-        self.set_animation_event()
+        self.set_custom_events()
         pass
 
-    def set_animation_event(self):
+    def set_custom_events(self):
+        """
+            Set custom events for the Animation event and Accelerate event
+            
+            Informations:
+                Animation event - the time between each frame for the moving tetromino.
+                
+                Accelerate event - the time between each frame for the accelerating tetromino. 
+        """
         self.animation_event = pygame.USEREVENT + 1
-        self.speed_event = pygame.USEREVENT + 2
+        self.accelerate_event = pygame.USEREVENT + 2
 
         self.animation_flag = False
         self.accelerate_event = True
@@ -26,15 +36,24 @@ class App:
         pygame.time.set_timer(self.accelerate_event, ACCELERATE_INTERVAL)
     
     def loop(self):
+        """
+            Run the program in one loop/frame
+        """
         self.clock.tick(FPS)
         self.getEvents()
         self.update()
         self.draw()
     
     def getEvents(self):
+        """
+            Retreive information about the pygame events
+        """
         self.events = pygame.event.get()
 
     def update(self):
+        """
+            Updates the application state
+        """
         self.animation_flag = False
         for event in self.events:
             if event.type == pygame.QUIT:
@@ -47,11 +66,17 @@ class App:
         pass
 
     def draw(self):
+        """
+            Draws the application state to the screen
+        """
         pygame.draw.rect(self.screen, BG_COLOR, (0,0,self.screen.get_width(), self.screen.get_height()))
         self.tetris.draw()
         pygame.display.update()
         pass
 
     def run(self):
+        """
+            Run the application
+        """
         while self.isRunning:
             self.loop()
