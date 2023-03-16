@@ -44,7 +44,7 @@ class SoundManager:
         pygame.mixer.Channel(SFX_CHANNEL).play(self.sfx_dict[id])
 
     def play_combo(self, num_combo):
-        combo = min(16, num_combo)
+        combo = min(15, num_combo)
         pygame.mixer.Channel(COMBO_CHANNEL).play(self.combos_sfx_dict[combo])
     
     def stop_ost(self):
@@ -94,6 +94,6 @@ class SoundManager:
         }
 
         self.combos_sfx_dict = {}
-        combos = (i for i in range(17))
+        combos = (i for i in range(-1, 16))
         for combo in combos:
             self.combos_sfx_dict[combo] = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, f"combo_{combo}.mp3"))
