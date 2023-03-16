@@ -320,11 +320,11 @@ class Tetris(State):
     
     def is_t_spin(self) -> bool:
         # return self.tetromino.shape == "T" and self.tetromino.get_num_occupied_corner_blocks() == 3 and self.tetromino.is_rotate
-        return self.tetromino.shape == "T" and self.tetromino.get_num_unoccupied_corner_blocks() == 1 and self.tetromino.is_rotate
+        return self.tetromino.shape == "T" and self.tetromino.get_num_unoccupied_corner_blocks() <= 1 and self.tetromino.is_rotate
 
     def is_mini_t_spin(self): 
         # return self.is_t_spin() and self.tetromino.is_wall_kick
-        return self.tetromino.shape == "T" and self.tetromino.get_num_unoccupied_corner_blocks() == 1 and self.tetromino.is_wall_kick  
+        return self.tetromino.shape == "T" and self.tetromino.get_num_unoccupied_corner_blocks() <= 1 and self.tetromino.is_wall_kick  
     
     def current_milliseconds(self):
         return time.time() *1000 
