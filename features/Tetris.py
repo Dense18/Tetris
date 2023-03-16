@@ -1,5 +1,3 @@
-import os
-import random
 import time
 from copy import deepcopy
 
@@ -152,7 +150,7 @@ class Tetris(State):
         self.is_last_action_difficult = is_current_action_difficult
         
         dict_index = 1 if is_t_spin else 2 if is_mini_t_spin else 0
-        ##Update score
+        ## Update score
         self.score += self.score_dict[dict_index][lines_cleared] * self.level + (self.is_b2b * B2B_MULTIPLIER)
         self.score += max(0, self.combo) * 50 * self.level
         self.action = self.action_dict[dict_index][lines_cleared]
@@ -321,10 +319,8 @@ class Tetris(State):
     
     def current_milliseconds(self):
         return time.time() *1000 
-    
 
     def update_time_speed(self):
-        # return
         speed = pow((0.8 - ((self.level-1) * 0.007)), self.level - 1) #https://tetris.fandom.com/wiki/Tetris_Worlds
         pygame.time.set_timer(self.app.animation_event, int(speed * 1000))
     

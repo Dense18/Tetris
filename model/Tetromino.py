@@ -114,7 +114,7 @@ class Tetromino:
         pivot = self.blocks[0].pos
         new_position = [block.rotate(pivot, clockwise) for block in self.blocks]
 
-        #O-piece is special as it needs to use the offset table, otherwise it will wobble and not stay in place when rotated.
+        # O-piece is special as it needs to use the offset table, otherwise it will wobble and not stay in place when rotated.
         # Hence, it shouldnt have a wall kick
         for i, offset in enumerate(self.get_offset(clockwise)):
             offset = vec(offset)

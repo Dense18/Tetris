@@ -1,7 +1,10 @@
-import pygame
-from settings import *
 from copy import deepcopy
 from enum import Enum
+
+import pygame
+
+from settings import *
+
 
 class Block:
     """
@@ -40,7 +43,7 @@ class Block:
                not self.tetromino.tetris.field_arr[int(self.pos.y) + drop + 1][int(self.pos.x)]:
             drop += 1
         
-        return drop 
+        return drop
     
     def draw(self, screen, offset = (0, 0), mode = MODE_FULL_COLOR):
         if mode == Block.MODE_FULL_COLOR:
