@@ -55,6 +55,8 @@ class Tetris(State):
             2: 400
         }
 
+        self.is_last_action_difficult = False
+
         self.ui = TetrisUI(self)
         self.sound_manager = SoundManager()
 
@@ -69,7 +71,6 @@ class Tetris(State):
 
         # Appearance Delay (in milliseconds)
         self.last_time_are = 0 
-
         self.sound_manager.play_ost()
 
     def add_new_bag(self):
@@ -153,14 +154,21 @@ class Tetris(State):
         
 
         ##Update score
+        is_current_action_difficult = lines_cleared == 4 or \
+            (lines_cleared > 1 and (is_t_spin or is_mini_t_spin))
 
-        self.score += self.t_spin_score_system[lines_cleared] * self.level if is_t_spin \
-            else self.mini_t_spin_score_system[lines_cleared] * self.level if is_mini_t_spin\
-            else self.basic_score_system[lines_cleared] * self.level
+        self.is_b2b = self.is_last_action_difficult and is_current_action_difficult
+        self.is_last_action_difficult = is_current_action_difficult
+        
+        print(f"is b2b: {self.is_b2b}")
+        self.score += self.t_spin_score_system[lines_cleared] * self.level + (self.is_b2b * B2B_MULTIPLIER) if is_t_spin \
+            else self.mini_t_spin_score_system[lines_cleared] * self.level + (self.is_b2b * B2B_MULTIPLIER) if is_mini_t_spin\
+            else self.basic_score_system[lines_cleared] * self.level + (self.is_b2b * B2B_MULTIPLIER)
         self.score += max(0, self.combo) * 50 * self.level
 
         ##Check B2B
-
+        self.is_b2b = self.lines_cleared == 4 or \
+            (lines_cleared > 1 and (is_t_spin or is_mini_t_spin))
         self.get_new_tetromino()
         self.last_time_are = self.current_milliseconds()
 

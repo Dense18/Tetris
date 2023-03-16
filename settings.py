@@ -55,7 +55,8 @@ MAX_LOCK_MOVES = 15 # Number
 # ARE (Appearance Delay)
 APPEARANCE_DELAY = 500
 
-
+#SCORE
+B2B_MULTIPLIER = 1.5
 # Links
 """
 SFX: https://you.have.fail/at/tetrioplus/#sfx-25Pi25-soundpack

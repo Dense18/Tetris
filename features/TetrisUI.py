@@ -64,7 +64,7 @@ class TetrisUI:
         score_label_rect.center = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.5)
         self.tetris.app.screen.blit(score_label_obj, score_label_rect)
 
-        score_text_obj = self.textFont.render(str(self.tetris.score), 1, self.textColor)
+        score_text_obj = self.textFont.render(str(round(self.tetris.score, 2)), 1, self.textColor)
         score_text_rect = score_text_obj.get_rect()
         score_text_rect.centerx = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2)
         score_text_rect.top = score_label_rect.bottom + 70
