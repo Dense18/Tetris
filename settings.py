@@ -36,6 +36,7 @@ TETROMINO_COLOR = {
 }
 
 LINES_TO_ADVANCE_LEVEL = 10 #Uses fixed goal levelling system
+MAX_LEVEL = 20
 # Directory
 SOUND_DIR= "Assets\\Sound"
 TETRIS_SOUND_SFX_DIR = SOUND_DIR + "\\" + "TetrisSfx" 

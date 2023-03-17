@@ -336,7 +336,7 @@ class Tetris(State):
         Checks and updates the level of the game if necessary
         """
         if self.lines_cleared >= self.level * LINES_TO_ADVANCE_LEVEL:
-            self.level += 1
+            self.level = min(self.level + 1, MAX_LEVEL)
             self.update_time_speed()
 
     def is_game_over(self):
