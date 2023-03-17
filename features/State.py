@@ -34,6 +34,9 @@ class State(Subject, ABC):
         if len(self.app.state_stack) > 1:
             self.prev_state = self.app.state_stack[-1]
         self.app.state_stack.append(self)
+        
+    def exit_state(self):
+        self.app.state_stack.pop()
     
     def register(self, observer):
         self.observer_list.append(observer)

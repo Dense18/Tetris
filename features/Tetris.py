@@ -356,6 +356,10 @@ class Tetris(State):
         self.sound_manager.stop()
         self.__init__(self.app)
     
+    def exit(self):
+        self.sound_manager.stop()
+        self.exit_state()
+    
     #* Handle events *#
     
     def handle_key_down_pressed(self, key):
@@ -375,6 +379,8 @@ class Tetris(State):
             self.hold()
         elif key == pygame.K_m:
             self.sound_manager.toggle_mute()
+        elif key == pygame.K_ESCAPE:
+            self.exit()
     
     def handle_key_pressed(self, key_pressed):
         """
