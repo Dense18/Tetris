@@ -21,13 +21,17 @@ class SoundManager:
     CLEAR_LINE_SFX = "clearlline"
     COMBO_BREAK_SFX = "combo_break_2"
     
+    MENU_HOVER_SFX = "menuhover"
+    MENU_HIT_SFX = "menuconfirm"
+    
     
     def __init__(self):
-        self.channels = [SFX_CHANNEL, COMBO_CHANNEL, OST_CHANNEL]
+        self.channels = [SFX_CHANNEL, COMBO_CHANNEL, OST_CHANNEL, MENU_CHANNEL]
 
         self.ost_volume = 0.1
         self.combo_volume = 0.7
         self.sfx_volume = 0.7
+        self.menu_volume = 0.4
 
         self.is_muted = False
 
@@ -42,6 +46,7 @@ class SoundManager:
         pygame.mixer.Channel(SFX_CHANNEL).set_volume(self.sfx_volume)
         pygame.mixer.Channel(COMBO_CHANNEL).set_volume(self.combo_volume)
         pygame.mixer.Channel(OST_CHANNEL).set_volume(self.ost_volume)
+        pygame.mixer.Channel(MENU_CHANNEL).set_volume(self.menu_volume)
     
     #* Play Sounds *#
     
@@ -74,6 +79,14 @@ class SoundManager:
         combo = min(15, num_combo)
         pygame.mixer.Channel(COMBO_CHANNEL).play(self.combos_sfx_dict[combo], loops)
     
+    def play_menu(self, id, loops = 0):
+        """
+        Plays a Menu sfx sound based on the id
+        
+        Args:
+            loops: number of times to play the sound. -1 means infinite
+        """
+        pygame.mixer.Channel(MENU_CHANNEL).play(self.menu_sfx_dict[id], loops)
     #* Stop Sounds *#
     
     def stop_ost(self):
@@ -154,3 +167,8 @@ class SoundManager:
         combos = (i for i in range(-1, 16))
         for combo in combos:
             self.combos_sfx_dict[combo] = pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, f"combo_{combo}.mp3"))
+        
+        self.menu_sfx_dict = {
+            SoundManager.MENU_HOVER_SFX : pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "menuhover.ogg")),
+            SoundManager.MENU_HIT_SFX: pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "menuhit1.mp3"))                                                   
+        }
