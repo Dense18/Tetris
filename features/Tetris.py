@@ -105,7 +105,6 @@ class Tetris(State):
                 self.accelerate = False
                 self.has_hold = False
                 if self.is_game_over():
-                    print(f"hi, lines cleared = {self.lines_cleared}, score = {self.score}")
                     self.sound_manager.stop()
                     game_over_activivity = GameOver(self.app, self.level, self.score, self.lines_cleared, self.get_time_passed(), self.game_mode)
                     game_over_activivity.enter_state()

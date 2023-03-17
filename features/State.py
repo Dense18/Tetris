@@ -4,6 +4,8 @@ from Subject import Subject
 
 
 class State(Subject, ABC):
+    ADD_STATE = 0
+    CLEAR_TOP = 1
     """
         Abstract Class of each State of the Game
     """
@@ -30,13 +32,45 @@ class State(Subject, ABC):
         """
         raise NotImplementedError
     
-    def enter_state(self):
+    def enter_state(self, flag = ADD_STATE):
+        """
+        Enter the current state.
+
+        Args:
+            Flag: additional instruction when entering the state.
+        """
+        if flag == State.CLEAR_TOP:
+            for i, state in enumerate(self.app.state_stack):
+                if isinstance(state, self.__class__):
+                    self.clear_top(i)
+                    return
+            self.add_current_state()
+        elif flag == State.ADD_STATE:
+            self.add_current_state()
+        else:
+            raise ValueError("Invalid flag")
+                    
+    
+    def clear_top(self, stack_index):
+        """
+            Clear all state above the given [stack_index] in the state stack
+        """
+        for i in range(stack_index + 1, len(self.app.state_stack)):
+            self.app.state_stack[-1].exit_state()
+            
+        if len(self.app.state_stack) > 1:
+            self.prev_state = self.app.state_stack[-1]
+            
+    def add_current_state(self):
+        """
+            Append current state to the state stack
+        """
         self.prev_state = self.app.state_stack[-1].on_leave_state()
         if len(self.app.state_stack) > 1:
             self.prev_state = self.app.state_stack[-1]
         
         self.app.state_stack.append(self)
-    
+        
     def exit_state(self):
         self.app.state_stack[-1].on_leave_state()
         self.app.state_stack.pop()

@@ -64,7 +64,10 @@ class Menu(State):
         self.drawButtons()
     
     def update(self, events):
-        pass
+        for event in events:
+            if event.type ==pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.exit_state()
     
     def drawButtons(self):
         for button in self.button_list: button.draw(self.app.screen)

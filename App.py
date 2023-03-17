@@ -83,6 +83,8 @@ class App:
         """
             Draws the application state to the screen
         """
+        if len(self.state_stack) <= 0:
+            return
         pygame.draw.rect(self.screen, BG_COLOR, (0,0,self.screen.get_width(), self.screen.get_height()))
         self.state_stack[-1].draw()
         pygame.display.update()
@@ -92,5 +94,5 @@ class App:
         """
             Run the application
         """
-        while self.isRunning:
+        while self.isRunning and len(self.state_stack):
             self.loop()
