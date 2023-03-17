@@ -20,7 +20,8 @@ class Tetris(State):
     key_dict = {pygame.K_LEFT: "left", pygame.K_RIGHT: "right"}
 
     def __init__(self, app):
-        self.app = app
+        super().__init__(app)
+        # self.app = app
         
         self.field_arr = [[0 for col in range(FIELD_WIDTH)] for row in range(FIELD_HEIGHT)]
         self.accelerate = False
