@@ -104,6 +104,7 @@ class Tetris(State):
                 self.accelerate = False
                 self.has_hold = False
                 if self.is_game_over():
+                    print(f"hi, lines cleared = {self.lines_cleared}, score = {self.score}")
                     self.sound_manager.stop()
                     game_over_activivity = GameOver(self.app, self.level, self.score, self.lines_cleared, self.get_time_passed(), self.game_mode)
                     game_over_activivity.enter_state()
@@ -355,7 +356,7 @@ class Tetris(State):
         if self.tetromino.blocks[0].pos.y == INITIAL_TETROMINO_OFFSET[1]:
             return True
         
-        if self.game_mode == Tetris.MODE_FORTY_LINES and self.lines_cleared >= 40:
+        if self.game_mode == Tetris.MODE_FORTY_LINES and self.lines_cleared >= 10:
             return True
         
         if self.game_mode == Tetris.MODE_ULTRA and self.get_time_passed() > ULTRA_TIME_SPAN/1000:
