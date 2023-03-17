@@ -34,21 +34,26 @@ class Button(ButtonObserver):
         self.textRect = self.text.get_rect(center = self.rect.center)
 
         self.pressed = False
-        self.listener = None
+        self.onClickListener = None
+        self.onHoverListener = None
 
 
     def setOnClickListener(self, listener):
-        self.listener = listener
+        self.onClickListener = listener
+    
+    def setOnHoverListener(self, listener):
+        self.onHoverListener = listener
 
     def update(self, position, mouseEvent):
         if self.rect.collidepoint(position):
             self.currentColor = self.hoverColor
+            if (self.onHoverListener!= None): self.onHoverListener()
             if mouseEvent[0]: ##Left Click
                 self.dynamicElevation = 0
                 self.pressed = True
             else:
                 if self.pressed:
-                    if (self.listener != None): self.listener()
+                    if (self.onClickListener != None): self.onClickListener()
                     self.pressed = False        
         else:
             self.currentColor = self.color
