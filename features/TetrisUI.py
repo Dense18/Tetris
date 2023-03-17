@@ -48,10 +48,10 @@ class TetrisUI:
 
         self.draw_hold_piece()
         self.draw_action()
-        if self.tetris.game_mode == Tetris.Tetris.MODE_LEVEL:
+        if self.tetris.game_mode == Tetris.Tetris.MODE_MARATHON:
             self.draw_score()
             self.draw_level()
-        elif self.tetris.game_mode in [Tetris.Tetris.MODE_FORTY_LINES, Tetris.Tetris.MODE_ULTRA]:
+        elif self.tetris.game_mode in [Tetris.Tetris.MODE_ULTRA, Tetris.Tetris.MODE_ULTRA]:
             self.draw_timer()
             
     def draw_hold_piece(self):
@@ -125,7 +125,7 @@ class TetrisUI:
             time_left_seconds = int(max((ULTRA_TIME_SPAN/1000) - time_passed_seconds, 0))
             time_left_seconds = max(0, time_left_seconds)   
         
-        time_to_show = time_passed_seconds if self.tetris.game_mode == Tetris.Tetris.MODE_FORTY_LINES else \
+        time_to_show = time_passed_seconds if self.tetris.game_mode == Tetris.Tetris.MODE_SPRINT else \
             time_left_seconds if self.tetris.game_mode == Tetris.Tetris.MODE_ULTRA else\
             0
         time_text = convert_seconds_to_time_str(time_to_show)

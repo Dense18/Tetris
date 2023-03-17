@@ -20,11 +20,12 @@ class Tetris(State):
     """
     key_dict = {pygame.K_LEFT: "left", pygame.K_RIGHT: "right"}
     
-    MODE_LEVEL = 0
-    MODE_ZEN = 1
-    MODE_FORTY_LINES = 2
-    MODE_ULTRA = 3
-    def __init__(self, app, game_mode = MODE_LEVEL):
+    MODE_MARATHON = "Marathon"
+    MODE_ZEN = "Zen"
+    MODE_SPRINT = "Sprint"
+    MODE_ULTRA = "Ultra"
+    
+    def __init__(self, app, game_mode = MODE_MARATHON):
         super().__init__(app)
         
         self.field_arr = [[0 for col in range(FIELD_WIDTH)] for row in range(FIELD_HEIGHT)]
@@ -32,7 +33,7 @@ class Tetris(State):
         
         self.level = 1
         self.game_mode = game_mode
-        if game_mode != Tetris.MODE_LEVEL:
+        if game_mode != Tetris.MODE_MARATHON:
             pygame.time.set_timer(self.app.animation_event, ZEN_MODE_FALL_SPEED)
             pygame.time.set_timer(self.app.accelerate_event, ACCELERATE_INTERVAL)
         else:
@@ -228,7 +229,7 @@ class Tetris(State):
         self.last_time_are = current_millis()
 
         
-        if self.game_mode == Tetris.MODE_LEVEL: self.check_next_nevel() 
+        if self.game_mode == Tetris.MODE_MARATHON: self.check_next_nevel() 
 
     def hard_drop(self):
         """
@@ -356,7 +357,7 @@ class Tetris(State):
         if self.tetromino.blocks[0].pos.y == INITIAL_TETROMINO_OFFSET[1]:
             return True
         
-        if self.game_mode == Tetris.MODE_FORTY_LINES and self.lines_cleared >= 10:
+        if self.game_mode == Tetris.MODE_SPRINT and self.lines_cleared >= 10:
             return True
         
         if self.game_mode == Tetris.MODE_ULTRA and self.get_time_passed() > ULTRA_TIME_SPAN/1000:
