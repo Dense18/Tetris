@@ -81,7 +81,9 @@ class TetrisUI:
         Draws the action UI
         """
         b2b_text = "B2B!" if self.tetris.is_b2b else ""
-        b2b_text_obj = self.textFont.render(b2b_text, 1, ACTION_COLOR)
+        full_clear_text = "Full Clear!" if self.tetris.is_current_perfect_clear else ""
+        bonus_action_text = b2b_text + full_clear_text
+        bonus_action_obj = self.textFont.render(bonus_action_text, 1, BONUS_ACTION_COLOR)
         
         action_text = ACTION_TO_TEXT[self.tetris.action]
         action_obj = self.textFont.render(action_text, 1, ACTION_COLOR)
@@ -90,11 +92,11 @@ class TetrisUI:
         combo_text = f"x {self.tetris.combo}" if self.tetris.combo >= 1 else ""
         combo_text_obj = self.textFont.render(combo_text, 1, COMBO_SCORE_COLOR)
         
-        b2b_text_rect = b2b_text_obj.get_rect(center = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//2.2 - action_obj.get_height()))
-        action_rect = action_obj.get_rect(centerx = INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, top = b2b_text_rect.bottom + 10)
+        bonus_action_rect = bonus_action_obj.get_rect(center = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//2.2 - action_obj.get_height()))
+        action_rect = action_obj.get_rect(centerx = INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, top = bonus_action_rect.bottom + 10)
         combo_text_rect = combo_text_obj.get_rect(centerx = INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, top = action_rect.bottom + 10)
 
-        self.tetris.app.screen.blit(b2b_text_obj, b2b_text_rect)
+        self.tetris.app.screen.blit(bonus_action_obj, bonus_action_rect)
         self.tetris.app.screen.blit(action_obj, action_rect)
         self.tetris.app.screen.blit(combo_text_obj, combo_text_rect)
 
