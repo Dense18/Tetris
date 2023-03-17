@@ -105,9 +105,8 @@ class Tetris(State):
                 self.has_hold = False
                 if self.is_game_over():
                     self.sound_manager.stop()
-                    game_over_activivity = GameOver(self.app)
+                    game_over_activivity = GameOver(self.app, self.level, self.score, self.lines_cleared, self.get_time_passed())
                     game_over_activivity.enter_state()
-                    self.reset()
                     return
                 self.place_tetromino()
                 self.last_time_lock = current_millis()
@@ -121,6 +120,9 @@ class Tetris(State):
                     self.accelerate = False
         
         self.handle_key_pressed(pygame.key.get_pressed())
+    
+    def on_leave_state(self):
+        self.sound_manager.stop()
 
     #* Update Tetromino state *#
     

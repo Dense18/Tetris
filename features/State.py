@@ -31,12 +31,17 @@ class State(Subject, ABC):
         raise NotImplementedError
     
     def enter_state(self):
+        self.prev_state = self.app.state_stack[-1].on_leave_state()
         if len(self.app.state_stack) > 1:
             self.prev_state = self.app.state_stack[-1]
-        self.app.state_stack.append(self)
         
+        self.app.state_stack.append(self)
+    
     def exit_state(self):
         self.app.state_stack.pop()
+    
+    def on_leave_state(self):
+        pass
     
     def register(self, observer):
         self.observer_list.append(observer)
