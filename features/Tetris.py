@@ -3,6 +3,7 @@ from copy import deepcopy
 
 import pygame
 
+from features.GameOver import GameOver
 from features.State import State
 from features.TetrisUI import TetrisUI
 from model.Block import Block
@@ -103,6 +104,9 @@ class Tetris(State):
                 self.accelerate = False
                 self.has_hold = False
                 if self.is_game_over():
+                    self.sound_manager.stop()
+                    game_over_activivity = GameOver(self.app)
+                    game_over_activivity.enter_state()
                     self.reset()
                     return
                 self.place_tetromino()
