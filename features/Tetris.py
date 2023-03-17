@@ -18,13 +18,23 @@ class Tetris(State):
         Class handling the execution of a Tetris.py game
     """
     key_dict = {pygame.K_LEFT: "left", pygame.K_RIGHT: "right"}
-
-    def __init__(self, app):
+    
+    MODE_LEVEL = 0
+    MODE_ZEN = 1
+    MODE_FORTY_LINES = 2
+    def __init__(self, app, game_mode = MODE_LEVEL):
         super().__init__(app)
-        # self.app = app
         
         self.field_arr = [[0 for col in range(FIELD_WIDTH)] for row in range(FIELD_HEIGHT)]
         self.accelerate = False
+        
+        self.level = 1
+        self.game_mode = game_mode
+        if game_mode == Tetris.MODE_ZEN:
+            pygame.time.set_timer(self.app.animation_event, ZEN_MODE_SPEED)
+            pygame.time.set_timer(self.app.accelerate_event, ACCELERATE_INTERVAL)
+        else:
+            self.update_time_speed()
 
         self.bag_min_items = 5
         self.bag = TetrominoBag(self.bag_min_items)
@@ -38,7 +48,6 @@ class Tetris(State):
         self.lines_cleared = 0
         self.combo = -1
 
-        self.level = 1
         self.score = 0
         # Key is based on lines cleared
         self.basic_score_system = {0: 0, 1: 100, 2: 200, 3: 500, 4: 800 }
@@ -90,7 +99,7 @@ class Tetris(State):
             if self.check_lock_delay():
                 self.accelerate = False
                 self.has_hold = False
-                if self.tetromino.blocks[0].pos.y == INITIAL_TETROMINO_OFFSET[1]:
+                if self.is_game_over():
                     self.reset()
                     return
                 self.place_tetromino()
@@ -208,7 +217,8 @@ class Tetris(State):
         self.get_new_tetromino()
         self.last_time_are = current_millis()
 
-        self.check_next_nevel()
+        
+        if self.game_mode == Tetris.MODE_LEVEL: self.check_next_nevel() 
 
     def hard_drop(self):
         """
@@ -319,6 +329,7 @@ class Tetris(State):
         """
         speed = pow((0.8 - ((self.level-1) * 0.007)), self.level - 1) #https://tetris.fandom.com/wiki/Tetris_Worlds
         pygame.time.set_timer(self.app.animation_event, int(speed * 1000))
+        pygame.time.set_timer(self.app.accelerate_event, int(speed * 500))
     
     def check_next_nevel(self):
         """
@@ -328,12 +339,21 @@ class Tetris(State):
             self.level += 1
             self.update_time_speed()
 
+    def is_game_over(self):
+        """
+        Identify if the current game should be over
+        """
+        if self.tetromino.blocks[0].pos.y == INITIAL_TETROMINO_OFFSET[1]:
+            return True
+        
+        if self.game_mode == Tetris.MODE_FORTY_LINES and self.lines_cleared >= 40:
+            return True
+    
     def reset(self):
         """
         Reset the game and start a new level
         """
         self.sound_manager.stop()
-        pygame.time.set_timer(self.app.animation_event, ANIMATION_INTERVAL)
         self.__init__(self.app)
     
     #* Handle events *#
@@ -420,5 +440,4 @@ class Tetris(State):
         Drawing Fuctions
     """
     def draw(self):
-        print(self.is_current_perfect_clear)
         self.ui.draw()

@@ -40,9 +40,9 @@ class App:
         self.accelerate_event = pygame.USEREVENT + 2
 
         self.animation_flag = False
-        self.accelerate_event = True
+        self.accelerate_event = False
 
-        pygame.time.set_timer(self.animation_event, ANIMATION_INTERVAL)
+        pygame.time.set_timer(self.animation_event, ZEN_MODE_SPEED)
         pygame.time.set_timer(self.accelerate_event, ACCELERATE_INTERVAL)
     
     def loop(self):
@@ -65,6 +65,8 @@ class App:
             Updates the application state
         """
         self.animation_flag = False
+        self.accelerate_event = False
+        
         for event in self.events:
             if event.type == pygame.QUIT:
                 self.isRunning = False

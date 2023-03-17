@@ -18,7 +18,7 @@ class Menu(State):
         self.paddingTop = 50
 
         self.buttonX = self.app.screen.get_width()//2 - self.buttonWidth//2
-        self.paddingTop = (self.app.screen.get_height() - (self.buttonHeight * 1)) / 2
+        self.paddingTop = (self.app.screen.get_height() - (self.buttonHeight * 3)) / 4
 
         self.button_color = (128, 0, 128)
         self.button_hover_color = (150, 0, 150)
@@ -26,13 +26,23 @@ class Menu(State):
 
         
     def setUpButtons(self):
-        self.play_level_button = AnimatedButton(self, self.buttonX, self.paddingTop,
+        self.level_mode_button = AnimatedButton(self, self.buttonX, self.paddingTop,
                                   self.buttonWidth, self.buttonHeight, 
                                   color = self.button_color, text = "Level Mode", hoverColor= self.button_hover_color)
-        self.play_level_button.setOnClickListener(self.on_play_level_click)
+        self.level_mode_button.setOnClickListener(self.level_mode_click)
+        
+        self.zen_mode_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.level_mode_button.y + self.level_mode_button.height,
+                                  self.buttonWidth, self.buttonHeight, 
+                                  color = self.button_color, text = "Zen Mode", hoverColor= self.button_hover_color)
+        self.zen_mode_button.setOnClickListener(self.zen_mode_click)
+        
+        self.forty_lines_mode_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.zen_mode_button.y + self.zen_mode_button.height,
+                                  self.buttonWidth, self.buttonHeight, 
+                                  color = self.button_color, text = "Forty Mode", hoverColor= self.button_hover_color)
+        self.forty_lines_mode_button.setOnClickListener(self.forty_lines_mode_click)
 
 
-        self.button_list = [self.play_level_button]
+        self.button_list = [self.level_mode_button, self.zen_mode_button,self.forty_lines_mode_button]
 
     def draw(self):
         rect = pygame.Rect(0,0, WIDTH, HEIGHT)
@@ -48,8 +58,16 @@ class Menu(State):
     """
         Button Listener
     """
-    def on_play_level_click(self):
-        tetris_activity = Tetris(self.app)
+    def level_mode_click(self):
+        tetris_activity = Tetris(self.app, game_mode= Tetris.MODE_LEVEL)
+        tetris_activity.enter_state()
+    
+    def zen_mode_click(self):
+        tetris_activity = Tetris(self.app, game_mode= Tetris.MODE_ZEN)
+        tetris_activity.enter_state()
+    
+    def forty_lines_mode_click(self):
+        tetris_activity = Tetris(self.app, game_mode= Tetris.MODE_FORTY_LINES)
         tetris_activity.enter_state()
     
     # def onQuitButtonClick(self):

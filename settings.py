@@ -21,8 +21,9 @@ INITIAL_TETROMINO_OFFSET = vec(FIELD_WIDTH//2 , 0)
 
 WIDTH, HEIGHT = BOARD_WIDTH + SIDEBAR_WIDTH + SIDEBAR_WIDTH, BOARD_HEIGHT
 
-ANIMATION_INTERVAL = 1000 # milliseconds
-ACCELERATE_INTERVAL = 150 # milliseconds
+# Accelerate speed should be twice as fast as normal gravity
+ZEN_MODE_SPEED = 500 # milliseconds
+ACCELERATE_INTERVAL = 100 # milliseconds
 
 TETROMINO_COLOR = {
         'T': (128,0,128), #Purple

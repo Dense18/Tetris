@@ -1,5 +1,6 @@
 import pygame
 
+import features.Tetris as Tetris
 from model.Block import Block
 from model.Tetromino import Tetromino
 from settings import *
@@ -46,8 +47,9 @@ class TetrisUI:
 
         self.draw_hold_piece()
         self.draw_action()
-        self.draw_score()
-        self.draw_level()
+        if self.tetris.game_mode == Tetris.Tetris.MODE_LEVEL:
+            self.draw_score()
+            self.draw_level()
     
     def draw_hold_piece(self):
         """
@@ -96,7 +98,7 @@ class TetrisUI:
     def draw_score(self):
         """
         Draw the score UI
-        """
+        """ 
         score_label_obj = self.textFont.render(self.score_text, 1, TEXT_LABEL_COLOR)
         score_label_rect = score_label_obj.get_rect(center = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.5))
         self.tetris.app.screen.blit(score_label_obj, score_label_rect)
