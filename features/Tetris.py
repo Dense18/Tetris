@@ -5,6 +5,7 @@ import pygame
 
 from features.State import State
 from features.TetrisUI import TetrisUI
+from model.Block import Block
 from model.Tetromino import Tetromino
 from model.TetrominoBag import TetrominoBag
 from settings import *
@@ -42,6 +43,8 @@ class Tetris(State):
         self.basic_score_system = {0: 0, 1: 100, 2: 200, 3: 500, 4: 800 }
         self.t_spin_score_system = {0: 400, 1: 800, 2: 1200, 3: 1600,}
         self.mini_t_spin_score_system = {0: 100, 1: 200, 2: 400}
+        self.score_perfect_clear_system = {0: 0, 1: 800, 2: 1200, 3: 1800, 4: 200 }
+        self.score_perfect_clear_b2b = 3200
         # Key is based on score type
         self.score_dict = { 0: self.basic_score_system, 1: self.t_spin_score_system, 2: self.mini_t_spin_score_system}
 
@@ -55,6 +58,7 @@ class Tetris(State):
 
         self.is_last_action_difficult = False
         self.is_b2b = False
+        self.is_current_perfect_clear = False
 
         self.ui = TetrisUI(self)
         self.sound_manager = SoundManager()
@@ -157,6 +161,9 @@ class Tetris(State):
     #* Update Field state *#
     
     def place_tetromino(self):
+        """
+        Places the current tetromino onto the Tetris field and updates score and combo accordingly
+        """
         self.sound_manager.play_sfx(SoundManager.LAND_SFX)
 
         for block in self.tetromino.blocks:
@@ -183,11 +190,18 @@ class Tetris(State):
 
         self.is_b2b = self.is_last_action_difficult and is_current_action_difficult
         self.is_last_action_difficult = is_current_action_difficult
+        self.is_current_perfect_clear = self.is_perfect_clear()
         
+        perfect_clear_score = 0 if not self.is_perfect_clear()\
+            else self.score_perfect_clear_b2b if self.is_b2b \
+            else self.score_perfect_clear_system[lines_cleared]            
+
+            
         dict_index = 1 if is_t_spin else 2 if is_mini_t_spin else 0
         ## Update score
         self.score += self.score_dict[dict_index][lines_cleared] * self.level + (self.is_b2b * B2B_MULTIPLIER)
         self.score += max(0, self.combo) * 50 * self.level
+        self.score += perfect_clear_score * self.level if self.is_current_perfect_clear else 0
         self.action = self.action_dict[dict_index][lines_cleared]
         
         self.get_new_tetromino()
@@ -217,6 +231,19 @@ class Tetris(State):
         while not tetromino.has_landed:
             tetromino.update()
    
+    def is_perfect_clear(self):
+        """
+        Checks if the Tetris field is a full clear, i.e all the blocks are empty
+
+        Note:
+        The method only checks if the first row is empty 
+        """
+        # print(self.field_arr[0])
+        for i in range(len(self.field_arr[-1])):
+            if self.field_arr[-1][i]:
+                return False
+        return True
+    
     # *Clear Full lines* #
     
     def is_row_full(self, row_index):
@@ -392,4 +419,5 @@ class Tetris(State):
         Drawing Fuctions
     """
     def draw(self):
+        print(self.is_current_perfect_clear)
         self.ui.draw()

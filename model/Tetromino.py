@@ -115,6 +115,13 @@ class Tetromino:
             self.has_landed = False
             return True
         
+        # Immediately check if the tetromino has landed by looking if it cannot move again in a downward direction
+        # Otherwise, require one more current update call to modify has_landed when tetromino is moved down
+        #
+        # new_positions_down = [block.pos + self.MOVE_DIRECTIONS[Tetromino.DIRECTIONS_DOWN] for block in self.blocks if block.pos]
+        # if self.is_collide(new_positions_down) and direction == Tetromino.DIRECTIONS_DOWN:
+        #     self.has_landed = True
+
         if direction == Tetromino.DIRECTIONS_DOWN:
             self.has_landed = True
         

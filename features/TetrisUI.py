@@ -12,7 +12,7 @@ class TetrisUI:
     def __init__(self, tetris) -> None:
         self.tetris = tetris
         
-        self.num_next_piece = min(self.tetris.bag_min_items, 5)
+        self.num_next_piece = min(self.tetris.bag_min_items, NUM_NEXT_PIECE_TO_DISPLAY)
 
         self.next_piece_text = "Next Piece:"
         self.hold_piece_text = "Hold Piece:"
@@ -20,9 +20,7 @@ class TetrisUI:
         self.level_label_text = "Level:"
         self.score_text = "Score:"
 
-        self.textSize = 30
-        self.textColor = (255,255,255)
-        self.textFont = pygame.font.SysFont("comicsans", self.textSize)
+        self.textFont = pygame.font.SysFont("comicsans", TEXT_SIZE)
 
     def draw(self):
         """
@@ -55,7 +53,7 @@ class TetrisUI:
         """
         Draws the hold piece UI
         """
-        hold_item_text_obj = self.textFont.render(self.hold_piece_text, 1, self.textColor)
+        hold_item_text_obj = self.textFont.render(self.hold_piece_text, 1, TEXT_LABEL_COLOR)
         hold_item_rect = hold_item_text_obj.get_rect(center = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//7))
         self.tetris.app.screen.blit(hold_item_text_obj, hold_item_rect)
 
@@ -78,14 +76,14 @@ class TetrisUI:
         Draws the action UI
         """
         b2b_text = "B2B!" if self.tetris.is_b2b else ""
-        b2b_text_obj = self.textFont.render(b2b_text, 1, self.textColor)
+        b2b_text_obj = self.textFont.render(b2b_text, 1, ACTION_COLOR)
         
         action_text = ACTION_TO_TEXT[self.tetris.action]
-        action_obj = self.textFont.render(action_text, 1, self.textColor)
+        action_obj = self.textFont.render(action_text, 1, ACTION_COLOR)
         action_rect = action_obj.get_rect()
 
         combo_text = f"x {self.tetris.combo}" if self.tetris.combo >= 1 else ""
-        combo_text_obj = self.textFont.render(combo_text, 1, self.textColor)
+        combo_text_obj = self.textFont.render(combo_text, 1, COMBO_SCORE_COLOR)
         
         b2b_text_rect = b2b_text_obj.get_rect(center = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//2.2 - action_obj.get_height()))
         action_rect = action_obj.get_rect(centerx = INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, top = b2b_text_rect.bottom + 10)
@@ -99,11 +97,11 @@ class TetrisUI:
         """
         Draw the score UI
         """
-        score_label_obj = self.textFont.render(self.score_text, 1, self.textColor)
+        score_label_obj = self.textFont.render(self.score_text, 1, TEXT_LABEL_COLOR)
         score_label_rect = score_label_obj.get_rect(center = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.5))
         self.tetris.app.screen.blit(score_label_obj, score_label_rect)
 
-        score_text_obj = self.textFont.render(str(round(self.tetris.score)), 1, self.textColor)
+        score_text_obj = self.textFont.render(str(round(self.tetris.score)), 1, TEXT_LABEL_COLOR)
         score_text_rect = score_text_obj.get_rect(centerx = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2), top = score_label_rect.bottom + 30)
         self.tetris.app.screen.blit(score_text_obj, score_text_rect)
     
@@ -111,7 +109,7 @@ class TetrisUI:
         """
         Draw the level UI
         """
-        level_label_obj = self.textFont.render(self.level_label_text + " "+str(self.tetris.level), 1, self.textColor)
+        level_label_obj = self.textFont.render(self.level_label_text + " "+str(self.tetris.level), 1, TEXT_LABEL_COLOR)
         level_label_rect = level_label_obj.get_rect(center = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.15))
         self.tetris.app.screen.blit(level_label_obj, level_label_rect)
 
@@ -182,7 +180,7 @@ class TetrisUI:
         """
         Draw the next tetromino piece UI
         """
-        next_item_label_obj = self.textFont.render(self.next_piece_text, 1, self.textColor)
+        next_item_label_obj = self.textFont.render(self.next_piece_text, 1, TEXT_LABEL_COLOR)
         next_item_label_rect = next_item_label_obj.get_rect(center = (INITIAL_RIGHT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//7))
         self.tetris.app.screen.blit(next_item_label_obj, next_item_label_rect)
 
@@ -204,10 +202,10 @@ class TetrisUI:
         """
         Draw the lines cleared UI
         """
-        cleared_label_obj = self.textFont.render(self.lines_cleared_text, 1, self.textColor)
+        cleared_label_obj = self.textFont.render(self.lines_cleared_text, 1, TEXT_LABEL_COLOR)
         cleared_label_rect = cleared_label_obj.get_rect(center = (INITIAL_RIGHT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.2))
         self.tetris.app.screen.blit(cleared_label_obj, cleared_label_rect)
 
-        line_cleared_obj = self.textFont.render(str(self.tetris.lines_cleared), 1, self.textColor)
+        line_cleared_obj = self.textFont.render(str(self.tetris.lines_cleared), 1, TEXT_LABEL_COLOR)
         line_cleared_rect = line_cleared_obj.get_rect(center = (INITIAL_RIGHT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.1))
         self.tetris.app.screen.blit(line_cleared_obj, line_cleared_rect)
