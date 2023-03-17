@@ -31,7 +31,7 @@ class Tetris(State):
         self.level = 1
         self.game_mode = game_mode
         if game_mode == Tetris.MODE_ZEN:
-            pygame.time.set_timer(self.app.animation_event, ZEN_MODE_SPEED)
+            pygame.time.set_timer(self.app.animation_event, ZEN_MODE_FALL_SPEED)
             pygame.time.set_timer(self.app.accelerate_event, ACCELERATE_INTERVAL)
         else:
             self.update_time_speed()
@@ -329,7 +329,7 @@ class Tetris(State):
         """
         speed = pow((0.8 - ((self.level-1) * 0.007)), self.level - 1) #https://tetris.fandom.com/wiki/Tetris_Worlds
         pygame.time.set_timer(self.app.animation_event, int(speed * 1000))
-        pygame.time.set_timer(self.app.accelerate_event, int(speed * 500))
+        pygame.time.set_timer(self.app.accelerate_event, int(speed * 1000 / 20))
     
     def check_next_nevel(self):
         """
