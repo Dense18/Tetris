@@ -37,6 +37,7 @@ class Button(ButtonObserver):
         self.has_hovered = False
         self.onClickListener = None
         self.onHoverListener = None
+        self.onButtonDownListener = None
 
 
     def setOnClickListener(self, listener):
@@ -44,6 +45,9 @@ class Button(ButtonObserver):
     
     def setOnHoverListener(self, listener):
         self.onHoverListener = listener
+    
+    def setOnButtonDownListener(self, listener):
+        self.onButtonDownListener = listener
 
     def update(self, position, mouseEvent):
         if self.rect.collidepoint(position):
@@ -51,9 +55,8 @@ class Button(ButtonObserver):
             if not self.has_hovered:
                 self.has_hovered = True
                 if self.onHoverListener: self.onHoverListener()
-            if (self.onHoverListener!= None): self.onHoverListener()
             if mouseEvent[0]: ##Left Click
-                self.dynamicElevation = 0
+                if not self.pressed and self.onButtonDownListener: self.onButtonDownListener()
                 self.pressed = True
             else:
                 if self.pressed:

@@ -33,18 +33,21 @@ class Menu(State):
                                   color = self.button_color, text = "Level Mode", hoverColor= self.button_hover_color)
         self.level_mode_button.setOnClickListener(self.level_mode_click)
         self.level_mode_button.setOnHoverListener(self.on_hover)
+        self.level_mode_button.setOnButtonDownListener(self.on_down)
         
         self.zen_mode_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.level_mode_button.y + self.level_mode_button.height,
                                   self.buttonWidth, self.buttonHeight, 
                                   color = self.button_color, text = "Zen Mode", hoverColor= self.button_hover_color)
         self.zen_mode_button.setOnClickListener(self.zen_mode_click)
         self.zen_mode_button.setOnHoverListener(self.on_hover)
+        self.zen_mode_button.setOnButtonDownListener(self.on_down)
         
         self.forty_lines_mode_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.zen_mode_button.y + self.zen_mode_button.height,
                                   self.buttonWidth, self.buttonHeight, 
                                   color = self.button_color, text = "Forty Mode", hoverColor= self.button_hover_color)
         self.forty_lines_mode_button.setOnClickListener(self.forty_lines_mode_click)
         self.forty_lines_mode_button.setOnHoverListener(self.on_hover)
+        self.forty_lines_mode_button.setOnButtonDownListener(self.on_down)
 
 
         self.button_list = [self.level_mode_button, self.zen_mode_button,self.forty_lines_mode_button]
@@ -64,22 +67,22 @@ class Menu(State):
         Button Listener
     """
     def level_mode_click(self):
-        self.sound_manager.play_menu(SoundManager.MENU_HIT_SFX)
+        # self.sound_manager.play_menu(SoundManager.MENU_HIT_SFX)
         tetris_activity = Tetris(self.app, game_mode= Tetris.MODE_LEVEL)
         tetris_activity.enter_state()
     
     def zen_mode_click(self):
-        self.sound_manager.play_menu(SoundManager.MENU_HIT_SFX)
+        # self.sound_manager.play_menu(SoundManager.MENU_HIT_SFX)
         tetris_activity = Tetris(self.app, game_mode= Tetris.MODE_ZEN)
         tetris_activity.enter_state()
     
     def forty_lines_mode_click(self):
-        self.sound_manager.play_menu(SoundManager.MENU_HIT_SFX)
+        # self.sound_manager.play_menu(SoundManager.MENU_HIT_SFX)
         tetris_activity = Tetris(self.app, game_mode= Tetris.MODE_FORTY_LINES)
         tetris_activity.enter_state()
     
     def on_hover(self):
         self.sound_manager.play_menu(SoundManager.MENU_HOVER_SFX)
     
-    # def onQuitButtonClick(self):
-    #     self.app.running = False
+    def on_down(self):
+        self.sound_manager.play_menu(SoundManager.MENU_HIT_SFX)
