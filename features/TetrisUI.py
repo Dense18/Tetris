@@ -4,6 +4,7 @@ import features.Tetris as Tetris
 from model.Block import Block
 from model.Tetromino import Tetromino
 from settings import *
+from utils import *
 
 
 class TetrisUI:
@@ -127,10 +128,7 @@ class TetrisUI:
         time_to_show = time_passed_seconds if self.tetris.game_mode == Tetris.Tetris.MODE_FORTY_LINES else \
             time_left_seconds if self.tetris.game_mode == Tetris.Tetris.MODE_ULTRA else\
             0
-        
-        minutes = time_to_show // 60
-        seconds = time_to_show % 60
-        time_text = str(minutes).zfill(2) + ":" + str(seconds).zfill(2)
+        time_text = convert_seconds_to_time_str(time_to_show)
         
         time_text_obj = self.textFont.render(time_text, 1, TEXT_LABEL_COLOR)
         time_text_rect = time_text_obj.get_rect(center = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.4))

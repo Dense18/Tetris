@@ -105,7 +105,7 @@ class Tetris(State):
                 self.has_hold = False
                 if self.is_game_over():
                     self.sound_manager.stop()
-                    game_over_activivity = GameOver(self.app, self.level, self.score, self.lines_cleared, self.get_time_passed())
+                    game_over_activivity = GameOver(self.app, self.level, self.score, self.lines_cleared, self.get_time_passed(), self.game_mode)
                     game_over_activivity.enter_state()
                     return
                 self.place_tetromino()
