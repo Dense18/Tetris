@@ -4,8 +4,12 @@ from settings import *
 
 
 class GameOverUI:
-    def __init__(self, game_over_state):
+    def __init__(self, game_over_state, level, score, lines_cleared, time_passed):
         self.state = game_over_state
+        self.level = level
+        self.score = score
+        self.lines_cleared = lines_cleared
+        self.time_passed = time_passed
         
         self.text_font = pygame.font.SysFont('comicsans', 30)
     
