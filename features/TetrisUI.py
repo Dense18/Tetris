@@ -50,7 +50,9 @@ class TetrisUI:
         if self.tetris.game_mode == Tetris.Tetris.MODE_LEVEL:
             self.draw_score()
             self.draw_level()
-    
+        elif self.tetris.game_mode in [Tetris.Tetris.MODE_FORTY_LINES, Tetris.Tetris.MODE_ULTRA]:
+            self.draw_timer()
+            
     def draw_hold_piece(self):
         """
         Draws the hold piece UI
@@ -115,6 +117,24 @@ class TetrisUI:
         level_label_rect = level_label_obj.get_rect(center = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.15))
         self.tetris.app.screen.blit(level_label_obj, level_label_rect)
 
+    def draw_timer(self):
+        time_passed_seconds = int(self.tetris.get_time_passed())
+        
+        if self.tetris.game_mode == Tetris.Tetris.MODE_ULTRA:
+            time_left_seconds = int(max((ULTRA_TIME_SPAN/1000) - time_passed_seconds, 0))
+            time_left_seconds = max(0, time_left_seconds)   
+        
+        time_to_show = time_passed_seconds if self.tetris.game_mode == Tetris.Tetris.MODE_FORTY_LINES else \
+            time_left_seconds if self.tetris.game_mode == Tetris.Tetris.MODE_ULTRA else\
+            0
+        
+        minutes = time_to_show // 60
+        seconds = time_to_show % 60
+        time_text = str(minutes).zfill(2) + ":" + str(seconds).zfill(2)
+        
+        time_text_obj = self.textFont.render(time_text, 1, TEXT_LABEL_COLOR)
+        time_text_rect = time_text_obj.get_rect(center = (INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH//2, BOARD_HEIGHT//1.4))
+        self.tetris.app.screen.blit(time_text_obj, time_text_rect)
     #* Middle *#
     
     def draw_middle(self):

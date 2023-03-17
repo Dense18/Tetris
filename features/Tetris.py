@@ -22,6 +22,7 @@ class Tetris(State):
     MODE_LEVEL = 0
     MODE_ZEN = 1
     MODE_FORTY_LINES = 2
+    MODE_ULTRA = 3
     def __init__(self, app, game_mode = MODE_LEVEL):
         super().__init__(app)
         
@@ -30,7 +31,7 @@ class Tetris(State):
         
         self.level = 1
         self.game_mode = game_mode
-        if game_mode == Tetris.MODE_ZEN:
+        if game_mode != Tetris.MODE_LEVEL:
             pygame.time.set_timer(self.app.animation_event, ZEN_MODE_FALL_SPEED)
             pygame.time.set_timer(self.app.accelerate_event, ACCELERATE_INTERVAL)
         else:
@@ -86,6 +87,8 @@ class Tetris(State):
         self.last_time_are = 0 
 
         self.sound_manager.play_ost()
+        
+        self.start_time_in_seconds = time.time()
        
     def update(self, events):
         trigger = [self.app.animation_flag, self.app.accelerate_event][self.accelerate]
@@ -348,13 +351,23 @@ class Tetris(State):
         
         if self.game_mode == Tetris.MODE_FORTY_LINES and self.lines_cleared >= 40:
             return True
+        
+        if self.game_mode == Tetris.MODE_ULTRA and self.get_time_passed() > ULTRA_TIME_SPAN/1000:
+            return True
+            
+    
+    def get_time_passed(self):
+        """
+        Return the time passed since since the game started
+        """
+        return time.time() - self.start_time_in_seconds
     
     def reset(self):
         """
         Reset the game and start a new level
         """
         self.sound_manager.stop()
-        self.__init__(self.app)
+        self.__init__(self.app, game_mode = self.game_mode)
     
     def exit(self):
         self.sound_manager.stop()

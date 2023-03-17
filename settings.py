@@ -21,9 +21,10 @@ INITIAL_TETROMINO_OFFSET = vec(FIELD_WIDTH//2 , 0)
 
 WIDTH, HEIGHT = BOARD_WIDTH + SIDEBAR_WIDTH + SIDEBAR_WIDTH, BOARD_HEIGHT
 
-# Accelerate speed should be 20 times faster than the normal fall sped
 ZEN_MODE_FALL_SPEED = 1000 # milliseconds
-ACCELERATE_INTERVAL = int(ZEN_MODE_FALL_SPEED / 20) # milliseconds
+ACCELERATE_INTERVAL = int(ZEN_MODE_FALL_SPEED / 20) # millisecond. Accelerate speed should be 20 times faster than the normal fall speed
+
+ULTRA_TIME_SPAN = 120000 #milliseconds
 
 TETROMINO_COLOR = {
         'T': (128,0,128), #Purple
@@ -37,6 +38,7 @@ TETROMINO_COLOR = {
 
 LINES_TO_ADVANCE_LEVEL = 10 #Uses fixed goal levelling system
 MAX_LEVEL = 20
+
 # Directory
 SOUND_DIR= "Assets\\Sound"
 TETRIS_SOUND_SFX_DIR = SOUND_DIR + "\\" + "TetrisSfx" 
