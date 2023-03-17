@@ -3,6 +3,7 @@ import os
 
 import pygame
 
+import features.Tetris as Tetris
 from features.GameOverUI import GameOverUI
 from features.State import State
 from SaveLoadSystem import SaveLoadSystem
@@ -24,11 +25,17 @@ class GameOver(State):
         
         self.save_load_system = SaveLoadSystem(file_path = "")
         
-        self.data = self.load_data("best_score.json")  
-        self.data[self.game_mode] = self.score
         
+        self.data = self.load_data("best_score.json")  
+        if self.data == {}: self.data[self.game_mode] = None
+        
+    def on_leave_state(self):
+        data_to_save = self.score if self.game_mode == Tetris.Tetris.MODE_MARATHON \
+            else self.lines_cleared if self.game_mode == Tetris.Tetris.MODE_ULTRA \
+            else self.time_passed if self.game_mode == Tetris.Tetris.MODE_SPRINT \
+            else self.score
+        self.data[self.game_mode] = self.score
         self.save_data("best_score.json")
-    
     
     def save_data(self, file_name):
         self.save_load_system.save(self.data, file_name)

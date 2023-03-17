@@ -38,6 +38,7 @@ class State(Subject, ABC):
         self.app.state_stack.append(self)
     
     def exit_state(self):
+        self.app.state_stack[-1].on_leave_state()
         self.app.state_stack.pop()
     
     def on_leave_state(self):
