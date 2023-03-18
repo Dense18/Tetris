@@ -25,8 +25,9 @@ class Menu(State):
         self.button_color = (128, 0, 128)
         self.button_hover_color = (150, 0, 150)
         self.setUpButtons()
-
         
+        # self.sound_manager.play_ost(SoundManager.MENU_OST)
+
     def setUpButtons(self):
         self.level_mode_button = AnimatedButton(self, self.buttonX, self.paddingTop,
                                   self.buttonWidth, self.buttonHeight, 
@@ -58,6 +59,13 @@ class Menu(State):
 
         self.button_list = [self.level_mode_button, self.zen_mode_button,self.forty_lines_mode_button, self.ultra_mode_button]
 
+    
+    def on_resume_state(self):
+        self.sound_manager.play_ost(SoundManager.MENU_OST)
+    
+    def on_exit_state(self):
+        self.sound_manager.stop()
+        
     def draw(self):
         rect = pygame.Rect(0,0, WIDTH, HEIGHT)
         pygame.draw.rect(self.app.screen, (0,0,0), rect)
@@ -76,18 +84,22 @@ class Menu(State):
         Button Listener
     """
     def level_mode_click(self):
+        self.sound_manager.stop()
         tetris_activity = Tetris(self.app, game_mode= Tetris.MODE_MARATHON)
         tetris_activity.enter_state()
     
     def zen_mode_click(self):
+        self.sound_manager.stop()
         tetris_activity = Tetris(self.app, game_mode= Tetris.MODE_ZEN)
         tetris_activity.enter_state()
     
     def forty_lines_mode_click(self):
+        self.sound_manager.stop()
         tetris_activity = Tetris(self.app, game_mode= Tetris.MODE_SPRINT)
         tetris_activity.enter_state()
     
     def ultra_mode_click(self):
+        self.sound_manager.stop()
         tetris_activity = Tetris(self.app, game_mode= Tetris.MODE_ULTRA)
         tetris_activity.enter_state()
     
