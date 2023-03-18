@@ -66,7 +66,7 @@ class SoundManager:
     
     #* Play Sounds *#
     
-    def play_ost(self, id, loops = -1, update = True, sound_volume = None):
+    def play_ost(self, id, loops = -1, update = True):
         """
         Plays an ost sound based on the [id]
         
@@ -77,9 +77,6 @@ class SoundManager:
         """
         if pygame.mixer.Channel(OST_CHANNEL).get_busy() and not update:
             return
-        # if sound_volume:
-        #     pygame.mixer.Channel(OST_CHANNEL).s
-        print("Play ost sound: " + str(id))
         pygame.mixer.Channel(OST_CHANNEL).play(self.ost_dict[id], loops)
     
     def play_sfx(self, id, loops = 0):
