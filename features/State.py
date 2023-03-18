@@ -61,7 +61,6 @@ class State(Subject, ABC):
             self.add_current_state()
         else:
             raise ValueError("Invalid flag")
-                    
     
     def clear_top(self, stack_index):
         """
@@ -77,17 +76,37 @@ class State(Subject, ABC):
         """
             Append current state to the state stack
         """
-        self.prev_state = self.app.state_stack[-1].on_leave_state()
         if len(self.app.state_stack) > 1:
+            self.app.state_stack[-1].on_leave_state()
             self.prev_state = self.app.state_stack[-1]
         
         self.app.state_stack.append(self)
-        
+        self.app.state_stack[-1].on_resume_state()
+    
+    
+    def on_resume_state(self):
+        """
+        Called when the state is resumed. Also called when the state is entered.       
+        """
+        pass
+    
+    def on_exit_state(self):
+        """
+        Called when the state is removed from the stack.        
+        """
+        pass
+    
     def exit_state(self):
         self.app.state_stack[-1].on_leave_state()
+        self.app.state_stack[-1].on_exit_state()
         self.app.state_stack.pop()
+        self.app.state_stack[-1].on_resume_state()
+    
     
     def on_leave_state(self):
+        """
+        Called when leaving the state 
+        """
         pass
     
     def register(self, observer):
