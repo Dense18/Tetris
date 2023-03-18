@@ -23,6 +23,8 @@ class SoundManager:
 
     CLEAR_LINE_SFX = "clearlline"
     COMBO_BREAK_SFX = "combo_break_2"
+    ALL_CLEAR_SFX = "all_clear"
+    LEVEL_UP_SFX = "level_up"
     
     MENU_HOVER_SFX = "menuhover"
     MENU_HIT_SFX = "menuconfirm"
@@ -38,9 +40,9 @@ class SoundManager:
         SoundManager.__instance = self
         self.channels = [SFX_CHANNEL, COMBO_CHANNEL, OST_CHANNEL, MENU_CHANNEL]
 
-        self.ost_volume = 0.3
-        self.combo_volume = 0.7
-        self.sfx_volume = 0.8
+        self.ost_volume = 0.2
+        self.combo_volume = 0.6
+        self.sfx_volume = 0.6
         self.menu_volume = 0.5
 
         self.is_muted = False
@@ -79,13 +81,17 @@ class SoundManager:
             return
         pygame.mixer.Channel(OST_CHANNEL).play(self.ost_dict[id], loops)
     
-    def play_sfx(self, id, loops = 0):
+    def play_sfx(self, id, loops = 0, override = True):
         """
         Plays a sfx sound based on the [id]
         
         Args:
             loops: number of times to play the sound. -1 means infinite
+            override: If set and a sfx sound is playing, stop playing the current sfx sound and play the new one
         """
+        if not override:
+            self.sfx_dict[id].set_volume(self.sfx_volume)
+            self.sfx_dict[id].play(loops)
         pygame.mixer.Channel(SFX_CHANNEL).play(self.sfx_dict[id], loops)
 
     def play_combo(self, num_combo, loops = 0):
@@ -187,6 +193,8 @@ class SoundManager:
 
             SoundManager.CLEAR_LINE_SFX : pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "clearline.ogg")),
             SoundManager.COMBO_BREAK_SFX : pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "combo_break_2.ogg")),
+            SoundManager.ALL_CLEAR_SFX : pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "allclear.ogg")),
+            SoundManager.LEVEL_UP_SFX : pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "level_up.ogg"))
         }
 
         self.combos_sfx_dict = {}

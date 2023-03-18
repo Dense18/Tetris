@@ -45,6 +45,20 @@ class Tetris(State):
         
         self.tetromino = None
         self.get_new_tetromino()
+        
+        # Uncomment this line to check full clear
+        # tetro = Tetromino(self, "O")
+        # self.field_arr[-1] = [Block(tetro, (0,0), "green") for i in range(FIELD_WIDTH)]
+        # self.field_arr[-2] = [Block(tetro, (0,0), "green") for i in range(FIELD_WIDTH)]
+        # for i in range(FIELD_WIDTH):
+        #     self.field_arr[-1][i].pos = vec(i, FIELD_HEIGHT - 1)
+        #     self.field_arr[-2][i].pos = vec(i, FIELD_HEIGHT - 2)
+        # self.field_arr[-1][5] = 0
+        # self.field_arr[-1][6] = 0
+        # self.field_arr[-2][5] = 0
+        # self.field_arr[-2][6] = 0
+        # self.tetromino = Tetromino(self, "O")
+        
 
         self.hold_piece_shape = None
         self.has_hold = False
@@ -222,6 +236,9 @@ class Tetris(State):
         self.is_last_action_difficult = is_current_action_difficult
         self.is_current_perfect_clear = self.is_perfect_clear()
         
+        if self.is_current_perfect_clear:
+            self.sound_manager.play_sfx(SoundManager.ALL_CLEAR_SFX)
+        
         perfect_clear_score = 0 if not self.is_perfect_clear()\
             else self.score_perfect_clear_b2b if self.is_b2b \
             else self.score_perfect_clear_system[lines_cleared]            
@@ -356,6 +373,8 @@ class Tetris(State):
         Checks and updates the level of the game if necessary
         """
         if self.lines_cleared >= self.level * LINES_TO_ADVANCE_LEVEL:
+            if self.level + 1 <= MAX_LEVEL:
+                self.sound_manager.play_sfx(SoundManager.LEVEL_UP_SFX, override= False)
             self.level = min(self.level + 1, MAX_LEVEL)
             self.update_time_speed()
 
