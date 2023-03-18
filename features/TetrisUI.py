@@ -51,7 +51,7 @@ class TetrisUI:
         if self.tetris.game_mode == Tetris.Tetris.MODE_MARATHON:
             self.draw_score()
             self.draw_level()
-        elif self.tetris.game_mode in [Tetris.Tetris.MODE_ULTRA, Tetris.Tetris.MODE_ULTRA]:
+        elif self.tetris.game_mode in [Tetris.Tetris.MODE_SPRINT, Tetris.Tetris.MODE_ULTRA]:
             self.draw_timer()
             
     def draw_hold_piece(self):
