@@ -122,6 +122,7 @@ ACTION_TO_TEXT = {
 SFX: https://you.have.fail/at/tetrioplus/#sfx-25Pi25-soundpack
 Main Ost: https://archive.org/details/TetrisThemeMusic
 Menu Ost: https://www.zophar.net/music/gameboy-gbs/tetris
+Game Over Ost:https://downloads.khinsider.com/game-soundtracks/album/tetris-rip 
 Tetris GuideLine: https://tetris.fandom.com/wiki/Tetris_Guideline 
 Rotation System: https://tetris.wiki/Super_Rotation_System
 Score System:  https://tetris.fandom.com/wiki/Scoring#Guideline_scoring_system  

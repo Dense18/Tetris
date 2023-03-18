@@ -12,6 +12,7 @@ class SoundManager:
     MAIN_OST = "tetris_ost"
     MENU_OST = "menu_st"
     GAME_OVER_OST = "game_over_ost"
+    HIGH_SCORE_OST = "high_score_ost"
 
     MOVE_SFX = "move"
     ROTATE_SFX = "rotate"
@@ -175,7 +176,8 @@ class SoundManager:
         self.ost_dict = {
             SoundManager.MAIN_OST : pygame.mixer.Sound(os.path.join(TETRIS_SOUND_OST_DIR, "tetris_ost.mp3")),
             SoundManager.MENU_OST : pygame.mixer.Sound(os.path.join(TETRIS_SOUND_OST_DIR, "menu_ost.mp3")),
-            SoundManager.GAME_OVER_OST : pygame.mixer.Sound(os.path.join(TETRIS_SOUND_OST_DIR, "game_over_ost.mp3"))
+            SoundManager.GAME_OVER_OST : pygame.mixer.Sound(os.path.join(TETRIS_SOUND_OST_DIR, "game_over_ost.mp3")),
+            SoundManager.HIGH_SCORE_OST : pygame.mixer.Sound(os.path.join(TETRIS_SOUND_OST_DIR, "high_score_ost.mp3"))
         }
 
         self.sfx_dict = {
