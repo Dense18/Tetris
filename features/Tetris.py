@@ -356,7 +356,7 @@ class Tetris(State):
         if self.tetromino.blocks[0].pos.y == INITIAL_TETROMINO_OFFSET[1]:
             return True
         
-        if self.game_mode == Tetris.MODE_SPRINT and self.lines_cleared >= 10:
+        if self.game_mode == Tetris.MODE_SPRINT and self.lines_cleared >= SPRINT_LINE_TO_CLEAR:
             return True
         
         if self.game_mode == Tetris.MODE_ULTRA and self.get_time_passed() > ULTRA_TIME_SPAN/1000:

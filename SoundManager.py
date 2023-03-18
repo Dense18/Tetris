@@ -51,13 +51,17 @@ class SoundManager:
     
     #* Play Sounds *#
     
-    def play_ost(self, id, loops = -1):
+    def play_ost(self, id, loops = -1, update = True):
         """
         Plays an ost sound based on the [id]
         
         Args:
             loops: number of times to play the sound. -1 means infinite
+            update: If not set and an ost sound is playing, continue playing the current ost sound
+                    Else, play the new sound
         """
+        if pygame.mixer.Channel(OST_CHANNEL).get_busy() and not update:
+            return
         pygame.mixer.Channel(OST_CHANNEL).play(self.ost_dict[id], loops)
     
     def play_sfx(self, id, loops = 0):

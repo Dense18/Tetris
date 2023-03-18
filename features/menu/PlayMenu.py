@@ -7,7 +7,7 @@ from SoundManager import SoundManager
 from ui.widget.AnimatedButton import AnimatedButton
 
 
-class Menu(State):
+class PlayMenu(State):
     """
         Menu State of the program. 
         Contains the VsPlayer, VSComputer, and Quit options
@@ -22,11 +22,9 @@ class Menu(State):
         self.buttonX = self.app.screen.get_width()//2 - self.buttonWidth//2
         self.paddingTop = (self.app.screen.get_height() - (self.buttonHeight * 4)) / 5
 
-        self.button_color = (128, 0, 128)
-        self.button_hover_color = (150, 0, 150)
+        self.button_color = BUTTON_COLOR
+        self.button_hover_color = BUTTON_HOVER_COLOR
         self.setUpButtons()
-        
-        # self.sound_manager.play_ost(SoundManager.MENU_OST)
 
     def setUpButtons(self):
         self.level_mode_button = AnimatedButton(self, self.buttonX, self.paddingTop,
@@ -61,10 +59,8 @@ class Menu(State):
 
     
     def on_resume_state(self):
-        self.sound_manager.play_ost(SoundManager.MENU_OST)
-    
-    def on_exit_state(self):
-        self.sound_manager.stop()
+        self.sound_manager.play_ost(SoundManager.MENU_OST, update = False)
+        pass
         
     def draw(self):
         rect = pygame.Rect(0,0, WIDTH, HEIGHT)

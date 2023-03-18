@@ -1,6 +1,6 @@
 import pygame
 
-from features.menu.Menu import Menu
+from features.menu.MainMenu import MainMenu
 from features.Tetris import Tetris
 from settings import *
 
@@ -24,7 +24,7 @@ class App:
         """
             Loads the first state of the program to the system
         """
-        tetris_activity = Menu(self)
+        tetris_activity = MainMenu(self)
         tetris_activity.enter_state()
 
     def set_custom_events(self):
@@ -74,9 +74,10 @@ class App:
                 self.animation_flag = True
             if event.type == self.accelerate_event:
                 self.accelerate_event = True
-                
+        
         self.state_stack[-1].notify(pygame.mouse.get_pos(), pygame.mouse.get_pressed())
-        self.state_stack[-1].update(self.events)
+        if len(self.state_stack): # State stack might be empty from an observer update
+            self.state_stack[-1].update(self.events)
         pass
 
     def draw(self):

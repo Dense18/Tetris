@@ -3,7 +3,7 @@ import os
 
 import pygame
 
-import features.menu.Menu as Menu
+import features.menu.PlayMenu as PlayMenu
 import features.Tetris as Tetris
 from features.GameOverUI import GameOverUI
 from features.State import State
@@ -55,7 +55,7 @@ class GameOver(State):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    menu_state = Menu.Menu(self.app)
+                    menu_state = PlayMenu.PlayMenu(self.app)
                     menu_state.enter_state(State.CLEAR_TOP)
     
     def draw(self):

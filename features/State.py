@@ -100,7 +100,7 @@ class State(Subject, ABC):
         self.app.state_stack[-1].on_leave_state()
         self.app.state_stack[-1].on_exit_state()
         self.app.state_stack.pop()
-        self.app.state_stack[-1].on_resume_state()
+        if len(self.app.state_stack): self.app.state_stack[-1].on_resume_state()
     
     
     def on_leave_state(self):

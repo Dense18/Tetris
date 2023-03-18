@@ -38,6 +38,7 @@ TETROMINO_COLOR = {
 
 LINES_TO_ADVANCE_LEVEL = 10 #Uses fixed goal levelling system
 MAX_LEVEL = 20
+SPRINT_LINE_TO_CLEAR = 10
 
 # Directory
 SOUND_DIR= "Assets\\Sound"
@@ -62,6 +63,11 @@ APPEARANCE_DELAY = 500
 
 #SCORE
 B2B_MULTIPLIER = 1.5
+
+
+# Buttons
+BUTTON_COLOR = (128, 0, 128)
+BUTTON_HOVER_COLOR = (150, 0, 150)
 
 ## TEXT_SIZE:
 TEXT_SIZE = 30

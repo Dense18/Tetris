@@ -39,7 +39,7 @@ class GameOverUI:
         
         elif self.state.game_mode == Tetris.Tetris.MODE_SPRINT:
             time_text = convert_seconds_to_time_str(self.state.time_passed)
-            text = "Time Taken: " + time_text if self.state.lines_cleared >= 40 else "Try again next time!"
+            text = "Time Taken: " + time_text if self.state.lines_cleared >= SPRINT_LINE_TO_CLEAR else "Try again next time!"
             time_text_obj = self.text_font.render(text, 1, "white")
             time_text_rect = time_text_obj.get_rect(center = (WIDTH//2, HEIGHT//2))
             self.state.app.screen.blit(time_text_obj, time_text_rect)
