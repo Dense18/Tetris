@@ -8,6 +8,7 @@ import features.Tetris as Tetris
 from features.GameOverUI import GameOverUI
 from features.State import State
 from SaveLoadSystem import SaveLoadSystem
+from settings import *
 
 
 class GameOver(State):
@@ -27,8 +28,7 @@ class GameOver(State):
         self.save_load_system = SaveLoadSystem(file_path = "")
         
         
-        self.data = self.load_data("best_score.json")  
-        if self.data == {}: self.data[self.game_mode] = None
+        self.data = self.load_data(BEST_SCORE_FILE_NAME)  
         
     def on_leave_state(self):
         data_to_save = self.score if self.game_mode == Tetris.Tetris.MODE_MARATHON \
@@ -36,14 +36,19 @@ class GameOver(State):
             else self.time_passed if self.game_mode == Tetris.Tetris.MODE_SPRINT \
             else self.score
         self.data[self.game_mode] = self.score
-        self.save_data("best_score.json")
+        self.save_data(BEST_SCORE_FILE_NAME)
     
     def save_data(self, file_name):
         self.save_load_system.save(self.data, file_name)
         
     def load_data(self, file_name):
         data = self.save_load_system.load(file_name)
-        return data if data else {}
+        return data if data else {
+            Tetris.Tetris.MODE_MARATHON: 0,
+            Tetris.Tetris.MODE_ZEN: 0,
+            Tetris.Tetris.MODE_ULTRA: 0,
+            Tetris.Tetris.MODE_SPRINT: 0
+        }
         
     def update(self, events):
         for event in events:
