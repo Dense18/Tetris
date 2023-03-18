@@ -24,7 +24,6 @@ WIDTH, HEIGHT = BOARD_WIDTH + SIDEBAR_WIDTH + SIDEBAR_WIDTH, BOARD_HEIGHT
 ZEN_MODE_FALL_SPEED = 1000 # milliseconds
 ACCELERATE_INTERVAL = int(ZEN_MODE_FALL_SPEED / 20) # millisecond. Accelerate speed should be 20 times faster than the normal fall speed
 
-ULTRA_TIME_SPAN = 120000 #milliseconds
 
 TETROMINO_COLOR = {
         'T': (128,0,128), #Purple
@@ -39,6 +38,7 @@ TETROMINO_COLOR = {
 LINES_TO_ADVANCE_LEVEL = 10 #Uses fixed goal levelling system
 MAX_LEVEL = 20
 SPRINT_LINE_TO_CLEAR = 10
+ULTRA_TIME_SPAN = 120000 #milliseconds
 
 # Directory
 SOUND_DIR= "Assets\\Sound"

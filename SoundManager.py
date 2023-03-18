@@ -9,8 +9,9 @@ class SoundManager:
     """
         Singleton Class that manages the sound for the Tetris Application
     """
-    MAIN_OST = "tetrisOst"
-    MENU_OST = "menuOst"
+    MAIN_OST = "tetris_ost"
+    MENU_OST = "menu_st"
+    GAME_OVER_OST = "game_over_ost"
 
     MOVE_SFX = "move"
     ROTATE_SFX = "rotate"
@@ -36,10 +37,10 @@ class SoundManager:
         SoundManager.__instance = self
         self.channels = [SFX_CHANNEL, COMBO_CHANNEL, OST_CHANNEL, MENU_CHANNEL]
 
-        self.ost_volume = 0.1
+        self.ost_volume = 0.3
         self.combo_volume = 0.7
-        self.sfx_volume = 0.7
-        self.menu_volume = 0.4
+        self.sfx_volume = 0.8
+        self.menu_volume = 0.5
 
         self.is_muted = False
 
@@ -64,7 +65,7 @@ class SoundManager:
     
     #* Play Sounds *#
     
-    def play_ost(self, id, loops = -1, update = True):
+    def play_ost(self, id, loops = -1, update = True, sound_volume = None):
         """
         Plays an ost sound based on the [id]
         
@@ -75,6 +76,9 @@ class SoundManager:
         """
         if pygame.mixer.Channel(OST_CHANNEL).get_busy() and not update:
             return
+        # if sound_volume:
+        #     pygame.mixer.Channel(OST_CHANNEL).s
+        print("Play ost sound: " + str(id))
         pygame.mixer.Channel(OST_CHANNEL).play(self.ost_dict[id], loops)
     
     def play_sfx(self, id, loops = 0):
@@ -169,8 +173,9 @@ class SoundManager:
         """
         # self.ost = pygame.mixer.Sound(os.path.join(SOUND_DIR, "tetrisOst.mp3"))
         self.ost_dict = {
-            SoundManager.MAIN_OST : pygame.mixer.Sound(os.path.join(TETRIS_SOUND_OST_DIR, "tetrisOst.mp3")),
-            SoundManager.MENU_OST : pygame.mixer.Sound(os.path.join(TETRIS_SOUND_OST_DIR, "menuOst.mp3")),
+            SoundManager.MAIN_OST : pygame.mixer.Sound(os.path.join(TETRIS_SOUND_OST_DIR, "tetris_ost.mp3")),
+            SoundManager.MENU_OST : pygame.mixer.Sound(os.path.join(TETRIS_SOUND_OST_DIR, "menu_ost.mp3")),
+            SoundManager.GAME_OVER_OST : pygame.mixer.Sound(os.path.join(TETRIS_SOUND_OST_DIR, "game_over_ost.mp3"))
         }
 
         self.sfx_dict = {

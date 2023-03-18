@@ -12,17 +12,16 @@ class TetrisInformation(json.JSONEncoder):
         self.time_passed = time_passed
         self.game_mode = game_mode
     
+
+class TetrisInformationEncoder(json.JSONEncoder):
     def default(self, obj):
-        # return {
-        #     self.game_mode:{
-        #         "Level": obj.level,
-        #         "Score": obj.score,
-        #         "Lines Cleared": obj.lines_cleared,
-        #         "Time Passed": obj.time_passed
-        #     }
-        # }
-        
-        
         return {
-            obj.game_mode: obj.score
+            "__meta": "_TetrisInformation",
+            "Level": obj.level,
+            "Score": obj.score,
+            "Lines Cleared": obj.lines_cleared,
+            "Time Passed": obj.time_passed,
+            "Game Mode": obj.game_mode
         }
+        
+        
