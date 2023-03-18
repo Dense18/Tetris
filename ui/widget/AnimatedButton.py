@@ -14,12 +14,16 @@ class AnimatedButton(Button):
         super().__init__(state, x, y, width, height, text, textSize, textColor, color, hoverColor, borderRadius)
         self.elevation = 20
         self.dynamicElevation = self.elevation
-
+        
+        # Store the original rect position after the elevation has been applied.
+        # This rect position is used to check for button clicks.
+        self.original_elevated_rect = pygame.Rect(self.x, self.y - self.elevation, width, height)
+        
         self.bottomRect = pygame.Rect((self.x, self.y), (self.width, self.elevation))
         self.bottomRectColor = "#354b5E"
 
     def update(self, position, mouseEvent):
-        if self.rect.collidepoint(position):
+        if self.original_elevated_rect.collidepoint(position):
             self.currentColor = self.hoverColor
             if not self.has_hovered:
                 self.has_hovered = True
@@ -38,13 +42,15 @@ class AnimatedButton(Button):
             self.has_hovered = False
             self.dynamicElevation = self.elevation
             self.currentColor = self.color
-    
-    def draw(self, screen):
-        #Elevation
+
+        # Update the current rect position after applying the dynamic elevation 
         self.rect.y = self.originalY - self.dynamicElevation
         self.textRect.center = self.rect.center
         self.bottomRect.midtop = self.rect.midtop
         self.bottomRect.height = self.rect.height + self.dynamicElevation
+
+    
+    def draw(self, screen):
         pygame.draw.rect(screen, self.bottomRectColor, self.bottomRect, border_radius = self.borderRadius)
 
         super().draw(screen)
