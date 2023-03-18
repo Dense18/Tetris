@@ -7,6 +7,7 @@ from features.GameOver import GameOver
 from features.State import State
 from features.TetrisUI import TetrisUI
 from model.Block import Block
+from model.TetrisInformation import TetrisInformation
 from model.Tetromino import Tetromino
 from model.TetrominoBag import TetrominoBag
 from settings import *
@@ -106,7 +107,12 @@ class Tetris(State):
                 self.has_hold = False
                 if self.is_game_over():
                     self.sound_manager.stop()
-                    game_over_activivity = GameOver(self.app, self.level, self.score, self.lines_cleared, self.get_time_passed(), self.game_mode)
+                    tetris_info = TetrisInformation(level = self.level,
+                        score = self.score, 
+                        lines_cleared= self.lines_cleared, 
+                        time_passed = self.get_time_passed(),
+                        game_mode = self.game_mode)
+                    game_over_activivity = GameOver(self.app, tetris_info)
                     game_over_activivity.enter_state()
                     return
                 self.place_tetromino()
@@ -123,7 +129,12 @@ class Tetris(State):
         self.handle_key_pressed(pygame.key.get_pressed())
     
     def on_leave_state(self):
+        # pass
+        print("Tetris.on_leave_state() called")
         self.sound_manager.stop()
+    
+    # def on_exit_state(self):
+    #     self.sound_manager.stop()
 
     #* Update Tetromino state *#
     
@@ -377,7 +388,7 @@ class Tetris(State):
         self.__init__(self.app, game_mode = self.game_mode)
     
     def exit(self):
-        self.sound_manager.stop()
+        # self.sound_manager.stop()
         self.exit_state()
     
     #* Handle events *#
