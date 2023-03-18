@@ -81,12 +81,19 @@ class State(Subject, ABC):
             self.prev_state = self.app.state_stack[-1]
         
         self.app.state_stack.append(self)
+        self.app.state_stack[-1].on_start_state()
         self.app.state_stack[-1].on_resume_state()
     
     
+    def on_start_state(self):
+        """
+            Called when state is first started
+        """
+        pass
+        
     def on_resume_state(self):
         """
-        Called when the state is resumed. Also called when the state is entered.       
+        Called when the state is resumed. Also called after on_start()   
         """
         pass
     

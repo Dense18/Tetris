@@ -57,7 +57,6 @@ class MainMenu(State):
     
     def on_resume_state(self):
         self.sound_manager.play_ost(SoundManager.MENU_OST, update = False)
-        pass
     
     def on_exit_state(self):
         self.sound_manager.stop()

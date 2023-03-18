@@ -88,11 +88,12 @@ class Tetris(State):
 
         # Appearance Delay (in milliseconds)
         self.last_time_are = 0 
-
-        self.sound_manager.play_ost(SoundManager.MAIN_OST)
         
         self.start_time_in_seconds = time.time()
-       
+    
+    def on_start_state(self):
+        self.sound_manager.play_ost(SoundManager.MAIN_OST)
+        
     def update(self, events):
         trigger = [self.app.animation_flag, self.app.accelerate_event][self.accelerate]
         if trigger and self.check_are():             
@@ -129,8 +130,6 @@ class Tetris(State):
         self.handle_key_pressed(pygame.key.get_pressed())
     
     def on_leave_state(self):
-        # pass
-        print("Tetris.on_leave_state() called")
         self.sound_manager.stop()
     
     # def on_exit_state(self):
@@ -388,7 +387,6 @@ class Tetris(State):
         self.__init__(self.app, game_mode = self.game_mode)
     
     def exit(self):
-        # self.sound_manager.stop()
         self.exit_state()
     
     #* Handle events *#
