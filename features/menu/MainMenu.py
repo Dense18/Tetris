@@ -34,21 +34,21 @@ class MainMenu(State):
                                   self.buttonWidth, self.buttonHeight, 
                                   color = self.button_color, text = "Play", hoverColor= self.button_hover_color)
         self.play_button.setOnClickListener(self.on_play_click)
-        self.play_button.setOnHoverListener(self.on_hover)
+        self.play_button.setOnFirstHoverListener(self.on_first_hover)
         self.play_button.setOnButtonDownListener(self.on_down)
         
         self.high_score_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.play_button.y + self.play_button.height,
                                   self.buttonWidth, self.buttonHeight, 
                                   color = self.button_color, text = "High Score", hoverColor= self.button_hover_color)
         self.high_score_button.setOnClickListener(self.on_high_score_click)
-        self.high_score_button.setOnHoverListener(self.on_hover)
+        self.high_score_button.setOnFirstHoverListener(self.on_first_hover)
         self.high_score_button.setOnButtonDownListener(self.on_down)
         
         self.quit_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.high_score_button.y + self.high_score_button.height,
                                   self.buttonWidth, self.buttonHeight, 
                                   color = self.button_color, text = "Quit", hoverColor= self.button_hover_color)
         self.quit_button.setOnClickListener(self.on_quit_click)
-        self.quit_button.setOnHoverListener(self.on_hover)
+        self.quit_button.setOnFirstHoverListener(self.on_first_hover)
         self.quit_button.setOnButtonDownListener(self.on_down)
         
 
@@ -62,8 +62,8 @@ class MainMenu(State):
         self.sound_manager.stop()
         
     def draw(self):
-        rect = pygame.Rect(0,0, WIDTH, HEIGHT)
-        pygame.draw.rect(self.app.screen, (0,0,0), rect)
+        # rect = pygame.Rect(0,0, WIDTH, HEIGHT)
+        # pygame.draw.rect(self.app.screen, (0,0,0), rect)
         self.drawButtons()
     
     def update(self, events):
@@ -91,7 +91,7 @@ class MainMenu(State):
     def on_quit_click(self):
         self.exit_state()
     
-    def on_hover(self):
+    def on_first_hover(self):
         self.sound_manager.play_menu(SoundManager.MENU_HOVER_SFX)
     
     def on_down(self):

@@ -146,6 +146,8 @@ class TetrisUI:
             Tetrominos on the field\n
             Ghost Tetromino \n
         """
+        pygame.draw.rect(self.tetris.app.screen, TETRIS_BOARD_COLOR, (INITIAL_BOARD_X, 0, BOARD_WIDTH, BOARD_HEIGHT))
+        
         self.draw_grid()
         self.tetris.tetromino.draw(self.tetris.app.screen, offset = (SIDEBAR_WIDTH, 0))
         self.draw_field()

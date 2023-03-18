@@ -25,9 +25,11 @@ class AnimatedButton(Button):
     def update(self, position, mouseEvent):
         if self.original_elevated_rect.collidepoint(position):
             self.currentColor = self.hoverColor
+            if self.onHoverListener: self.onHoverListener()
             if not self.has_hovered:
                 self.has_hovered = True
-                if self.onHoverListener: self.onHoverListener()
+                if self.OnFirstHoverListener: 
+                    self.OnFirstHoverListener()
             if mouseEvent[0]: ##Left Click
                 self.dynamicElevation = 0
                 if not self.pressed and self.onButtonDownListener: self.onButtonDownListener()

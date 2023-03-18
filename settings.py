@@ -3,12 +3,13 @@ import pygame
 vec = pygame.math.Vector2
 
 FPS = 60
-BG_COLOR = (40,40,40)
+BG_COLOR = (48, 25, 52)
 SIDEBAR_BG_COLOR = (0,0,0)
+TETRIS_BOARD_COLOR = (40,40,40)
 
 BLOCK_SIZE = 40 # Size of each block of tetromino
 FIELD_SIZE = FIELD_WIDTH, FIELD_HEIGHT = 10, 20 # Number of block available on the field
-BOARD_WIDTH, BOARD_HEIGHT = BLOCK_SIZE * FIELD_WIDTH, BLOCK_SIZE * FIELD_HEIGHT # Total width and height of the game screen
+BOARD_WIDTH, BOARD_HEIGHT = BLOCK_SIZE * FIELD_WIDTH, BLOCK_SIZE * FIELD_HEIGHT # Total width and height of the Tetris Board
 
 SIDEBAR_WIDTH = 230
 
@@ -37,8 +38,8 @@ TETROMINO_COLOR = {
 
 LINES_TO_ADVANCE_LEVEL = 10 #Uses fixed goal levelling system
 MAX_LEVEL = 20
-SPRINT_LINE_TO_CLEAR = 10
-ULTRA_TIME_SPAN = 10000 #120000 milliseconds
+SPRINT_LINE_TO_CLEAR = 40
+ULTRA_TIME_SPAN = 120000 #milliseconds
 
 # Directory
 SOUND_DIR= "Assets\\Sound"
@@ -72,6 +73,7 @@ BUTTON_HOVER_COLOR = (150, 0, 150)
 
 ## TEXT_SIZE:
 TEXT_SIZE = 30
+HINT_TEXT_SIZE = 20
 
 ## TEXT COLORS:
 BONUS_ACTION_COLOR = "purple"
