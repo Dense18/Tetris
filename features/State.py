@@ -97,6 +97,9 @@ class State(Subject, ABC):
         pass
     
     def exit_state(self):
+        """
+            Exit the current state and pop it from the state stack
+        """
         self.app.state_stack[-1].on_leave_state()
         self.app.state_stack[-1].on_exit_state()
         self.app.state_stack.pop()
