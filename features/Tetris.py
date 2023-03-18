@@ -88,7 +88,7 @@ class Tetris(State):
         # Appearance Delay (in milliseconds)
         self.last_time_are = 0 
 
-        self.sound_manager.play_ost()
+        self.sound_manager.play_ost(SoundManager.MAIN_OST)
         
         self.start_time_in_seconds = time.time()
        

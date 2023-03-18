@@ -25,7 +25,7 @@ class App:
             Loads the first state of the program to the system
         """
         tetris_activity = Menu(self)
-        self.state_stack.append(tetris_activity)
+        tetris_activity.enter_state()
 
     def set_custom_events(self):
         """

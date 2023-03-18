@@ -29,6 +29,7 @@ class GameOver(State):
         
         
         self.data = self.load_data(BEST_SCORE_FILE_NAME)  
+        self.save_data(BEST_SCORE_FILE_NAME)
         
     def on_leave_state(self):
         data_to_save = self.score if self.game_mode == Tetris.Tetris.MODE_MARATHON \

@@ -9,7 +9,8 @@ class SoundManager:
     """
         Manages the sound for the Tetris Game
     """
-    MAIN_OST_SFX = "tetrisOst"
+    MAIN_OST = "tetrisOst"
+    MENU_OST = "menuOst"
 
     MOVE_SFX = "move"
     ROTATE_SFX = "rotate"
@@ -50,18 +51,18 @@ class SoundManager:
     
     #* Play Sounds *#
     
-    def play_ost(self, loops = -1):
+    def play_ost(self, id, loops = -1):
         """
-        Plays the Main Tetris OST sound [loops] times
+        Plays an ost sound based on the [id]
         
         Args:
             loops: number of times to play the sound. -1 means infinite
         """
-        pygame.mixer.Channel(OST_CHANNEL).play(self.ost, loops)
+        pygame.mixer.Channel(OST_CHANNEL).play(self.ost_dict[id], loops)
     
     def play_sfx(self, id, loops = 0):
         """
-        Plays a sfx sound based on the id
+        Plays a sfx sound based on the [id]
         
         Args:
             loops: number of times to play the sound. -1 means infinite
@@ -149,7 +150,11 @@ class SoundManager:
         """
         Loads all neccessary sounds onto the system
         """
-        self.ost = pygame.mixer.Sound(os.path.join(SOUND_DIR, "tetrisOst.mp3"))
+        # self.ost = pygame.mixer.Sound(os.path.join(SOUND_DIR, "tetrisOst.mp3"))
+        self.ost_dict = {
+            SoundManager.MAIN_OST : pygame.mixer.Sound(os.path.join(SOUND_DIR, "tetrisOst.mp3")),
+            SoundManager.MENU_OST : pygame.mixer.Sound(os.path.join(SOUND_DIR, "menuOst.mp3")),
+        }
 
         self.sfx_dict = {
             SoundManager.MOVE_SFX : pygame.mixer.Sound(os.path.join(TETRIS_SOUND_SFX_DIR, "move.ogg")),
