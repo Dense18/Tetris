@@ -169,8 +169,8 @@ class SoundManager:
         """
         # self.ost = pygame.mixer.Sound(os.path.join(SOUND_DIR, "tetrisOst.mp3"))
         self.ost_dict = {
-            SoundManager.MAIN_OST : pygame.mixer.Sound(os.path.join(SOUND_DIR, "tetrisOst.mp3")),
-            SoundManager.MENU_OST : pygame.mixer.Sound(os.path.join(SOUND_DIR, "menuOst.mp3")),
+            SoundManager.MAIN_OST : pygame.mixer.Sound(os.path.join(TETRIS_SOUND_OST_DIR, "tetrisOst.mp3")),
+            SoundManager.MENU_OST : pygame.mixer.Sound(os.path.join(TETRIS_SOUND_OST_DIR, "menuOst.mp3")),
         }
 
         self.sfx_dict = {

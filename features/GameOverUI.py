@@ -2,7 +2,7 @@ import pygame
 
 import features.Tetris as Tetris
 from settings import *
-from utils import *
+from utils.utils import *
 
 
 class GameOverUI:

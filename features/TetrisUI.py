@@ -4,7 +4,7 @@ import features.Tetris as Tetris
 from model.Block import Block
 from model.Tetromino import Tetromino
 from settings import *
-from utils import *
+from utils.utils import *
 
 
 class TetrisUI:

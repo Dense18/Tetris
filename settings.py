@@ -42,6 +42,7 @@ SPRINT_LINE_TO_CLEAR = 10
 
 # Directory
 SOUND_DIR= "Assets\\Sound"
+TETRIS_SOUND_OST_DIR = SOUND_DIR + "\\" "TetrisOst"
 TETRIS_SOUND_SFX_DIR = SOUND_DIR + "\\" + "TetrisSfx" 
 
 # Sound Channel

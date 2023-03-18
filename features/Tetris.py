@@ -11,7 +11,7 @@ from model.Tetromino import Tetromino
 from model.TetrominoBag import TetrominoBag
 from settings import *
 from SoundManager import SoundManager
-from utils import *
+from utils.utils import *
 
 
 class Tetris(State):
