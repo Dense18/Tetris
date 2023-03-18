@@ -1,8 +1,8 @@
 import pygame
 
+from features.HighScoreStat import HighScoreStat
 from features.menu.PlayMenu import PlayMenu
 from features.State import State
-from features.Tetris import Tetris
 from settings import *
 from SoundManager import SoundManager
 from ui.widget.AnimatedButton import AnimatedButton
@@ -85,8 +85,8 @@ class MainMenu(State):
         play_menu_activity.enter_state()
     
     def on_high_score_click(self):
-        #TODO: Implement high score state activity
-        pass
+        high_score_activity = HighScoreStat(self.app)
+        high_score_activity.enter_state()
     
     def on_quit_click(self):
         self.exit_state()
