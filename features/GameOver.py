@@ -1,3 +1,4 @@
+import copy
 import json
 import os
 
@@ -7,7 +8,7 @@ import features.menu.PlayMenu as PlayMenu
 import features.Tetris as Tetris
 from features.GameOverUI import GameOverUI
 from features.State import State
-from model.TetrisInformation import TetrisInformation, TetrisInformationEncoder
+from model.TetrisStat import TetrisStat, TetrisStatEncoder
 from SaveLoadSystem import SaveLoadSystem
 from settings import *
 from SoundManager import SoundManager
@@ -17,54 +18,73 @@ class GameOver(State):
     """
         Class that represents the Game Over state of a Tetris game
     """
-    def __init__(self, app, tetris_info: TetrisInformation):
+    def __init__(self, app, tetris_stat: TetrisStat):
         super().__init__(app)
         self.ui = GameOverUI(self)
         
-        self.tetris_info = tetris_info
-        self.sound_manager = SoundManager.getInstance()
-    
+        self.tetris_stat = tetris_stat
         
-        self.save_load_system = SaveLoadSystem(file_path = "")    
+        self.sound_manager = SoundManager.getInstance()
+        self.save_load_system = SaveLoadSystem(file_path = "")   
+        
+        ## Load the old best data
         self.data = self.load_data(BEST_SCORE_FILE_NAME)  
-        # self.save_data(BEST_SCORE_FILE_NAME)
+        
+        ## Save the new tetris_state data if needed
+        self.save_tetris_stat(BEST_SCORE_FILE_NAME)
         
     def on_start_state(self):
-        if self.is_game_sucess() and self.is_new_best_score(self.tetris_info):
+        if self.is_game_successful() and self.is_new_best_score(self.tetris_stat):
             self.sound_manager.play_ost(SoundManager.HIGH_SCORE_OST, loops = 0)
             return
         self.sound_manager.play_ost(SoundManager.GAME_OVER_OST, loops = 0)
         
     def on_leave_state(self):
-        self.save_data(BEST_SCORE_FILE_NAME)
+        self.save_tetris_stat(BEST_SCORE_FILE_NAME)
     
-    def is_game_sucess(self):
-        if self.tetris_info.game_mode == Tetris.Tetris.MODE_SPRINT and self.tetris_info.lines_cleared < SPRINT_LINE_TO_CLEAR:
+    def is_game_successful(self):
+        """
+        Check whether the game is successful based on the game mode
+        
+        For Sprint Mode, the game is successful if the number of lines is larger than SPRINT_LINE_TO_CLEAR
+            
+        For Ultra mode, the game is successful if the time passed is larger than ULTRA_TIME_SPAN
+        
+        In other modes, the game will always be a successful game
+        """
+        if self.tetris_stat.game_mode == Tetris.Tetris.MODE_SPRINT and self.tetris_stat.lines_cleared < SPRINT_LINE_TO_CLEAR:
             return False
-        elif self.tetris_info.game_mode == Tetris.Tetris.MODE_ULTRA and self.tetris_info.time_passed >= ULTRA_TIME_SPAN / 1000:
+        elif self.tetris_stat.game_mode == Tetris.Tetris.MODE_ULTRA and self.tetris_stat.time_passed < ULTRA_TIME_SPAN/1000:
             return False
         
         return True
     
-    def is_new_best_score(self, tetris_info: TetrisInformation):
-        if tetris_info.game_mode not in self.data.keys():
+    def is_new_best_score(self, tetris_stat: TetrisStat):
+        """
+        Checks it the current tetris stats is better than the old best stats
+        """
+        if tetris_stat.game_mode not in self.data.keys():
             return True
         
-        if tetris_info.game_mode in [Tetris.Tetris.MODE_MARATHON, Tetris.Tetris.MODE_ZEN]:
-            if tetris_info.score > self.data[Tetris.Tetris.MODE_MARATHON]["Score"]:
+        if tetris_stat.game_mode in [Tetris.Tetris.MODE_MARATHON, Tetris.Tetris.MODE_ZEN]:
+            if tetris_stat.score > self.data[Tetris.Tetris.MODE_MARATHON]["Score"]:
                 return True
-        elif tetris_info.game_mode == Tetris.Tetris.MODE_SPRINT:
-            if tetris_info.time_passed < self.data[Tetris.Tetris.MODE_SPRINT]["Time Passed"]:
+        elif tetris_stat.game_mode == Tetris.Tetris.MODE_SPRINT:
+            if tetris_stat.time_passed < self.data[Tetris.Tetris.MODE_SPRINT]["Time Passed"]:
                 return True
-        elif tetris_info.game_mode == Tetris.Tetris.MODE_ULTRA:
-            if tetris_info.lines_cleared > self.data[Tetris.Tetris.MODE_ULTRA]["Lines Cleared"]:
+        elif tetris_stat.game_mode == Tetris.Tetris.MODE_ULTRA:
+            if tetris_stat.lines_cleared > self.data[Tetris.Tetris.MODE_ULTRA]["Lines Cleared"]:
                 return True
         return False
     
-    def save_data(self, file_name):
-        if self.is_new_best_score(self.tetris_info) and self.is_game_sucess():
-            self.data[self.tetris_info.game_mode] = self.tetris_info
-        self.save_load_system.save(self.data, file_name, cls = TetrisInformationEncoder)
+    def save_tetris_stat(self, file_name):
+        """
+        Saves thes tetris stat into the [file_name] file
+        """
+        if self.is_new_best_score(self.tetris_stat) and self.is_game_successful():
+            data_to_save = copy.deepcopy(self.data)
+            data_to_save[self.tetris_stat.game_mode] = self.tetris_stat
+            self.save_load_system.save(data_to_save, file_name, cls = TetrisStatEncoder)
         
     def load_data(self, file_name):
         data = self.save_load_system.load(file_name)

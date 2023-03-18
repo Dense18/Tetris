@@ -7,7 +7,7 @@ from features.GameOver import GameOver
 from features.State import State
 from features.TetrisUI import TetrisUI
 from model.Block import Block
-from model.TetrisInformation import TetrisInformation
+from model.TetrisStat import TetrisStat
 from model.Tetromino import Tetromino
 from model.TetrominoBag import TetrominoBag
 from settings import *
@@ -108,7 +108,7 @@ class Tetris(State):
                 self.has_hold = False
                 if self.is_game_over():
                     self.sound_manager.stop()
-                    tetris_info = TetrisInformation(level = self.level,
+                    tetris_info = TetrisStat(level = self.level,
                         score = self.score, 
                         lines_cleared= self.lines_cleared, 
                         time_passed = self.get_time_passed(),
@@ -375,7 +375,7 @@ class Tetris(State):
     
     def get_time_passed(self):
         """
-        Return the time passed since since the game started
+        Return the time passed since since the game started in seconds
         """
         return time.time() - self.start_time_in_seconds
     

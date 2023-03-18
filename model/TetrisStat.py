@@ -1,7 +1,7 @@
 import json
 
 
-class TetrisInformation(json.JSONEncoder):
+class TetrisStat(json.JSONEncoder):
     """
         Class to store tetris information when game has ended
     """
@@ -13,10 +13,10 @@ class TetrisInformation(json.JSONEncoder):
         self.game_mode = game_mode
     
 
-class TetrisInformationEncoder(json.JSONEncoder):
+class TetrisStatEncoder(json.JSONEncoder):
     def default(self, obj):
         return {
-            "__meta": "_TetrisInformation",
+            "__meta": "_TetrisStat",
             "Level": obj.level,
             "Score": obj.score,
             "Lines Cleared": obj.lines_cleared,

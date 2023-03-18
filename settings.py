@@ -38,7 +38,7 @@ TETROMINO_COLOR = {
 LINES_TO_ADVANCE_LEVEL = 10 #Uses fixed goal levelling system
 MAX_LEVEL = 20
 SPRINT_LINE_TO_CLEAR = 10
-ULTRA_TIME_SPAN = 120000 #milliseconds
+ULTRA_TIME_SPAN = 10000 #120000 milliseconds
 
 # Directory
 SOUND_DIR= "Assets\\Sound"
