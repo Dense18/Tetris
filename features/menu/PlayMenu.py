@@ -27,35 +27,35 @@ class PlayMenu(State):
         self.setUpButtons()
 
     def setUpButtons(self):
-        self.level_mode_button = AnimatedButton(self, self.buttonX, self.paddingTop,
+        self.marathon_button = AnimatedButton(self, self.buttonX, self.paddingTop,
                                   self.buttonWidth, self.buttonHeight, 
                                   color = self.button_color, text = "Marathon", hoverColor= self.button_hover_color)
-        self.level_mode_button.setOnClickListener(self.level_mode_click)
-        self.level_mode_button.setOnHoverListener(self.on_hover)
-        self.level_mode_button.setOnButtonDownListener(self.on_down)
+        self.marathon_button.setOnClickListener(self.on_marathon_click)
+        self.marathon_button.setOnHoverListener(self.on_hover)
+        self.marathon_button.setOnButtonDownListener(self.on_down)
         
-        self.zen_mode_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.level_mode_button.y + self.level_mode_button.height,
+        self.zen_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.marathon_button.y + self.marathon_button.height,
                                   self.buttonWidth, self.buttonHeight, 
                                   color = self.button_color, text = "Zen", hoverColor= self.button_hover_color)
-        self.zen_mode_button.setOnClickListener(self.zen_mode_click)
-        self.zen_mode_button.setOnHoverListener(self.on_hover)
-        self.zen_mode_button.setOnButtonDownListener(self.on_down)
+        self.zen_button.setOnClickListener(self.on_zen_click)
+        self.zen_button.setOnHoverListener(self.on_hover)
+        self.zen_button.setOnButtonDownListener(self.on_down)
         
-        self.forty_lines_mode_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.zen_mode_button.y + self.zen_mode_button.height,
+        self.sprint_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.zen_button.y + self.zen_button.height,
                                   self.buttonWidth, self.buttonHeight, 
                                   color = self.button_color, text = "Sprint", hoverColor= self.button_hover_color)
-        self.forty_lines_mode_button.setOnClickListener(self.forty_lines_mode_click)
-        self.forty_lines_mode_button.setOnHoverListener(self.on_hover)
-        self.forty_lines_mode_button.setOnButtonDownListener(self.on_down)
+        self.sprint_button.setOnClickListener(self.on_sprint_click)
+        self.sprint_button.setOnHoverListener(self.on_hover)
+        self.sprint_button.setOnButtonDownListener(self.on_down)
         
-        self.ultra_mode_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.forty_lines_mode_button.y + self.forty_lines_mode_button.height,
+        self.ultra_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.sprint_button.y + self.sprint_button.height,
                                   self.buttonWidth, self.buttonHeight, 
                                   color = self.button_color, text = "Ultra", hoverColor= self.button_hover_color)
-        self.ultra_mode_button.setOnClickListener(self.ultra_mode_click)
-        self.ultra_mode_button.setOnHoverListener(self.on_hover)
-        self.ultra_mode_button.setOnButtonDownListener(self.on_down)
+        self.ultra_button.setOnClickListener(self.on_ultra_click)
+        self.ultra_button.setOnHoverListener(self.on_hover)
+        self.ultra_button.setOnButtonDownListener(self.on_down)
 
-        self.button_list = [self.level_mode_button, self.zen_mode_button,self.forty_lines_mode_button, self.ultra_mode_button]
+        self.button_list = [self.marathon_button, self.zen_button,self.sprint_button, self.ultra_button]
 
     
     def on_resume_state(self):
@@ -78,22 +78,22 @@ class PlayMenu(State):
     """
         Button Listener
     """
-    def level_mode_click(self):
+    def on_marathon_click(self):
         # self.sound_manager.stop()
         tetris_activity = Tetris(self.app, game_mode= Tetris.MODE_MARATHON)
         tetris_activity.enter_state()
     
-    def zen_mode_click(self):
+    def on_zen_click(self):
         self.sound_manager.stop()
         tetris_activity = Tetris(self.app, game_mode= Tetris.MODE_ZEN)
         tetris_activity.enter_state()
     
-    def forty_lines_mode_click(self):
+    def on_sprint_click(self):
         self.sound_manager.stop()
         tetris_activity = Tetris(self.app, game_mode= Tetris.MODE_SPRINT)
         tetris_activity.enter_state()
     
-    def ultra_mode_click(self):
+    def on_ultra_click(self):
         self.sound_manager.stop()
         tetris_activity = Tetris(self.app, game_mode= Tetris.MODE_ULTRA)
         tetris_activity.enter_state()
