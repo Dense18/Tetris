@@ -3,6 +3,7 @@ import pygame
 from features.menu.MainMenu import MainMenu
 from features.Tetris import Tetris
 from settings import *
+from SoundManager import SoundManager
 
 
 class App:
@@ -13,7 +14,7 @@ class App:
         self.screen = screen
         self.isRunning = True
         self.clock = pygame.time.Clock()
-        
+        self.sound_manager = SoundManager.getInstance()
         self.state_stack = []
 
         self.set_custom_events()
@@ -70,6 +71,8 @@ class App:
         for event in self.events:
             if event.type == pygame.QUIT:
                 self.isRunning = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_m:
+                self.sound_manager.toggle_mute()
             if event.type == self.animation_event:
                 self.animation_flag = True
             if event.type == self.accelerate_event:

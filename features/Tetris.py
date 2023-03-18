@@ -406,8 +406,6 @@ class Tetris(State):
         elif key in [pygame.K_c, pygame.K_LSHIFT, pygame.K_RSHIFT]:
             self.last_time_lock = current_millis()
             self.hold()
-        elif key == pygame.K_m:
-            self.sound_manager.toggle_mute()
         elif key == pygame.K_ESCAPE:
             self.exit()
     
