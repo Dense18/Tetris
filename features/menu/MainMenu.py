@@ -15,7 +15,7 @@ class MainMenu(State):
     """
     def __init__(self, app):
         super().__init__(app)
-        self.sound_manager = SoundManager()
+        self.sound_manager = SoundManager.getInstance()
         self.buttonWidth = 300
         self.buttonHeight = 100
         self.paddingTop = 50
@@ -72,6 +72,8 @@ class MainMenu(State):
             if event.type ==pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.exit_state()
+                if event.key == pygame.K_p:
+                    self.play_click()
     
     def drawButtons(self):
         for button in self.button_list: button.draw(self.app.screen)
@@ -94,5 +96,4 @@ class MainMenu(State):
         self.sound_manager.play_menu(SoundManager.MENU_HOVER_SFX)
     
     def on_down(self):
-        # pass
         self.sound_manager.play_menu(SoundManager.MENU_HIT_SFX)

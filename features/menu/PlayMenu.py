@@ -14,7 +14,7 @@ class PlayMenu(State):
     """
     def __init__(self, app):
         super().__init__(app)
-        self.sound_manager = SoundManager()
+        self.sound_manager = SoundManager.getInstance()
         self.buttonWidth = 300
         self.buttonHeight = 100
         self.paddingTop = 50
@@ -60,7 +60,6 @@ class PlayMenu(State):
     
     def on_resume_state(self):
         self.sound_manager.play_ost(SoundManager.MENU_OST, update = False)
-        pass
         
     def draw(self):
         rect = pygame.Rect(0,0, WIDTH, HEIGHT)
@@ -80,7 +79,7 @@ class PlayMenu(State):
         Button Listener
     """
     def level_mode_click(self):
-        self.sound_manager.stop()
+        # self.sound_manager.stop()
         tetris_activity = Tetris(self.app, game_mode= Tetris.MODE_MARATHON)
         tetris_activity.enter_state()
     

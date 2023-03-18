@@ -7,7 +7,7 @@ from settings import *
 
 class SoundManager:
     """
-        Manages the sound for the Tetris Game
+        Singleton Class that manages the sound for the Tetris Application
     """
     MAIN_OST = "tetrisOst"
     MENU_OST = "menuOst"
@@ -25,8 +25,15 @@ class SoundManager:
     MENU_HOVER_SFX = "menuhover"
     MENU_HIT_SFX = "menuconfirm"
     
+    HAS_lOADED = False
+    
+    __instance = None
     
     def __init__(self):
+        if SoundManager.__instance is not None:
+            raise Exception("This class is a Singleton! SoundManager instance has been created already!\n Please use the getInstance() method to get the SoundManager instance.")
+        
+        SoundManager.__instance = self
         self.channels = [SFX_CHANNEL, COMBO_CHANNEL, OST_CHANNEL, MENU_CHANNEL]
 
         self.ost_volume = 0.1
@@ -39,6 +46,12 @@ class SoundManager:
         self.set_sound_channel()
         self.load_sounds()
 
+
+    @staticmethod
+    def getInstance():
+        if SoundManager.__instance is None:
+            SoundManager()
+        return SoundManager.__instance
 
     def set_sound_channel(self):
         """

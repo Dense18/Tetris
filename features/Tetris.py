@@ -74,7 +74,7 @@ class Tetris(State):
         self.is_current_perfect_clear = False
 
         self.ui = TetrisUI(self)
-        self.sound_manager = SoundManager()
+        self.sound_manager = SoundManager.getInstance()
 
         # Delayed Auto Shift (in milliseconds)
         self.last_time_interval = 0
