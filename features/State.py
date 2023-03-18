@@ -5,7 +5,18 @@ from Subject import Subject
 
 class State(Subject, ABC):
     ADD_STATE = 0
+    """
+    If set, add the state to the state stack.
+    """
+
     CLEAR_TOP = 1
+    """
+    If set, and the state exists on the state stack, instead of creating a new state, all the other states on top of it will be exited and 
+    the top of the state stack will then be the current state. Otherwise, if the state does not exist on the state stack, all the state on the state
+    stack will be exited and the top of the state stack will be the current state.
+    """
+    
+    
     """
         Abstract Class of each State of the Game
     """
@@ -44,6 +55,7 @@ class State(Subject, ABC):
                 if isinstance(state, self.__class__):
                     self.clear_top(i)
                     return
+            self.clear_top(0)
             self.add_current_state()
         elif flag == State.ADD_STATE:
             self.add_current_state()
