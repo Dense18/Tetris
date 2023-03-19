@@ -33,6 +33,8 @@ class GameOver(State):
         ## Save the new tetris_state data if needed
         self.save_tetris_stat(BEST_SCORE_FILE_NAME)
         
+        self.is_high_score = self.is_game_successful() and self.is_new_best_score(self.tetris_stat)
+        
     def on_start_state(self):
         if self.is_game_successful() and self.is_new_best_score(self.tetris_stat):
             self.sound_manager.play_ost(SoundManager.HIGH_SCORE_OST, loops = 0)

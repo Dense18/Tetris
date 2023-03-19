@@ -10,15 +10,15 @@ class GameOverUI:
         self.state = game_over_state
         
         self.text_font = pygame.font.SysFont('comicsans', 30)
+        
+        self.high_score_text = "High Score!"
     
     def draw(self):
         self.state.app.screen.fill(GAME_OVER_BG_COLOR)
         
-        # text_obj = self.text_font.render('GAME OVER', 1, "white")
-        # text_obj_rect = text_obj.get_rect(center = (WIDTH//2, HEIGHT//2))
-        # self.state.app.screen.blit(text_obj, text_obj_rect)
-        
         self.draw_information()
+        if self.state.is_high_score:
+            self.draw_high_score_text()
     
     def draw_information(self):
         """
@@ -74,3 +74,8 @@ class GameOverUI:
             best_line_cleared_obj = self.text_font.render(best_line_cleared_text, 1, "white")
             best_line_cleared_rect = best_line_cleared_obj.get_rect(center = (WIDTH//2, line_cleared_text_rect.bottom + 20))
             self.state.app.screen.blit(best_line_cleared_obj, best_line_cleared_rect)
+            
+    def draw_high_score_text(self):
+        self.high_score_obj = self.text_font.render(self.high_score_text, 1, HIGH_SCORE_TEXT_COLOR)
+        self.high_score_rect = self.high_score_obj.get_rect(center = (WIDTH//2, HEIGHT//3.5))
+        self.state.app.screen.blit(self.high_score_obj, self.high_score_rect)
