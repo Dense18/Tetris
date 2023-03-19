@@ -15,6 +15,9 @@ class TetrisStatFileManager:
         return data if data else {
             "__meta": "_GameMode"
         }
+    
+    def clear_data(self) -> dict:
+        self.save_dict({})
         
     def save_dict(self, tetris_stat_dict):
         """

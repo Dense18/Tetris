@@ -21,6 +21,8 @@ class HighScoreStatUI:
         self.draw_marathon_stats()
         self.draw_sprint_stats()
         self.draw_ultra_stats()
+        
+        self.draw_buttons()
     
     def draw_marathon_stats(self):
         score = 0 if Tetris.Tetris.MODE_MARATHON not in self.state.data.keys() \
@@ -63,3 +65,6 @@ class HighScoreStatUI:
         self.ultra_stat_rect = time_passed_obj.get_rect(centerx = self.state.app.screen.get_width()//2, 
                                                         y = ultra_label_rect.bottom + self.box_padding)
         self.state.app.screen.blit(time_passed_obj, self.ultra_stat_rect)
+    
+    def draw_buttons(self):
+        for button in self.state.button_list: button.draw(self.state.app.screen)
