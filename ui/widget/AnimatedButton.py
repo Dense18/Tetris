@@ -10,8 +10,8 @@ class AnimatedButton(Button):
     def __init__(self, state, x, y, width, height, 
                  text = "", textSize = 50, textColor = (255,255,255),
                  color = (0,0,0), hoverColor = (255,0,0),
-                 borderRadius = 12, elevation = 20, tag = ""):
-        super().__init__(state, x, y, width, height, text, textSize, textColor, color, hoverColor, borderRadius, tag)
+                 borderRadius = 12, elevation = 20, image = None, tag = ""):
+        super().__init__(state, x, y, width, height, text, textSize, textColor, color, hoverColor, borderRadius, image, tag)
         self.elevation = elevation
         self.dynamicElevation = self.elevation
         

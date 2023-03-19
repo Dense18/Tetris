@@ -10,7 +10,7 @@ class Button(ButtonObserver):
     def __init__(self, state, x, y, width, height, 
                  text = "", textSize = 50, textColor = (255,255,255),
                  color = (0,0,0), hoverColor = (255,0,0),
-                 borderRadius = 12, tag = ""):
+                 borderRadius = 12, image = None, tag = ""):
         self.state = state
         self.state.register(self)
 
@@ -32,6 +32,8 @@ class Button(ButtonObserver):
         self.textColor = textColor
         self.text = self.textFont.render(text, 1, self.textColor)
         self.textRect = self.text.get_rect(center = self.rect.center)
+        
+        self.image = pygame.transform.scale(image, (self.width * 0.8, self.height * 0.8)) if image is not None else None
 
         self.tag = tag
         self.pressed = False
@@ -77,7 +79,6 @@ class Button(ButtonObserver):
         """
         if self.rect.collidepoint(position):
             self.currentColor = self.hoverColor
-            if self.onHoverListener: self.onHoverListener()
             if not self.has_hovered:
                 self.has_hovered = True
                 if self.onHoverListener: self.onHoverListener(self, True)
@@ -98,4 +99,4 @@ class Button(ButtonObserver):
         """Draws the button on the [screen].
         """
         pygame.draw.rect(screen, self.currentColor, self.rect, border_radius = self.borderRadius)
-        screen.blit(self.text, self.textRect)
+        screen.blit(self.text, self.textRect) if not self.image else screen.blit(self.image, self.textRect)
