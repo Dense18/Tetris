@@ -18,16 +18,16 @@ class HighScoreStat(State):
         
         self.button_width = 60
         self.button_height = 30
-        self.button_color = "Red"
-        self.button_hover_color = (200,0,0)
-        self.button_x = self.app.screen.get_width()//2 - self.button_width//2
+        self.button_x = self.app.screen.get_width() - self.button_width - 30
+        self.button_y = 30
         self.set_up_buttons()
     
     def set_up_buttons(self):
-        self.clear_button = AnimatedButton(self, self.button_x, self.app.screen.get_height()//10,
+        self.clear_button = AnimatedButton(self, self.button_x, self.button_y,
                                   self.button_width, self.button_height, 
-                                  color = self.button_color, text = "Clear", textSize=18, textColor="black",
-                                  hoverColor= self.button_color, elevation=6)
+                                  color = CLEAR_BUTTON_COLOR, hoverColor= CLEAR_BUTTON_HOVER_COLOR,
+                                  text = "Clear", textSize=18, textColor="black",
+                                 elevation=6)
         
         self.clear_button.setOnClickListener(self.on_click)
 
@@ -46,6 +46,7 @@ class HighScoreStat(State):
         Button Listeners
     """
     def on_click(self, button):
+        self.sound_manager.play_menu(SoundManager.MENU_HIT_SFX)
         self.tetris_stat_file_manager.clear_data()
         self.data = self.tetris_stat_file_manager.get_data()
     
