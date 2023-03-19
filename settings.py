@@ -42,6 +42,8 @@ MAX_LEVEL = 20
 SPRINT_LINE_TO_CLEAR = 40
 ULTRA_TIME_SPAN = 120000 #milliseconds
 
+COUNTDOWN_TIME = 3000 #milliseconds
+WITH_COUNTDOWN = False # Flag to set if there should be a countdown timer before being able to apply a move in the tetris game
 # Directory
 SOUND_DIR= "Assets\\Sound"
 TETRIS_SOUND_OST_DIR = SOUND_DIR + "\\" "TetrisOst"

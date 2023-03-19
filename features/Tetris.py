@@ -46,19 +46,6 @@ class Tetris(State):
         self.tetromino = None
         self.get_new_tetromino()
         
-        # Uncomment this line to check full clear
-        # tetro = Tetromino(self, "O")
-        # self.field_arr[-1] = [Block(tetro, (0,0), "green") for i in range(FIELD_WIDTH)]
-        # self.field_arr[-2] = [Block(tetro, (0,0), "green") for i in range(FIELD_WIDTH)]
-        # for i in range(FIELD_WIDTH):
-        #     self.field_arr[-1][i].pos = vec(i, FIELD_HEIGHT - 1)
-        #     self.field_arr[-2][i].pos = vec(i, FIELD_HEIGHT - 2)
-        # self.field_arr[-1][5] = 0
-        # self.field_arr[-1][6] = 0
-        # self.field_arr[-2][5] = 0
-        # self.field_arr[-2][6] = 0
-        # self.tetromino = Tetromino(self, "O")
-        
 
         self.hold_piece_shape = None
         self.has_hold = False
@@ -103,12 +90,21 @@ class Tetris(State):
         # Appearance Delay (in milliseconds)
         self.last_time_are = 0 
         
-        self.start_time_in_seconds = time.time()
     
     def on_start_state(self):
         self.sound_manager.play_ost(SoundManager.MAIN_OST)
         
+        self.start_time_countdown_ms = current_millis()
+        self.time_left_countdown_ms = COUNTDOWN_TIME
+        
+        self.start_time_in_seconds = time.time() + COUNTDOWN_TIME
+        
     def update(self, events):
+        if self.time_left_countdown_ms > 0 and WITH_COUNTDOWN:  
+            time_passed = current_millis() - self.start_time_countdown_ms          
+            self.time_left_countdown_ms = COUNTDOWN_TIME - time_passed
+            return
+            
         trigger = [self.app.animation_flag, self.app.accelerate_event][self.accelerate]
         if trigger and self.check_are():             
             is_success = self.tetromino.update()
@@ -142,7 +138,7 @@ class Tetris(State):
                 self.handle_key_down_pressed(event.key)
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_DOWN:
-                    self.accelerate = False
+                    self.accelerate = True
         
         self.handle_key_pressed(pygame.key.get_pressed())
     
@@ -386,7 +382,6 @@ class Tetris(State):
             self.update_time_speed()
 
     def is_game_over(self):
-        print(self.get_time_passed())
         """
         Identify if the current game should be over
         """

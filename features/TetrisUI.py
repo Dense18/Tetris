@@ -1,3 +1,5 @@
+import math
+
 import pygame
 
 import features.Tetris as Tetris
@@ -21,6 +23,7 @@ class TetrisUI:
         self.score_text = "Score:"
 
         self.textFont = pygame.font.SysFont("comicsans", TEXT_SIZE)
+        self.textFont_countdown = pygame.font.SysFont("comicsans", 50)
 
     def draw(self):
         """
@@ -143,6 +146,7 @@ class TetrisUI:
             Tetris Field\n
             Tetrominos on the field\n
             Ghost Tetromino \n
+            Countdown Text 
         """
         pygame.draw.rect(self.tetris.app.screen, TETRIS_BOARD_COLOR, (INITIAL_BOARD_X, 0, BOARD_WIDTH, BOARD_HEIGHT))
         
@@ -151,6 +155,7 @@ class TetrisUI:
         self.draw_field()
         self.draw_ghost_tetromino()
         
+        self.draw_countdown()
     
     def draw_field(self):
         """
@@ -184,6 +189,14 @@ class TetrisUI:
                                  (col * BLOCK_SIZE + INITIAL_BOARD_X, 0), 
                                  (col * BLOCK_SIZE + SIDEBAR_WIDTH, BOARD_HEIGHT), 
                                  1)
+    
+    def draw_countdown(self):
+        if self.tetris.time_left_countdown_ms > 0 and WITH_COUNTDOWN:
+            time_left_str = convert_seconds_to_time_str(math.ceil(self.tetris.time_left_countdown_ms/1000))
+            time_left_obj = self.textFont.render(time_left_str, 1, "yellow")
+            time_left_rect = time_left_obj.get_rect(center = (self.tetris.app.screen.get_width()//2, self.tetris.app.screen.get_height()//2))
+            self.tetris.app.screen.blit(time_left_obj, time_left_rect)
+    
     #* Left side bar *#
     def draw_right_side_bar(self):
         """
