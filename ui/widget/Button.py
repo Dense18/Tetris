@@ -28,7 +28,7 @@ class Button(ButtonObserver):
         self.rect = pygame.Rect(self.x, self.y, width, height)
 
         self.textSize = textSize
-        self.textFont = pygame.font.SysFont("cambria", 50)
+        self.textFont = pygame.font.SysFont("cambria", self.textSize)
         self.textColor = textColor
         self.text = self.textFont.render(text, 1, self.textColor)
         self.textRect = self.text.get_rect(center = self.rect.center)

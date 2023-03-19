@@ -10,9 +10,9 @@ class AnimatedButton(Button):
     def __init__(self, state, x, y, width, height, 
                  text = "", textSize = 50, textColor = (255,255,255),
                  color = (0,0,0), hoverColor = (255,0,0),
-                 borderRadius = 12, tag = ""):
+                 borderRadius = 12, elevation = 20, tag = ""):
         super().__init__(state, x, y, width, height, text, textSize, textColor, color, hoverColor, borderRadius, tag)
-        self.elevation = 20
+        self.elevation = elevation
         self.dynamicElevation = self.elevation
         
         # Store the original rect position after the elevation has been applied.

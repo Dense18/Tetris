@@ -34,7 +34,9 @@ class PlayMenu(State):
     def setUpButtons(self):
         self.marathon_button = AnimatedButton(self, self.button_x, self.margin_top,
                                   self.button_width, self.button_height, 
-                                  color = BUTTON_COLOR, text = "Marathon", hoverColor= BUTTON_HOVER_COLOR,
+                                  color = BUTTON_COLOR, hoverColor= BUTTON_HOVER_COLOR,
+                                   text = "Marathon",textSize = MENU_BUTTON_TEXT_SIZE, 
+                                   borderRadius= MENU_BUTTON_BORDER_RADIUS,
                                   tag = self.MARATHON_BUTTON_TAG)
         self.marathon_button.setOnClickListener(self.on_click)
         self.marathon_button.setOnHoverListener(self.on_hover)
@@ -43,6 +45,7 @@ class PlayMenu(State):
         self.zen_button = AnimatedButton(self, self.button_x, self.margin_top + self.marathon_button.y + self.marathon_button.height,
                                   self.button_width, self.button_height, 
                                   color = BUTTON_COLOR, text = "Zen", hoverColor= BUTTON_HOVER_COLOR,
+                                  textSize = MENU_BUTTON_TEXT_SIZE, borderRadius= MENU_BUTTON_BORDER_RADIUS,
                                   tag = self.ZEN_BUTTON_TAG)
         self.zen_button.setOnClickListener(self.on_click)
         self.zen_button.setOnHoverListener(self.on_hover)
@@ -50,7 +53,9 @@ class PlayMenu(State):
         
         self.sprint_button = AnimatedButton(self, self.button_x, self.margin_top + self.zen_button.y + self.zen_button.height,
                                   self.button_width, self.button_height, 
-                                  color = BUTTON_COLOR, text = "Sprint", hoverColor= BUTTON_HOVER_COLOR,
+                                  color = BUTTON_COLOR, hoverColor= BUTTON_HOVER_COLOR,
+                                  text = "Sprint", textSize = MENU_BUTTON_TEXT_SIZE, 
+                                  borderRadius= MENU_BUTTON_BORDER_RADIUS,
                                   tag = self.SPRINT_BUTTON_TAG)
         self.sprint_button.setOnClickListener(self.on_click)
         self.sprint_button.setOnHoverListener(self.on_hover)
@@ -58,7 +63,9 @@ class PlayMenu(State):
         
         self.ultra_button = AnimatedButton(self, self.button_x, self.margin_top + self.sprint_button.y + self.sprint_button.height,
                                   self.button_width, self.button_height, 
-                                  color = BUTTON_COLOR, text = "Ultra", hoverColor= BUTTON_HOVER_COLOR,
+                                  color = BUTTON_COLOR, hoverColor= BUTTON_HOVER_COLOR,
+                                  text = "Ultra", textSize = MENU_BUTTON_TEXT_SIZE,
+                                  borderRadius= MENU_BUTTON_BORDER_RADIUS,
                                   tag = self.ULTRA_BUTTON_TAG)
         self.ultra_button.setOnClickListener(self.on_click)
         self.ultra_button.setOnHoverListener(self.on_hover)
