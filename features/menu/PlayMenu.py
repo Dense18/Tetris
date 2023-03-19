@@ -94,6 +94,7 @@ class PlayMenu(State):
     """
     def on_click(self, button):
         self.sound_manager.stop()
+        self.ui.reset_flag()
         if button.tag == self.MARATHON_BUTTON_TAG:
             state = Tetris.Tetris(self.app, game_mode= Tetris.Tetris.MODE_MARATHON)
         elif button.tag == self.ZEN_BUTTON_TAG:
