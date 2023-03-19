@@ -2,7 +2,7 @@ import json
 import os
 
 
-class SaveLoadSystem():
+class FileSystem():
     """
         Class for saving and loading a file
     """

@@ -14,7 +14,7 @@ class TetrisStat(json.JSONEncoder):
     
 
 class TetrisStatEncoder(json.JSONEncoder):
-    def default(self, obj):
+    def default(self, obj: TetrisStat):
         return {
             "__meta": "_TetrisStat",
             "Level": obj.level,

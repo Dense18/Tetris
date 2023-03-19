@@ -1,6 +1,4 @@
 import copy
-import json
-import os
 
 import pygame
 
@@ -8,10 +6,11 @@ import features.menu.PlayMenu as PlayMenu
 import features.Tetris as Tetris
 from features.GameOverUI import GameOverUI
 from features.State import State
+from FileSystem import FileSystem
 from model.TetrisStat import TetrisStat, TetrisStatEncoder
-from SaveLoadSystem import SaveLoadSystem
 from settings import *
 from SoundManager import SoundManager
+from TetrisStatFileManager import TetrisStatFileManager
 
 
 class GameOver(State):
@@ -23,26 +22,26 @@ class GameOver(State):
         self.ui = GameOverUI(self)
         
         self.tetris_stat = tetris_stat
+        self.fileSystem = FileSystem("")
         
         self.sound_manager = SoundManager.getInstance()
-        self.save_load_system = SaveLoadSystem(file_path = "")   
+        self.tetris_stat_manager = TetrisStatFileManager()   
         
         ## Load the old best data
-        self.data = self.load_data(BEST_SCORE_FILE_NAME)  
+        self.data = self.tetris_stat_manager.get_data()  
         
-        ## Save the new tetris_state data if needed
-        self.save_tetris_stat(BEST_SCORE_FILE_NAME)
         
         self.is_high_score = self.is_game_successful() and self.is_new_best_score(self.tetris_stat)
+        
+        ## Save the new tetris_state data if needed
+        self.save_tetris_stat()
+        
         
     def on_start_state(self):
         if self.is_game_successful() and self.is_new_best_score(self.tetris_stat):
             self.sound_manager.play_ost(SoundManager.HIGH_SCORE_OST, loops = 0)
             return
         self.sound_manager.play_ost(SoundManager.GAME_OVER_OST, loops = 0)
-        
-    def on_leave_state(self):
-        self.save_tetris_stat(BEST_SCORE_FILE_NAME)
     
     def is_game_successful(self):
         """
@@ -79,20 +78,14 @@ class GameOver(State):
                 return True
         return False
     
-    def save_tetris_stat(self, file_name):
+    def save_tetris_stat(self):
         """
-        Saves thes tetris stat into the [file_name] file
+        Saves thes tetris stat into the system if it is a high score
         """
         if self.is_new_best_score(self.tetris_stat) and self.is_game_successful():
             data_to_save = copy.deepcopy(self.data)
             data_to_save[self.tetris_stat.game_mode] = self.tetris_stat
-            self.save_load_system.save(data_to_save, file_name, cls = TetrisStatEncoder)
-        
-    def load_data(self, file_name):
-        data = self.save_load_system.load(file_name)
-        return data if data else {
-            "__meta": "_GameMode"
-        }
+            self.tetris_stat_manager.save_dict(data_to_save)
         
     def update(self, events):
         for event in events:
