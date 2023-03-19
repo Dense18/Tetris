@@ -137,10 +137,9 @@ class SoundManager:
         """
         Stops all sounds
         """
-        self.stop_ost()
-        self.stop_sfx()
-        self.stop_combo()
-
+        for channel in self.channels:
+            pygame.mixer.Channel(channel).stop()
+            
     #* Mute/Unmute Sounds *#
     
     def toggle_mute(self):
@@ -167,6 +166,7 @@ class SoundManager:
         pygame.mixer.Channel(OST_CHANNEL).set_volume(self.ost_volume)
         pygame.mixer.Channel(SFX_CHANNEL).set_volume(self.sfx_volume)
         pygame.mixer.Channel(COMBO_CHANNEL).set_volume(self.combo_volume)
+        pygame.mixer.Channel(MENU_CHANNEL).set_volume(self.menu_volume)
         self.is_muted = False
 
     #* Load Sounds *#
