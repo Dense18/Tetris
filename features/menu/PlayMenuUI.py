@@ -34,28 +34,28 @@ class PlayMenuUI:
     def draw_marathon_hint(self):
         button_rect = self.menu_state.marathon_button.original_elevated_rect
         
-        text_obj = self.font.render("Get the highest score possible over a series of levels", 1, "white")
+        text_obj = self.font.render("Get the highest score possible over a series of levels", 1, HINT_TEXT_COLOR)
         text_obj_rect = text_obj.get_rect(x = button_rect.right + 20, centery = button_rect.centery)
         self.menu_state.app.screen.blit(text_obj, text_obj_rect)
 
     def draw_zen_hint(self):
         button_rect = self.menu_state.zen_button.original_elevated_rect
         
-        text_obj = self.font.render("Practice your skills with the neverending tetris mode", 1, "white")
+        text_obj = self.font.render("Practice your skills with the neverending tetris mode", 1, HINT_TEXT_COLOR)
         text_obj_rect = text_obj.get_rect(x = button_rect.right + 20, centery = button_rect.centery)
         self.menu_state.app.screen.blit(text_obj, text_obj_rect)
         
     def draw_sprint_hint(self):
         button_rect = self.menu_state.sprint_button.original_elevated_rect
         
-        text_obj = self.font.render(f"Clear {SPRINT_LINE_TO_CLEAR} lines quickly", 1, "white")
+        text_obj = self.font.render(f"Clear {SPRINT_LINE_TO_CLEAR} lines quickly", 1, HINT_TEXT_COLOR)
         text_obj_rect = text_obj.get_rect(x = button_rect.right + 20, centery = button_rect.centery)
         self.menu_state.app.screen.blit(text_obj, text_obj_rect)
     
     def draw_ultra_hint(self):
         button_rect = self.menu_state.ultra_button.original_elevated_rect
         
-        text_obj = self.font.render("Clear as many lines as possible within the time frame", 1, "white")
+        text_obj = self.font.render("Clear as many lines as possible within the time frame", 1, HINT_TEXT_COLOR)
         text_obj_rect = text_obj.get_rect(x = button_rect.right + 20, centery = button_rect.centery)
         self.menu_state.app.screen.blit(text_obj, text_obj_rect)
 
