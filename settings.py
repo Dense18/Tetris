@@ -3,7 +3,7 @@ import pygame
 vec = pygame.math.Vector2
 
 FPS = 60
-BG_COLOR = (48, 25, 52)#(48, 25, 52)
+BG_COLOR = (0,0,0) # or (48, 25, 52)
 SIDEBAR_BG_COLOR = (0,0,0)
 GAME_OVER_BG_COLOR = (0,0,0)
 TETRIS_BOARD_COLOR = (40,40,40)
