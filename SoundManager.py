@@ -38,13 +38,14 @@ class SoundManager:
             raise Exception("This class is a Singleton! SoundManager instance has been created already!\n Please use the getInstance() method to get the SoundManager instance.")
         
         SoundManager.__instance = self
-        self.channels = [OST_CHANNEL, SFX_CHANNEL, COMBO_CHANNEL, MENU_CHANNEL]
+        self.channels = [OST_CHANNEL, SFX_CHANNEL, COMBO_CHANNEL, MENU_CHANNEL, MOVE_CHANNEL, LEVEL_UP_CHANNNEL]
         self.volumes = {
             OST_CHANNEL: 0.2,
             SFX_CHANNEL: 0.8,
             COMBO_CHANNEL: 0.6,
-            MENU_CHANNEL: 0.5
-            
+            MENU_CHANNEL: 0.5,
+            MOVE_CHANNEL: 0.8,
+            LEVEL_UP_CHANNNEL: 0.8
         }
 
         self.is_muted = False
@@ -86,12 +87,20 @@ class SoundManager:
         
         Args:
             loops: number of times to play the sound. -1 means infinite
-            override: If set and a sfx sound is playing, stop playing the current sfx sound and play the new one
+            override: If set and a sfx sound is playing, stop playing the current sfx sound and play the new one. 
+            Else, play the new sound without stopping the current sfx sound. Only used for MOVE_SFX and LEVEL_UP_SFX
+        
+        Note: MOVE_SFX and LEVEL_UP_SFX will have a reserved seperate channel that is used when override is not set
         """
-        # if not override:
-        #     self.sfx_dict[id].set_volume(self.volumes[SFX_CHANNEL]) if not self.is_muted else self.sfx_dict[id].set_volume(0)
-        #     self.sfx_dict[id].play(loops)
-        #     return
+        
+        if not override:
+            if id == SoundManager.MOVE_SFX:
+                pygame.mixer.Channel(MOVE_CHANNEL).play(self.sfx_dict[id], loops)
+            elif id == SoundManager.LEVEL_UP_SFX:
+                pygame.mixer.Channel(LEVEL_UP_CHANNNEL).play(self.sfx_dict[id], loops)
+            else:
+                raise PermissionError("Override argument is not supported for the given id!")
+                                                
         pygame.mixer.Channel(SFX_CHANNEL).play(self.sfx_dict[id], loops)
 
     def play_combo(self, num_combo, loops = 0):
@@ -126,6 +135,8 @@ class SoundManager:
         Stops all sfx sounds
         """
         pygame.mixer.Channel(SFX_CHANNEL).stop()
+        pygame.mixer.Channel(MOVE_CHANNEL).stop()
+        pygame.mixer.Channel(LEVEL_UP_CHANNNEL).stop()
 
     def stop_combo(self):
         """

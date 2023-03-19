@@ -52,10 +52,12 @@ TETRIS_SOUND_SFX_DIR = SOUND_DIR + "\\" + "TetrisSfx"
 IMAGES_DIR = "Assets\\Images"
 
 # Sound Channel
-MENU_CHANNEL = 3
-COMBO_CHANNEL = 2
-SFX_CHANNEL = 1
-OST_CHANNEL = 0
+LEVEL_UP_CHANNNEL = 6
+MOVE_CHANNEL = 5
+MENU_CHANNEL = 4
+COMBO_CHANNEL = 3
+SFX_CHANNEL = 2
+OST_CHANNEL = 1
 
 # Das (Delayed Auto Shift) in milliseconds
 KEY_DELAY = 133

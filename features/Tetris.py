@@ -116,11 +116,11 @@ class Tetris(State):
             if self.check_lock_delay():
                 self.accelerate = False
                 # self.has_hold = False
+                self.sound_manager.play_sfx(SoundManager.LAND_SFX)
                 if self.is_game_over():
                     if self.game_mode == Tetris.MODE_ZEN:
                         self.reset()
                         return
-                    self.sound_manager.stop()
                     tetris_info = TetrisStat(level = self.level,
                         score = self.score, 
                         lines_cleared= self.lines_cleared, 
@@ -138,7 +138,7 @@ class Tetris(State):
                 self.handle_key_down_pressed(event.key)
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_DOWN:
-                    self.accelerate = True
+                    self.accelerate = False
         
         self.handle_key_pressed(pygame.key.get_pressed())
     
@@ -269,12 +269,11 @@ class Tetris(State):
             # num_move_down += 1
             self.tetromino.update()
 
-        self.last_time_lock = 0
-        
-        # self.place_tetromino()
-        # self.last_time_lock = current_millis()
-        
+        # self.last_time_lock = 0
         self.score += drop_distance * 2
+        self.place_tetromino()
+        self.last_time_lock = current_millis()
+        
 
     def hard_drop2(self, tetromino):
         """
