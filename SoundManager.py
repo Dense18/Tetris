@@ -39,11 +39,13 @@ class SoundManager:
         
         SoundManager.__instance = self
         self.channels = [SFX_CHANNEL, COMBO_CHANNEL, OST_CHANNEL, MENU_CHANNEL]
-
-        self.ost_volume = 0.2
-        self.combo_volume = 0.6
-        self.sfx_volume = 0.6
-        self.menu_volume = 0.5
+        self.volumes = {
+            OST_CHANNEL: 0.2,
+            SFX_CHANNEL: 0.6,
+            COMBO_CHANNEL: 0.6,
+            MENU_CHANNEL: 0.5
+            
+        }
 
         self.is_muted = False
 
@@ -61,11 +63,8 @@ class SoundManager:
         """
         Sets the sound channel for the game
         """
-        pygame.mixer.Channel(SFX_CHANNEL).set_volume(self.sfx_volume)
-        pygame.mixer.Channel(COMBO_CHANNEL).set_volume(self.combo_volume)
-        pygame.mixer.Channel(OST_CHANNEL).set_volume(self.ost_volume)
-        pygame.mixer.Channel(MENU_CHANNEL).set_volume(self.menu_volume)
-    
+        for channel in self.channels:
+            pygame.mixer.Channel(channel).set_volume(self.volumes[channel])
     #* Play Sounds *#
     
     def play_ost(self, id, loops = -1, update = True):
@@ -163,10 +162,8 @@ class SoundManager:
         if not self.is_muted:
             return
         
-        pygame.mixer.Channel(OST_CHANNEL).set_volume(self.ost_volume)
-        pygame.mixer.Channel(SFX_CHANNEL).set_volume(self.sfx_volume)
-        pygame.mixer.Channel(COMBO_CHANNEL).set_volume(self.combo_volume)
-        pygame.mixer.Channel(MENU_CHANNEL).set_volume(self.menu_volume)
+        for channel in self.channels:
+            pygame.mixer.Channel(channel).set_volume(self.volumes[channel])
         self.is_muted = False
 
     #* Load Sounds *#
