@@ -10,8 +10,8 @@ class AnimatedButton(Button):
     def __init__(self, state, x, y, width, height, 
                  text = "", textSize = 50, textColor = (255,255,255),
                  color = (0,0,0), hoverColor = (255,0,0),
-                 borderRadius = 12):
-        super().__init__(state, x, y, width, height, text, textSize, textColor, color, hoverColor, borderRadius)
+                 borderRadius = 12, tag = ""):
+        super().__init__(state, x, y, width, height, text, textSize, textColor, color, hoverColor, borderRadius, tag)
         self.elevation = 20
         self.dynamicElevation = self.elevation
         
@@ -25,19 +25,20 @@ class AnimatedButton(Button):
     def update(self, position, mouseEvent):
         if self.original_elevated_rect.collidepoint(position):
             self.currentColor = self.hoverColor
-            if self.onHoverListener: self.onHoverListener()
             if not self.has_hovered:
                 self.has_hovered = True
-                if self.OnFirstHoverListener: 
-                    self.OnFirstHoverListener()
+                if self.onHoverListener: self.onHoverListener(self, True)
+            else:
+                if self.onHoverListener: self.onHoverListener(self, False)
+                
             if mouseEvent[0]: ##Left Click
                 self.dynamicElevation = 0
-                if not self.pressed and self.onButtonDownListener: self.onButtonDownListener()
+                if not self.pressed and self.onButtonDownListener: self.onButtonDownListener(self)
                 self.pressed = True
             else:
                 self.dynamicElevation = self.elevation
                 if self.pressed:
-                    if (self.onClickListener != None): self.onClickListener()
+                    if (self.onClickListener != None): self.onClickListener(self)
                     self.pressed = False        
         else:
             self.pressed = False

@@ -9,6 +9,11 @@ from ui.widget.AnimatedButton import AnimatedButton
 
 
 class PlayMenu(State):
+    MARATHON_BUTTON_TAG = "Marathon Button Tag"
+    ZEN_BUTTON_TAG = "Zen Button Tag"
+    SPRINT_BUTTON_TAG = "Sprint Button Tag"
+    ULTRA_BUTTON_TAG = "Ultra Button Tag"
+    
     """
         Menu State of the program. 
         Contains the VsPlayer, VSComputer, and Quit options
@@ -29,34 +34,34 @@ class PlayMenu(State):
     def setUpButtons(self):
         self.marathon_button = AnimatedButton(self, self.buttonX, self.paddingTop,
                                   self.buttonWidth, self.buttonHeight, 
-                                  color = BUTTON_COLOR, text = "Marathon", hoverColor= BUTTON_HOVER_COLOR)
-        self.marathon_button.setOnClickListener(self.on_marathon_click)
-        self.marathon_button.setOnFirstHoverListener(self.on_first_hover)
-        self.marathon_button.setOnHoverListener(self.on_marathon_hover)
+                                  color = BUTTON_COLOR, text = "Marathon", hoverColor= BUTTON_HOVER_COLOR,
+                                  tag = self.MARATHON_BUTTON_TAG)
+        self.marathon_button.setOnClickListener(self.on_click)
+        self.marathon_button.setOnHoverListener(self.on_hover)
         self.marathon_button.setOnButtonDownListener(self.on_down)
         
         self.zen_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.marathon_button.y + self.marathon_button.height,
                                   self.buttonWidth, self.buttonHeight, 
-                                  color = BUTTON_COLOR, text = "Zen", hoverColor= BUTTON_HOVER_COLOR)
-        self.zen_button.setOnClickListener(self.on_zen_click)
-        self.zen_button.setOnFirstHoverListener(self.on_first_hover)
-        self.zen_button.setOnHoverListener(self.on_zen_hover)
+                                  color = BUTTON_COLOR, text = "Zen", hoverColor= BUTTON_HOVER_COLOR,
+                                  tag = self.ZEN_BUTTON_TAG)
+        self.zen_button.setOnClickListener(self.on_click)
+        self.zen_button.setOnHoverListener(self.on_hover)
         self.zen_button.setOnButtonDownListener(self.on_down)
         
         self.sprint_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.zen_button.y + self.zen_button.height,
                                   self.buttonWidth, self.buttonHeight, 
-                                  color = BUTTON_COLOR, text = "Sprint", hoverColor= BUTTON_HOVER_COLOR)
-        self.sprint_button.setOnClickListener(self.on_sprint_click)
-        self.sprint_button.setOnFirstHoverListener(self.on_first_hover)
-        self.sprint_button.setOnHoverListener(self.on_sprint_hover)
+                                  color = BUTTON_COLOR, text = "Sprint", hoverColor= BUTTON_HOVER_COLOR,
+                                  tag = self.SPRINT_BUTTON_TAG)
+        self.sprint_button.setOnClickListener(self.on_click)
+        self.sprint_button.setOnHoverListener(self.on_hover)
         self.sprint_button.setOnButtonDownListener(self.on_down)
         
         self.ultra_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.sprint_button.y + self.sprint_button.height,
                                   self.buttonWidth, self.buttonHeight, 
-                                  color = BUTTON_COLOR, text = "Ultra", hoverColor= BUTTON_HOVER_COLOR)
-        self.ultra_button.setOnClickListener(self.on_ultra_click)
-        self.ultra_button.setOnFirstHoverListener(self.on_first_hover)
-        self.ultra_button.setOnHoverListener(self.on_ultra_hover)
+                                  color = BUTTON_COLOR, text = "Ultra", hoverColor= BUTTON_HOVER_COLOR,
+                                  tag = self.ULTRA_BUTTON_TAG)
+        self.ultra_button.setOnClickListener(self.on_click)
+        self.ultra_button.setOnHoverListener(self.on_hover)
         self.ultra_button.setOnButtonDownListener(self.on_down)
 
         self.button_list = [self.marathon_button, self.zen_button,self.sprint_button, self.ultra_button]
@@ -80,40 +85,30 @@ class PlayMenu(State):
     """
         Button Listener
     """
-    def on_marathon_click(self):
+    def on_click(self, button):
         self.sound_manager.stop()
-        tetris_activity = Tetris(self.app, game_mode= Tetris.MODE_MARATHON)
-        tetris_activity.enter_state()
-    
-    def on_zen_click(self):
-        self.sound_manager.stop()
-        tetris_activity = Tetris(self.app, game_mode= Tetris.MODE_ZEN)
-        tetris_activity.enter_state()
-    
-    def on_sprint_click(self):
-        self.sound_manager.stop()
-        tetris_activity = Tetris(self.app, game_mode= Tetris.MODE_SPRINT)
-        tetris_activity.enter_state()
-    
-    def on_ultra_click(self):
-        self.sound_manager.stop()
-        tetris_activity = Tetris(self.app, game_mode= Tetris.MODE_ULTRA)
-        tetris_activity.enter_state()
-    
-    def on_first_hover(self):
-        self.sound_manager.play_menu(SoundManager.MENU_HOVER_SFX)
-    
-    def on_marathon_hover(self):
-        self.ui.draw_marathon_hint()
+        if button.tag == self.MARATHON_BUTTON_TAG:
+            state = Tetris(self.app, game_mode= Tetris.MODE_MARATHON)
+        elif button.tag == self.ZEN_BUTTON_TAG:
+            state = Tetris(self.app, game_mode= Tetris.MODE_ZEN)
+        elif button.tag == self.SPRINT_BUTTON_TAG:
+            state = Tetris(self.app, game_mode= Tetris.MODE_SPRINT)
+        elif button.tag == self.ULTRA_BUTTON_TAG:
+            state = Tetris(self.app, game_mode= Tetris.MODE_ULTRA)
         
-    def on_zen_hover(self):
-        self.ui.draw_zen_hint()
+        state.enter_state()
         
-    def on_sprint_hover(self):
-        self.ui.draw_sprint_hint()
-    
-    def on_ultra_hover(self):
-        self.ui.draw_ultra_hint()
+    def on_hover(self, button, first_hover):
+        if first_hover: 
+            self.sound_manager.play_menu(SoundManager.MENU_HOVER_SFX)
+        if button.tag == self.MARATHON_BUTTON_TAG:
+            self.ui.set_hint_flag(PlayMenuUI.MARATHON_HINT_TAG)
+        elif button.tag == self.ZEN_BUTTON_TAG:
+            self.ui.set_hint_flag(PlayMenuUI.ZEN_HINT_TAG)
+        elif button.tag == self.SPRINT_BUTTON_TAG:
+            self.ui.set_hint_flag(PlayMenuUI.SPRINT_HINT_TAG)
+        elif button.tag == self.ULTRA_BUTTON_TAG:
+            self.ui.set_hint_flag(PlayMenuUI.ULTRA_HINT_TAG)
         
-    def on_down(self):
+    def on_down(self, button):
         self.sound_manager.play_menu(SoundManager.MENU_HIT_SFX)

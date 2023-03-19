@@ -12,7 +12,7 @@ class GameOverUI:
         self.text_font = pygame.font.SysFont('comicsans', 30)
     
     def draw(self):
-        self.state.app.screen.fill((0, 0, 0))
+        self.state.app.screen.fill(GAME_OVER_BG_COLOR)
         
         # text_obj = self.text_font.render('GAME OVER', 1, "white")
         # text_obj_rect = text_obj.get_rect(center = (WIDTH//2, HEIGHT//2))
@@ -29,7 +29,6 @@ class GameOverUI:
             score_text_obj = self.text_font.render(f"Score: {int(self.state.tetris_stat.score)}", 1, "white")
             score_text_rect = score_text_obj.get_rect(center = (WIDTH//2, HEIGHT//2))
             self.state.app.screen.blit(score_text_obj, score_text_rect)
-            
             
             if game_mode in self.state.data.keys():
                 best_score = self.state.data[game_mode]["Score"]

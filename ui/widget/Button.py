@@ -10,7 +10,7 @@ class Button(ButtonObserver):
     def __init__(self, state, x, y, width, height, 
                  text = "", textSize = 50, textColor = (255,255,255),
                  color = (0,0,0), hoverColor = (255,0,0),
-                 borderRadius = 12):
+                 borderRadius = 12, tag = ""):
         self.state = state
         self.state.register(self)
 
@@ -33,6 +33,7 @@ class Button(ButtonObserver):
         self.text = self.textFont.render(text, 1, self.textColor)
         self.textRect = self.text.get_rect(center = self.rect.center)
 
+        self.tag = tag
         self.pressed = False
         self.has_hovered = False
         self.onClickListener = None
@@ -59,13 +60,15 @@ class Button(ButtonObserver):
             if self.onHoverListener: self.onHoverListener()
             if not self.has_hovered:
                 self.has_hovered = True
-                if self.OnFirstHoverListener: self.OnFirstHoverListener()
+                if self.onHoverListener: self.onHoverListener(self, True)
+            else:
+                if self.onHoverListener: self.onHoverListener(self, False)
             if mouseEvent[0]: ##Left Click
                 if not self.pressed and self.onButtonDownListener: self.onButtonDownListener()
                 self.pressed = True
             else:
                 if self.pressed:
-                    if (self.onClickListener != None): self.onClickListener()
+                    if (self.onClickListener != None): self.onClickListener(self)
                     self.pressed = False        
         else:
             self.has_hovered = False

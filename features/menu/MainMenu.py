@@ -13,6 +13,10 @@ class MainMenu(State):
         MainMenu State of the program. 
         Contains the Play, High Score, and Quit options
     """
+    PLAY_BUTTON_TAG = "Play Button Tag"
+    HIGH_SCORE_BUTTON_TAG = "High Score Button Tag"
+    QUIT_BUTTON_TAG = "Quit Button Tag"
+    
     def __init__(self, app):
         super().__init__(app)
         self.sound_manager = SoundManager.getInstance()
@@ -32,23 +36,26 @@ class MainMenu(State):
     def setUpButtons(self):
         self.play_button = AnimatedButton(self, self.buttonX, self.paddingTop,
                                   self.buttonWidth, self.buttonHeight, 
-                                  color = self.button_color, text = "Play", hoverColor= self.button_hover_color)
-        self.play_button.setOnClickListener(self.on_play_click)
-        self.play_button.setOnFirstHoverListener(self.on_first_hover)
+                                  color = self.button_color, text = "Play", hoverColor= self.button_hover_color,
+                                  tag = self.PLAY_BUTTON_TAG)
+        self.play_button.setOnClickListener(self.on_click)
+        self.play_button.setOnHoverListener(self.on_hover)
         self.play_button.setOnButtonDownListener(self.on_down)
         
         self.high_score_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.play_button.y + self.play_button.height,
                                   self.buttonWidth, self.buttonHeight, 
-                                  color = self.button_color, text = "High Score", hoverColor= self.button_hover_color)
-        self.high_score_button.setOnClickListener(self.on_high_score_click)
-        self.high_score_button.setOnFirstHoverListener(self.on_first_hover)
+                                  color = self.button_color, text = "High Score", hoverColor= self.button_hover_color,
+                                  tag = self.HIGH_SCORE_BUTTON_TAG)
+        self.high_score_button.setOnClickListener(self.on_click)
+        self.high_score_button.setOnHoverListener(self.on_hover)
         self.high_score_button.setOnButtonDownListener(self.on_down)
         
         self.quit_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.high_score_button.y + self.high_score_button.height,
                                   self.buttonWidth, self.buttonHeight, 
-                                  color = self.button_color, text = "Quit", hoverColor= self.button_hover_color)
-        self.quit_button.setOnClickListener(self.on_quit_click)
-        self.quit_button.setOnFirstHoverListener(self.on_first_hover)
+                                  color = self.button_color, text = "Quit", hoverColor= self.button_hover_color,
+                                  tag = self.QUIT_BUTTON_TAG)
+        self.quit_button.setOnClickListener(self.on_click)
+        self.quit_button.setOnHoverListener(self.on_hover)
         self.quit_button.setOnButtonDownListener(self.on_down)
         
 
@@ -80,19 +87,19 @@ class MainMenu(State):
     """
         Button Listener
     """
-    def on_play_click(self):
-        play_menu_activity = PlayMenu(self.app)
-        play_menu_activity.enter_state()
+    def on_click(self, button):
+        if button.tag == self.PLAY_BUTTON_TAG:
+            state = PlayMenu(self.app)
+        elif button.tag == self.HIGH_SCORE_BUTTON_TAG:
+            state = HighScoreStat(self.app)
+        elif button.tag == self.QUIT_BUTTON_TAG:
+            self.exit_state()
+            return
+        state.enter_state()
+        
+    def on_hover(self, button, first_hover):
+        if first_hover: self.sound_manager.play_menu(SoundManager.MENU_HOVER_SFX)
+        
     
-    def on_high_score_click(self):
-        high_score_activity = HighScoreStat(self.app)
-        high_score_activity.enter_state()
-    
-    def on_quit_click(self):
-        self.exit_state()
-    
-    def on_first_hover(self):
-        self.sound_manager.play_menu(SoundManager.MENU_HOVER_SFX)
-    
-    def on_down(self):
+    def on_down(self, button):
         self.sound_manager.play_menu(SoundManager.MENU_HIT_SFX)

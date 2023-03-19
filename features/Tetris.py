@@ -121,6 +121,9 @@ class Tetris(State):
                 self.accelerate = False
                 self.has_hold = False
                 if self.is_game_over():
+                    if self.game_mode == Tetris.MODE_ZEN:
+                        self.reset()
+                        return
                     self.sound_manager.stop()
                     tetris_info = TetrisStat(level = self.level,
                         score = self.score, 
@@ -286,7 +289,6 @@ class Tetris(State):
         Note:
         The method only checks if the first row is empty 
         """
-        # print(self.field_arr[0])
         for i in range(len(self.field_arr[-1])):
             if self.field_arr[-1][i]:
                 return False
@@ -402,7 +404,6 @@ class Tetris(State):
         """
         Reset the game and start a new level
         """
-        self.sound_manager.stop()
         self.__init__(self.app, game_mode = self.game_mode)
     
     def exit(self):
