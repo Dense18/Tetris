@@ -97,7 +97,7 @@ class Tetris(State):
         self.start_time_countdown_ms = current_millis()
         self.time_left_countdown_ms = COUNTDOWN_TIME
         
-        self.start_time_in_seconds = time.time() + COUNTDOWN_TIME
+        self.start_time_in_seconds = time.time() + COUNTDOWN_TIME//1000 if WITH_COUNTDOWN else time.time()
         
     def update(self, events):
         if self.time_left_countdown_ms > 0 and WITH_COUNTDOWN:  

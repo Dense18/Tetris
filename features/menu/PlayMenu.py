@@ -116,7 +116,7 @@ class PlayMenu(State):
         elif button.tag == self.SPRINT_BUTTON_TAG:
             state = Tetris.Tetris(self.app, game_mode= Tetris.Tetris.MODE_SPRINT)
         elif button.tag == self.ULTRA_BUTTON_TAG:
-            state = Tetris/Tetris(self.app, game_mode= Tetris.Tetris.MODE_ULTRA)
+            state = Tetris.Tetris(self.app, game_mode= Tetris.Tetris.MODE_ULTRA)
         elif button.tag == self.BACK_BUTTON_TAG:
             self.exit_state()
             return
