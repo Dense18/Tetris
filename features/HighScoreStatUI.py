@@ -43,28 +43,28 @@ class HighScoreStatUI:
     
     def draw_sprint_stats(self):
         lines_cleared = 0 if Tetris.Tetris.MODE_SPRINT not in self.state.data.keys() \
-            else self.state.data[Tetris.Tetris.MODE_SPRINT]["Score"]
+            else int(self.state.data[Tetris.Tetris.MODE_SPRINT]["Time Passed"])
         
         sprint_label_obj = self.text_font.render("Sprint", True, "Red")
         sprint_label_rect = sprint_label_obj.get_rect(centerx = self.state.app.screen.get_width()//2, 
                                                       y = self.marathon_stat_rect.bottom + self.margin_top)
         self.state.app.screen.blit(sprint_label_obj, sprint_label_rect)
         
-        lines_cleared_obj = self.text_font.render(f"Best Score: {lines_cleared}", True, "White")
+        lines_cleared_obj = self.text_font.render(f"Best Time Taken: {lines_cleared} secs", True, "White")
         self.sprint_stat_rect = lines_cleared_obj.get_rect(centerx = self.state.app.screen.get_width()//2, 
                                                            y = sprint_label_rect.bottom + self.box_padding)
         self.state.app.screen.blit(lines_cleared_obj, self.sprint_stat_rect)
     
     def draw_ultra_stats(self):
         time_passed = 0 if Tetris.Tetris.MODE_ULTRA not in self.state.data.keys() \
-            else self.state.data[Tetris.Tetris.MODE_ULTRA]["Score"]
+            else self.state.data[Tetris.Tetris.MODE_ULTRA]["Line Cleared"]
         
         ultra_label_obj = self.text_font.render("Ultra", True, "Red")
         ultra_label_rect = ultra_label_obj.get_rect(centerx = self.state.app.screen.get_width()//2, 
                                                     y = self.sprint_stat_rect.bottom + self.margin_top)
         self.state.app.screen.blit(ultra_label_obj, ultra_label_rect)
         
-        time_passed_obj = self.text_font.render(f"Best Score: {time_passed}", True, "White")
+        time_passed_obj = self.text_font.render(f"Best Line Cleared: {time_passed}", True, "White")
         self.ultra_stat_rect = time_passed_obj.get_rect(centerx = self.state.app.screen.get_width()//2, 
                                                         y = ultra_label_rect.bottom + self.box_padding)
         self.state.app.screen.blit(time_passed_obj, self.ultra_stat_rect)

@@ -56,9 +56,9 @@ class GameOverUI:
                 best_time = self.state.data[game_mode]["Time Passed"]
                 best_time = int(best_time) if best_time is not None else 0
             else:
-                best_time = 0 
+                best_time = None
             
-            best_time_taken_text = "Old Best Time Taken: " + convert_seconds_to_time_str(best_time)
+            best_time_taken_text = f"Old Best Time Taken: {convert_seconds_to_time_str(best_time) if best_time else None}" 
             best_time_taken_obj  = self.text_font.render(best_time_taken_text, 1, "white")
             best_time_taken_rect = best_time_taken_obj.get_rect(center = (WIDTH//2, time_text_rect.bottom + 20))
             self.state.app.screen.blit(best_time_taken_obj, best_time_taken_rect)
