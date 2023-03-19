@@ -119,7 +119,7 @@ class Tetris(State):
         if self.tetromino.has_landed:
             if self.check_lock_delay():
                 self.accelerate = False
-                self.has_hold = False
+                # self.has_hold = False
                 if self.is_game_over():
                     if self.game_mode == Tetris.MODE_ZEN:
                         self.reset()
@@ -177,20 +177,20 @@ class Tetris(State):
 
             is_move_success = self.tetromino.update(direction)
             if is_move_success: 
-                self.sound_manager.play_sfx(SoundManager.MOVE_SFX)
+                self.sound_manager.play_sfx(SoundManager.MOVE_SFX, override=False)
                 self.last_time_lock = current_millis()
                 self.update_lock_move()
 
             self.key_down_pressed = True
 
-            # self.last_time_lock = current_millis()
             self.last_time_delay = current_millis()
 
         elif self.check_das():
 
             is_move_success = self.tetromino.update(direction)
             if is_move_success: 
-                self.sound_manager.play_sfx(SoundManager.MOVE_SFX)
+                self.sound_manager.play_sfx(SoundManager.MOVE_SFX, override=False)
+                #self.last_time_lock = current_millis()
                 self.update_lock_move()
 
             self.last_time_interval = current_millis()
@@ -212,11 +212,12 @@ class Tetris(State):
         Places the current tetromino onto the Tetris field and updates score and combo accordingly
         """
         self.sound_manager.play_sfx(SoundManager.LAND_SFX)
-
         for block in self.tetromino.blocks:
             x, y = int(block.pos.x), int(block.pos.y)
             if x in range(0, FIELD_WIDTH) and y in range(0, FIELD_HEIGHT):
                 self.field_arr[y][x] = block
+        
+        self.has_hold = False
         
         is_t_spin = self.is_t_spin()
         is_mini_t_spin = self.is_mini_t_spin()
@@ -271,8 +272,9 @@ class Tetris(State):
             # num_move_down += 1
             self.tetromino.update()
 
+        self.place_tetromino()
+        self.last_time_lock = current_millis()
         self.sound_manager.play_sfx(SoundManager.HARD_DROP_SFX)
-        self.last_time_lock = 0
         self.score += drop_distance * 2
 
     def hard_drop2(self, tetromino):
