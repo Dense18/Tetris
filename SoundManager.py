@@ -89,7 +89,7 @@ class SoundManager:
             override: If set and a sfx sound is playing, stop playing the current sfx sound and play the new one
         """
         if not override:
-            self.sfx_dict[id].set_volume(self.volumes[SFX_CHANNEL])
+            self.sfx_dict[id].set_volume(self.volumes[SFX_CHANNEL]) if not self.is_muted else self.sfx_dict[id].set_volume(0)
             self.sfx_dict[id].play(loops)
             return
         pygame.mixer.Channel(SFX_CHANNEL).play(self.sfx_dict[id], loops)

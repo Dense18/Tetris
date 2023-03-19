@@ -211,7 +211,7 @@ class Tetris(State):
         """
         Places the current tetromino onto the Tetris field and updates score and combo accordingly
         """
-        self.sound_manager.play_sfx(SoundManager.LAND_SFX)
+        # self.sound_manager.play_sfx(SoundManager.LAND_SFX)
         for block in self.tetromino.blocks:
             x, y = int(block.pos.x), int(block.pos.y)
             if x in range(0, FIELD_WIDTH) and y in range(0, FIELD_HEIGHT):
@@ -258,13 +258,14 @@ class Tetris(State):
         self.get_new_tetromino()
         self.last_time_are = current_millis()
 
-        
+        #Check if game is over
         if self.game_mode == Tetris.MODE_MARATHON: self.check_next_nevel() 
 
     def hard_drop(self):
         """
             Move the current tetromino down until it has landed
         """
+        self.sound_manager.play_sfx(SoundManager.HARD_DROP_SFX)
         drop_distance = self.tetromino.drop_distance()
 
         # num_move_down = 0
@@ -272,9 +273,11 @@ class Tetris(State):
             # num_move_down += 1
             self.tetromino.update()
 
-        self.place_tetromino()
-        self.last_time_lock = current_millis()
-        self.sound_manager.play_sfx(SoundManager.HARD_DROP_SFX)
+        self.last_time_lock = 0
+        
+        # self.place_tetromino()
+        # self.last_time_lock = current_millis()
+        
         self.score += drop_distance * 2
 
     def hard_drop2(self, tetromino):
@@ -383,6 +386,7 @@ class Tetris(State):
             self.update_time_speed()
 
     def is_game_over(self):
+        print(self.get_time_passed())
         """
         Identify if the current game should be over
         """

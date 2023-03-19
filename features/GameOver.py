@@ -30,7 +30,6 @@ class GameOver(State):
         ## Load the old best data
         self.data = self.tetris_stat_manager.get_data()  
         
-        
         self.is_high_score = self.is_game_successful() and self.is_new_best_score(self.tetris_stat)
         
         ## Save the new tetris_state data if needed
@@ -89,8 +88,8 @@ class GameOver(State):
         
     def update(self, events):
         for event in events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE \
+                or event.type == pygame.MOUSEBUTTONDOWN:
                     menu_state = PlayMenu.PlayMenu(self.app)
                     menu_state.enter_state(State.CLEAR_TOP)
     
