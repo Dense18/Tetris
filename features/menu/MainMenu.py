@@ -20,12 +20,12 @@ class MainMenu(State):
     def __init__(self, app):
         super().__init__(app)
         self.sound_manager = SoundManager.getInstance()
-        self.buttonWidth = 300
-        self.buttonHeight = 100
-        self.paddingTop = 50
+        self.button_width = 300
+        self.button_height = 100
+        self.margin_top = 50
 
-        self.buttonX = self.app.screen.get_width()//2 - self.buttonWidth//2
-        self.paddingTop = (self.app.screen.get_height() - (self.buttonHeight * 3)) / 4
+        self.button_x = self.app.screen.get_width()//2 - self.button_width//2
+        self.margin_top = (self.app.screen.get_height() - (self.button_height * 3)) / 4
 
         self.button_color = BUTTON_COLOR
         self.button_hover_color = BUTTON_HOVER_COLOR
@@ -34,24 +34,24 @@ class MainMenu(State):
         # self.sound_manager.play_ost(SoundManager.MENU_OST)
 
     def setUpButtons(self):
-        self.play_button = AnimatedButton(self, self.buttonX, self.paddingTop,
-                                  self.buttonWidth, self.buttonHeight, 
+        self.play_button = AnimatedButton(self, self.button_x, self.margin_top,
+                                  self.button_width, self.button_height, 
                                   color = self.button_color, text = "Play", hoverColor= self.button_hover_color,
                                   tag = self.PLAY_BUTTON_TAG)
         self.play_button.setOnClickListener(self.on_click)
         self.play_button.setOnHoverListener(self.on_hover)
         self.play_button.setOnButtonDownListener(self.on_down)
         
-        self.high_score_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.play_button.y + self.play_button.height,
-                                  self.buttonWidth, self.buttonHeight, 
+        self.high_score_button = AnimatedButton(self, self.button_x, self.margin_top + self.play_button.y + self.play_button.height,
+                                  self.button_width, self.button_height, 
                                   color = self.button_color, text = "High Score", hoverColor= self.button_hover_color,
                                   tag = self.HIGH_SCORE_BUTTON_TAG)
         self.high_score_button.setOnClickListener(self.on_click)
         self.high_score_button.setOnHoverListener(self.on_hover)
         self.high_score_button.setOnButtonDownListener(self.on_down)
         
-        self.quit_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.high_score_button.y + self.high_score_button.height,
-                                  self.buttonWidth, self.buttonHeight, 
+        self.quit_button = AnimatedButton(self, self.button_x, self.margin_top + self.high_score_button.y + self.high_score_button.height,
+                                  self.button_width, self.button_height, 
                                   color = self.button_color, text = "Quit", hoverColor= self.button_hover_color,
                                   tag = self.QUIT_BUTTON_TAG)
         self.quit_button.setOnClickListener(self.on_click)

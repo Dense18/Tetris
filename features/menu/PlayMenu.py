@@ -1,8 +1,8 @@
 import pygame
 
+import features.Tetris as Tetris
 from features.menu.PlayMenuUI import PlayMenuUI
 from features.State import State
-from features.Tetris import Tetris
 from settings import *
 from SoundManager import SoundManager
 from ui.widget.AnimatedButton import AnimatedButton
@@ -21,43 +21,43 @@ class PlayMenu(State):
     def __init__(self, app):
         super().__init__(app)
         self.sound_manager = SoundManager.getInstance()
-        self.buttonWidth = 300
-        self.buttonHeight = 100
-        self.paddingTop = 50
+        self.button_width = 300
+        self.button_height = 100
+        self.margin_top = 50
 
-        self.buttonX = self.app.screen.get_width()//3 - self.buttonWidth//2
-        self.paddingTop = (self.app.screen.get_height() - (self.buttonHeight * 4)) / 5
+        self.button_x = self.app.screen.get_width()//3 - self.button_width//2
+        self.margin_top = (self.app.screen.get_height() - (self.button_height * 4)) / 5
         self.setUpButtons()
         
         self.ui = PlayMenuUI(self)
 
     def setUpButtons(self):
-        self.marathon_button = AnimatedButton(self, self.buttonX, self.paddingTop,
-                                  self.buttonWidth, self.buttonHeight, 
+        self.marathon_button = AnimatedButton(self, self.button_x, self.margin_top,
+                                  self.button_width, self.button_height, 
                                   color = BUTTON_COLOR, text = "Marathon", hoverColor= BUTTON_HOVER_COLOR,
                                   tag = self.MARATHON_BUTTON_TAG)
         self.marathon_button.setOnClickListener(self.on_click)
         self.marathon_button.setOnHoverListener(self.on_hover)
         self.marathon_button.setOnButtonDownListener(self.on_down)
         
-        self.zen_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.marathon_button.y + self.marathon_button.height,
-                                  self.buttonWidth, self.buttonHeight, 
+        self.zen_button = AnimatedButton(self, self.button_x, self.margin_top + self.marathon_button.y + self.marathon_button.height,
+                                  self.button_width, self.button_height, 
                                   color = BUTTON_COLOR, text = "Zen", hoverColor= BUTTON_HOVER_COLOR,
                                   tag = self.ZEN_BUTTON_TAG)
         self.zen_button.setOnClickListener(self.on_click)
         self.zen_button.setOnHoverListener(self.on_hover)
         self.zen_button.setOnButtonDownListener(self.on_down)
         
-        self.sprint_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.zen_button.y + self.zen_button.height,
-                                  self.buttonWidth, self.buttonHeight, 
+        self.sprint_button = AnimatedButton(self, self.button_x, self.margin_top + self.zen_button.y + self.zen_button.height,
+                                  self.button_width, self.button_height, 
                                   color = BUTTON_COLOR, text = "Sprint", hoverColor= BUTTON_HOVER_COLOR,
                                   tag = self.SPRINT_BUTTON_TAG)
         self.sprint_button.setOnClickListener(self.on_click)
         self.sprint_button.setOnHoverListener(self.on_hover)
         self.sprint_button.setOnButtonDownListener(self.on_down)
         
-        self.ultra_button = AnimatedButton(self, self.buttonX, self.paddingTop + self.sprint_button.y + self.sprint_button.height,
-                                  self.buttonWidth, self.buttonHeight, 
+        self.ultra_button = AnimatedButton(self, self.button_x, self.margin_top + self.sprint_button.y + self.sprint_button.height,
+                                  self.button_width, self.button_height, 
                                   color = BUTTON_COLOR, text = "Ultra", hoverColor= BUTTON_HOVER_COLOR,
                                   tag = self.ULTRA_BUTTON_TAG)
         self.ultra_button.setOnClickListener(self.on_click)
@@ -88,13 +88,13 @@ class PlayMenu(State):
     def on_click(self, button):
         self.sound_manager.stop()
         if button.tag == self.MARATHON_BUTTON_TAG:
-            state = Tetris(self.app, game_mode= Tetris.MODE_MARATHON)
+            state = Tetris.Tetris(self.app, game_mode= Tetris.Tetris.MODE_MARATHON)
         elif button.tag == self.ZEN_BUTTON_TAG:
-            state = Tetris(self.app, game_mode= Tetris.MODE_ZEN)
+            state = Tetris.Tetris(self.app, game_mode= Tetris.Tetris.MODE_ZEN)
         elif button.tag == self.SPRINT_BUTTON_TAG:
-            state = Tetris(self.app, game_mode= Tetris.MODE_SPRINT)
+            state = Tetris.Tetris(self.app, game_mode= Tetris.Tetris.MODE_SPRINT)
         elif button.tag == self.ULTRA_BUTTON_TAG:
-            state = Tetris(self.app, game_mode= Tetris.MODE_ULTRA)
+            state = Tetris/Tetris(self.app, game_mode= Tetris.Tetris.MODE_ULTRA)
         
         state.enter_state()
         
