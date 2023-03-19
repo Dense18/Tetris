@@ -37,7 +37,6 @@ class Button(ButtonObserver):
         self.pressed = False
         self.has_hovered = False
         self.onClickListener = None
-        self.OnFirstHoverListener = None
         self.onHoverListener = None
         self.onButtonDownListener = None
 
@@ -47,9 +46,6 @@ class Button(ButtonObserver):
     
     def setOnHoverListener(self, listener):
         self.onHoverListener = listener
-    
-    def setOnFirstHoverListener(self, listener):
-        self.OnFirstHoverListener= listener
     
     def setOnButtonDownListener(self, listener):
         self.onButtonDownListener = listener
@@ -64,7 +60,7 @@ class Button(ButtonObserver):
             else:
                 if self.onHoverListener: self.onHoverListener(self, False)
             if mouseEvent[0]: ##Left Click
-                if not self.pressed and self.onButtonDownListener: self.onButtonDownListener()
+                if not self.pressed and self.onButtonDownListener: self.onButtonDownListener(self)
                 self.pressed = True
             else:
                 if self.pressed:
