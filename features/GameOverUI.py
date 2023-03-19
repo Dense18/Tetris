@@ -6,14 +6,19 @@ from utils.utils import *
 
 
 class GameOverUI:
+    """
+        Manages UI elements for the GamOver State
+    """
     def __init__(self, game_over_state):
         self.state = game_over_state
         
         self.text_font = pygame.font.SysFont('comicsans', 30)
-        
         self.high_score_text = "High Score!"
     
     def draw(self):
+        """
+        Draws the UI elements onto the screen
+        """
         self.state.app.screen.fill(GAME_OVER_BG_COLOR)
         
         self.draw_information()
@@ -76,6 +81,9 @@ class GameOverUI:
             self.state.app.screen.blit(best_line_cleared_obj, best_line_cleared_rect)
             
     def draw_high_score_text(self):
+        """
+        Draws the high score text onto the screen
+        """
         self.high_score_obj = self.text_font.render(self.high_score_text, 1, HIGH_SCORE_TEXT_COLOR)
         self.high_score_rect = self.high_score_obj.get_rect(center = (WIDTH//2, HEIGHT//3.5))
         self.state.app.screen.blit(self.high_score_obj, self.high_score_rect)

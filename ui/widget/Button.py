@@ -42,15 +42,39 @@ class Button(ButtonObserver):
 
 
     def setOnClickListener(self, listener):
+        """
+        [listener] is a function that will be called when the button is clicked.
+        I.e, it will trigger when the button is released after it is pressed down.
+
+        Args:
+            listener(button): [button] is the current Button object. 
+        """
         self.onClickListener = listener
     
     def setOnHoverListener(self, listener):
+        """
+        [listener] is a function that will be called when the button is hovered.
+        I.e, when the mouse is over the button.
+
+        Args:
+            listener(button, first_hover: bool): [button] is the current Button object. 
+            [first_hover] is True the first time the mouse hovers the button and False otherwise. It will reset when the mouse leaves the button 
+        """
         self.onHoverListener = listener
     
     def setOnButtonDownListener(self, listener):
+        """
+        [listener] is a function that will be called when the button is pressed down.
+
+        Args:
+            listener(button): [button] is the current Button object. 
+        """
         self.onButtonDownListener = listener
 
     def update(self, position, mouseEvent):
+        """
+        Updates the button based on the mouse position [position] and the mouse event [mouseEvent].
+        """
         if self.rect.collidepoint(position):
             self.currentColor = self.hoverColor
             if self.onHoverListener: self.onHoverListener()
@@ -71,5 +95,7 @@ class Button(ButtonObserver):
             self.currentColor = self.color
 
     def draw(self, screen):
+        """Draws the button on the [screen].
+        """
         pygame.draw.rect(screen, self.currentColor, self.rect, border_radius = self.borderRadius)
         screen.blit(self.text, self.textRect)

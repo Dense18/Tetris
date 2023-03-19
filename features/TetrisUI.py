@@ -13,8 +13,6 @@ class TetrisUI:
     """
     def __init__(self, tetris) -> None:
         self.tetris = tetris
-        
-        self.num_next_piece = min(self.tetris.bag_min_items, NUM_NEXT_PIECE_TO_DISPLAY)
 
         self.next_piece_text = "Next Piece:"
         self.hold_piece_text = "Hold Piece:"
@@ -215,7 +213,7 @@ class TetrisUI:
         next_tetromino_rect.top = next_item_label_rect.bottom + 70
 
         y_offset = 0
-        for i in range(self.num_next_piece):
+        for i in range(min(NUM_NEXT_PIECE_TO_DISPLAY, len(self.tetris.bag))):
             Tetromino.draw_custom_position(self.tetris.app.screen, 
                                                 self.tetris.bag[i],
                                                 (next_tetromino_rect.x, next_tetromino_rect.y + y_offset), 

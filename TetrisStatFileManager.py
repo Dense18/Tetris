@@ -17,6 +17,9 @@ class TetrisStatFileManager:
         }
     
     def clear_data(self) -> dict:
+        """
+            Clear all the data on the saved best TetrisState file 
+        """
         self.save_dict({})
         
     def save_dict(self, tetris_stat_dict):
