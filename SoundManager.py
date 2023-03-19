@@ -38,10 +38,10 @@ class SoundManager:
             raise Exception("This class is a Singleton! SoundManager instance has been created already!\n Please use the getInstance() method to get the SoundManager instance.")
         
         SoundManager.__instance = self
-        self.channels = [SFX_CHANNEL, COMBO_CHANNEL, OST_CHANNEL, MENU_CHANNEL]
+        self.channels = [OST_CHANNEL, SFX_CHANNEL, COMBO_CHANNEL, MENU_CHANNEL]
         self.volumes = {
             OST_CHANNEL: 0.2,
-            SFX_CHANNEL: 0.6,
+            SFX_CHANNEL: 0.8,
             COMBO_CHANNEL: 0.6,
             MENU_CHANNEL: 0.5
             
@@ -88,10 +88,10 @@ class SoundManager:
             loops: number of times to play the sound. -1 means infinite
             override: If set and a sfx sound is playing, stop playing the current sfx sound and play the new one
         """
-        if not override:
-            self.sfx_dict[id].set_volume(self.volumes[SFX_CHANNEL]) if not self.is_muted else self.sfx_dict[id].set_volume(0)
-            self.sfx_dict[id].play(loops)
-            return
+        # if not override:
+        #     self.sfx_dict[id].set_volume(self.volumes[SFX_CHANNEL]) if not self.is_muted else self.sfx_dict[id].set_volume(0)
+        #     self.sfx_dict[id].play(loops)
+        #     return
         pygame.mixer.Channel(SFX_CHANNEL).play(self.sfx_dict[id], loops)
 
     def play_combo(self, num_combo, loops = 0):
