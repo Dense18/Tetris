@@ -76,8 +76,6 @@ class MainMenu(State):
     def update(self, events):
         for event in events:
             if event.type ==pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.exit_state()
                 if event.key == pygame.K_p:
                     self.on_play_click()
     
