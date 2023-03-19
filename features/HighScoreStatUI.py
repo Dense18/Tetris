@@ -3,6 +3,9 @@ from settings import *
 
 
 class HighScoreStatUI:
+    """
+        Class handling UI element for the HighScoreStat State
+    """
     def __init__(self, high_score_state):
         self.state = high_score_state
         

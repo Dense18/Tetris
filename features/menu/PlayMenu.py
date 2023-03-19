@@ -1,3 +1,5 @@
+import os
+
 import pygame
 
 import features.Tetris as Tetris
@@ -13,6 +15,7 @@ class PlayMenu(State):
     ZEN_BUTTON_TAG = "Zen Button Tag"
     SPRINT_BUTTON_TAG = "Sprint Button Tag"
     ULTRA_BUTTON_TAG = "Ultra Button Tag"
+    BACK_BUTTON_TAG = "Back Button Tag"
     
     """
         Menu State of the program. 
@@ -24,6 +27,8 @@ class PlayMenu(State):
         self.button_width = 300
         self.button_height = 100
         self.margin_top = 50
+        
+        self.back_image = pygame.image.load(os.path.join(IMAGES_DIR, "back_ic.png")).convert_alpha()
 
         self.button_x = self.app.screen.get_width()//3 - self.button_width//2
         self.margin_top = (self.app.screen.get_height() - (self.button_height * 4)) / 5
@@ -70,8 +75,18 @@ class PlayMenu(State):
         self.ultra_button.setOnClickListener(self.on_click)
         self.ultra_button.setOnHoverListener(self.on_hover)
         self.ultra_button.setOnButtonDownListener(self.on_down)
+        
+        self.back_button = AnimatedButton(self, 30, 30,
+                                  BACK_BUTTON_WIDTH, BACK_BUTTON_HEIGHT, 
+                                  color = BUTTON_COLOR, hoverColor= BUTTON_HOVER_COLOR,
+                                  text = "Back", textSize = 20, textColor = BACK_BUTTON_TEXT_COLOR,
+                                  borderRadius= BACK_BUTTON_BORDER_RADIUS, elevation= BACK_BUTTON_ELEVATION,
+                                  image = self.back_image, tag = self.BACK_BUTTON_TAG)
+        self.back_button.setOnClickListener(self.on_click)
+        self.back_button.setOnHoverListener(self.on_hover)
+        self.back_button.setOnButtonDownListener(self.on_down)
 
-        self.button_list = [self.marathon_button, self.zen_button,self.sprint_button, self.ultra_button]
+        self.button_list = [self.marathon_button, self.zen_button,self.sprint_button, self.ultra_button, self.back_button]
 
     
     def on_resume_state(self):
@@ -93,7 +108,6 @@ class PlayMenu(State):
         Button Listener
     """
     def on_click(self, button):
-        self.sound_manager.stop()
         self.ui.reset_flag()
         if button.tag == self.MARATHON_BUTTON_TAG:
             state = Tetris.Tetris(self.app, game_mode= Tetris.Tetris.MODE_MARATHON)
@@ -103,7 +117,9 @@ class PlayMenu(State):
             state = Tetris.Tetris(self.app, game_mode= Tetris.Tetris.MODE_SPRINT)
         elif button.tag == self.ULTRA_BUTTON_TAG:
             state = Tetris/Tetris(self.app, game_mode= Tetris.Tetris.MODE_ULTRA)
-        
+        elif button.tag == self.BACK_BUTTON_TAG:
+            self.exit_state()
+            return
         state.enter_state()
         
     def on_hover(self, button, first_hover):

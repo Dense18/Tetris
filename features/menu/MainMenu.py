@@ -35,7 +35,7 @@ class MainMenu(State):
         self.play_button = AnimatedButton(self, self.button_x, self.margin_top,
                                   self.button_width, self.button_height, 
                                   color = BUTTON_COLOR, hoverColor= BUTTON_HOVER_COLOR, 
-                                  text = "Play",  textSize = MENU_BUTTON_TEXT_SIZE,
+                                  text = "Play", textSize = MENU_BUTTON_TEXT_SIZE, textColor = BUTTON_TEXT_COLOR, 
                                   borderRadius= MENU_BUTTON_BORDER_RADIUS,
                                   tag = self.PLAY_BUTTON_TAG)
         self.play_button.setOnClickListener(self.on_click)
@@ -45,7 +45,7 @@ class MainMenu(State):
         self.high_score_button = AnimatedButton(self, self.button_x, self.margin_top + self.play_button.y + self.play_button.height,
                                   self.button_width, self.button_height, 
                                   color = BUTTON_COLOR, hoverColor = BUTTON_HOVER_COLOR,
-                                  text = "High Score", textSize = MENU_BUTTON_TEXT_SIZE, 
+                                  text = "High Score", textSize = MENU_BUTTON_TEXT_SIZE, textColor = BUTTON_TEXT_COLOR, 
                                   borderRadius= MENU_BUTTON_BORDER_RADIUS,
                                   tag = self.HIGH_SCORE_BUTTON_TAG)
         self.high_score_button.setOnClickListener(self.on_click)
@@ -55,7 +55,7 @@ class MainMenu(State):
         self.quit_button = AnimatedButton(self, self.button_x, self.margin_top + self.high_score_button.y + self.high_score_button.height,
                                   self.button_width, self.button_height, 
                                   color = BUTTON_COLOR, hoverColor= BUTTON_HOVER_COLOR,
-                                  text = "Quit", textSize = MENU_BUTTON_TEXT_SIZE, 
+                                  text = "Quit", textSize = MENU_BUTTON_TEXT_SIZE, textColor = BUTTON_TEXT_COLOR, 
                                   borderRadius= MENU_BUTTON_BORDER_RADIUS,
                                   tag = self.QUIT_BUTTON_TAG)
         self.quit_button.setOnClickListener(self.on_click)
