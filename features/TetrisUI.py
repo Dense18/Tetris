@@ -189,7 +189,14 @@ class TetrisUI:
                                  (col * BLOCK_SIZE + INITIAL_BOARD_X, 0), 
                                  (col * BLOCK_SIZE + SIDEBAR_WIDTH, BOARD_HEIGHT), 
                                  1)
-    
+        
+        """
+            Draw a red horizontal line indiciating the SkyLine
+        """
+        pygame.draw.line(self.tetris.app.screen, "red", 
+                            (INITIAL_BOARD_X, SKY_LINE * BLOCK_SIZE), 
+                            (BOARD_WIDTH + SIDEBAR_WIDTH, SKY_LINE * BLOCK_SIZE), 
+                            10)
     def draw_countdown(self):
         if self.tetris.time_left_countdown_ms > 0 and WITH_COUNTDOWN:
             time_left_str = convert_seconds_to_time_str(math.ceil(self.tetris.time_left_countdown_ms/1000))

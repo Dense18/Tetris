@@ -32,6 +32,9 @@ class Tetris(State):
         self.field_arr = [[0 for col in range(FIELD_WIDTH)] for row in range(FIELD_HEIGHT)]
         self.accelerate = False
         
+        self.lock_out = False
+        self.block_out = False
+
         self.level = 1
         self.game_mode = game_mode
         if game_mode != Tetris.MODE_MARATHON:
@@ -117,21 +120,34 @@ class Tetris(State):
                 self.accelerate = False
                 # self.has_hold = False
                 self.sound_manager.play_sfx(SoundManager.LAND_SFX)
-                if self.is_game_over():
-                    if self.game_mode == Tetris.MODE_ZEN:
-                        self.reset()
-                        return
-                    tetris_info = TetrisStat(level = self.level,
-                        score = self.score, 
-                        lines_cleared= self.lines_cleared, 
-                        time_passed = self.get_time_passed(),
-                        game_mode = self.game_mode)
-                    game_over_activivity = GameOver(self.app, tetris_info)
-                    game_over_activivity.enter_state()
-                    return
+                # if self.is_game_over():
+                #     if self.game_mode == Tetris.MODE_ZEN:
+                #         self.reset()
+                #         return
+                #     tetris_info = TetrisStat(level = self.level,
+                #         score = self.score, 
+                #         lines_cleared= self.lines_cleared, 
+                #         time_passed = self.get_time_passed(),
+                #         game_mode = self.game_mode)
+                #     game_over_activivity = GameOver(self.app, tetris_info)
+                #     game_over_activivity.enter_state()
+                #     return
                 self.place_tetromino()
                 self.last_time_lock = current_millis()
-                
+        
+        if self.is_game_over():
+            if self.game_mode == Tetris.MODE_ZEN:
+                self.reset()
+                return
+            tetris_info = TetrisStat(level = self.level,
+                    score = self.score, 
+                    lines_cleared= self.lines_cleared, 
+                    time_passed = self.get_time_passed(),
+                    game_mode = self.game_mode)
+            game_over_activivity = GameOver(self.app, tetris_info)
+            game_over_activivity.enter_state()
+            return
+        
         ## Check events
         for event in events:
             if event.type == pygame.KEYDOWN:    
@@ -208,11 +224,22 @@ class Tetris(State):
         Places the current tetromino onto the Tetris field and updates score and combo accordingly
         """
         # self.sound_manager.play_sfx(SoundManager.LAND_SFX)
+        
+        #Check the total number of blocks in the tetromino that can be placed onto the field. Lock out Condition
+        count = 0
+        
         for block in self.tetromino.blocks:
             x, y = int(block.pos.x), int(block.pos.y)
-            if x in range(0, FIELD_WIDTH) and y in range(0, FIELD_HEIGHT):
+            if x in range(0, FIELD_WIDTH) and y in range(0, FIELD_HEIGHT): 
                 self.field_arr[y][x] = block
+                if y < SKY_LINE:  
+                    count += 1
         
+        #If all of the blocks are above the sky line, updated the lock out game over conidition
+        if count == 4:
+            self.lock_out = True
+            
+            
         self.has_hold = False
         
         is_t_spin = self.is_t_spin()
@@ -235,7 +262,7 @@ class Tetris(State):
         is_current_action_difficult = lines_cleared == 4 or is_t_spin or is_mini_t_spin
         
         ## Alternatively, any action that is not a single, double or triple
-        is_current_action_difficult = not (lines_cleared < 4 and not (is_t_spin or is_mini_t_spin))
+        # is_current_action_difficult = not (lines_cleared < 4 and not (is_t_spin or is_mini_t_spin))
 
         self.is_b2b = self.is_last_action_difficult and is_current_action_difficult
         self.is_last_action_difficult = is_current_action_difficult
@@ -258,9 +285,16 @@ class Tetris(State):
         
         self.get_new_tetromino()
         self.last_time_are = current_millis()
+        
+        #Check Block Out condition. The newly spawned Tetromino is blocked by an existing block on the field
+        for block in self.tetromino.blocks:
+            if self.field_arr[int(block.pos.y)][int(block.pos.x)]:
+                self.block_out = True
+                break
+        
 
-        #Check if game is over
-        if self.game_mode == Tetris.MODE_MARATHON: self.check_next_nevel() 
+        if self.game_mode == Tetris.MODE_MARATHON: 
+            self.check_next_nevel() 
 
     def hard_drop(self):
         """
@@ -275,7 +309,7 @@ class Tetris(State):
             self.tetromino.update()
 
         self.last_time_lock = 0
-        # self.score += drop_distance * 2
+        self.score += drop_distance * 2
         # self.place_tetromino()
         # self.last_time_lock = current_millis()
 
@@ -389,8 +423,7 @@ class Tetris(State):
         """
         Identify if the current game should be over
         """
-        print(self.get_time_passed())
-        if self.tetromino.blocks[0].pos.y == INITIAL_TETROMINO_OFFSET[1]:
+        if self.lock_out or self.block_out:
             return True
         
         if self.game_mode == Tetris.MODE_SPRINT and self.lines_cleared >= SPRINT_LINE_TO_CLEAR:

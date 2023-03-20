@@ -9,7 +9,8 @@ GAME_OVER_BG_COLOR = (0,0,0)
 TETRIS_BOARD_COLOR = (40,40,40)
 
 BLOCK_SIZE = 40 # Size of each block of tetromino
-FIELD_SIZE = FIELD_WIDTH, FIELD_HEIGHT = 10, 20 # Number of block available on the field
+FIELD_SIZE = FIELD_WIDTH, FIELD_HEIGHT = 10, 22 # Number of block available on the field. Also called as the Matrix
+SKY_LINE = 2# Horizontal line/ Row index on the Matrix. Tetromino will initially spawn just above the SKY_LINE
 BOARD_WIDTH, BOARD_HEIGHT = BLOCK_SIZE * FIELD_WIDTH, BLOCK_SIZE * FIELD_HEIGHT # Total width and height of the Tetris Board
 
 SIDEBAR_WIDTH = 240
@@ -18,7 +19,7 @@ INITIAL_LEFT_SIDEBAR_X = 0
 INITIAL_BOARD_X = INITIAL_LEFT_SIDEBAR_X + SIDEBAR_WIDTH
 INITIAL_RIGHT_SIDEBAR_X = INITIAL_BOARD_X + BOARD_WIDTH
 
-INITIAL_TETROMINO_OFFSET = vec(FIELD_WIDTH//2 , 0)
+INITIAL_TETROMINO_OFFSET = vec(FIELD_WIDTH//2 , 1)
 # INITIAL_TETROMINO_OFFSET = vec(FIELD_SIZE) //2 #Middle of the field
 
 WIDTH, HEIGHT = BOARD_WIDTH + SIDEBAR_WIDTH + SIDEBAR_WIDTH, BOARD_HEIGHT
