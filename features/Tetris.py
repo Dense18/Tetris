@@ -103,11 +103,16 @@ class Tetris(State):
         self.start_time_in_seconds = time.time() + COUNTDOWN_TIME//1000 if WITH_COUNTDOWN else time.time()
         
     def update(self, events):
+        
+        # Countdown Phase (Countdown before the first update can be made)
+        # This phase is only executed if the WITH_COUNTDOWN flag is set to True 
         if self.time_left_countdown_ms > 0 and WITH_COUNTDOWN:  
             time_passed = current_millis() - self.start_time_countdown_ms          
             self.time_left_countdown_ms = COUNTDOWN_TIME - time_passed
             return
-            
+        
+        
+        # Falling Phase
         trigger = [self.app.animation_flag, self.app.accelerate_event][self.accelerate]
         if trigger and self.check_are():             
             is_success = self.tetromino.update()
@@ -115,28 +120,17 @@ class Tetris(State):
                 if self.accelerate:  self.score += 1
                 self.last_time_lock = current_millis()
 
+        # Lock/Placing Phase. Score and Combo is also updated in this phase
         if self.tetromino.has_landed:
             if self.check_lock_delay():
                 self.accelerate = False
-                # self.has_hold = False
                 self.sound_manager.play_sfx(SoundManager.LAND_SFX)
-                # if self.is_game_over():
-                #     if self.game_mode == Tetris.MODE_ZEN:
-                #         self.reset()
-                #         return
-                #     tetris_info = TetrisStat(level = self.level,
-                #         score = self.score, 
-                #         lines_cleared= self.lines_cleared, 
-                #         time_passed = self.get_time_passed(),
-                #         game_mode = self.game_mode)
-                #     game_over_activivity = GameOver(self.app, tetris_info)
-                #     game_over_activivity.enter_state()
-                #     return
-                self.place_tetromino()
+                self.place_tetromino() # Score and Combo are updated here
                 self.last_time_lock = current_millis()
         
+        # Game Over Phase
         if self.is_game_over():
-            if self.game_mode == Tetris.MODE_ZEN:
+            if self.game_mode == Tetris.MODE_ZEN: # Resets the game if it is in Zen mode rather than enetering the Game Over State
                 self.reset()
                 return
             tetris_info = TetrisStat(level = self.level,
@@ -160,9 +154,6 @@ class Tetris(State):
     
     def on_leave_state(self):
         self.sound_manager.stop()
-    
-    # def on_exit_state(self):
-    #     self.sound_manager.stop()
 
     #* Update Tetromino state *#
     
@@ -222,6 +213,10 @@ class Tetris(State):
     def place_tetromino(self, get_new_tetromino = True):
         """
         Places the current tetromino onto the Tetris field and updates score and combo accordingly
+        
+        Args:
+        get_new_tetromino: If set, get a new tetromino from the current bag 
+        and updates the current tetromino to the new tetromino after placing it on the field
         """
         #Check the total number of blocks in the tetromino that is above the skyline. Lock out Condition
         count = 0
