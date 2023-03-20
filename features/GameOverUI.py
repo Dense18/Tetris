@@ -31,7 +31,7 @@ class GameOverUI:
         """
         game_mode = self.state.tetris_stat.game_mode
         if game_mode == Tetris.Tetris.MODE_MARATHON or game_mode == Tetris.Tetris.MODE_ZEN:
-            score_text_obj = self.text_font.render(f"Score: {int(self.state.tetris_stat.score)}", 1, "white")
+            score_text_obj = self.text_font.render(f"Score: {int(self.state.tetris_stat.score)}", 1, GAME_OVER_SCORE_TEXT_COLOR)
             score_text_rect = score_text_obj.get_rect(center = (WIDTH//2, HEIGHT//2))
             self.state.app.screen.blit(score_text_obj, score_text_rect)
             
@@ -48,7 +48,8 @@ class GameOverUI:
         elif game_mode == Tetris.Tetris.MODE_SPRINT:
             time_text = convert_seconds_to_time_str(self.state.tetris_stat.time_passed)
             text = "Time Taken: " + time_text if self.state.is_game_successful() else "Try again next time!"
-            time_text_obj = self.text_font.render(text, 1, "white")
+            text_color = GAME_OVER_SCORE_TEXT_COLOR if self.state.is_game_successful() else GAME_FAILED_TEXT_COLOR
+            time_text_obj = self.text_font.render(text, 1, text_color)
             time_text_rect = time_text_obj.get_rect(center = (WIDTH//2, HEIGHT//2))
             self.state.app.screen.blit(time_text_obj, time_text_rect)
             
@@ -65,7 +66,8 @@ class GameOverUI:
         
         elif game_mode == Tetris.Tetris.MODE_ULTRA:
             text = f"Lines cleared: {self.state.tetris_stat.lines_cleared}" if self.state.is_game_successful() else "Try again next time!"
-            line_cleared_text_obj = self.text_font.render(text, 1, "white")
+            text_color = GAME_OVER_SCORE_TEXT_COLOR if self.state.is_game_successful() else GAME_FAILED_TEXT_COLOR
+            line_cleared_text_obj = self.text_font.render(text, 1, text_color)
             line_cleared_text_rect = line_cleared_text_obj.get_rect(center = (WIDTH//2, HEIGHT//2))
             self.state.app.screen.blit(line_cleared_text_obj, line_cleared_text_rect)
             
