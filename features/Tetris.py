@@ -219,27 +219,29 @@ class Tetris(State):
 
     #* Update Field state *#
     
-    def place_tetromino(self):
+    def place_tetromino(self, get_new_tetromino = True):
         """
         Places the current tetromino onto the Tetris field and updates score and combo accordingly
         """
-        # self.sound_manager.play_sfx(SoundManager.LAND_SFX)
-        
-        #Check the total number of blocks in the tetromino that can be placed onto the field. Lock out Condition
+        #Check the total number of blocks in the tetromino that is above the skyline. Lock out Condition
         count = 0
         
+        #Place current tetromino to the field
         for block in self.tetromino.blocks:
             x, y = int(block.pos.x), int(block.pos.y)
             if x in range(0, FIELD_WIDTH) and y in range(0, FIELD_HEIGHT): 
                 self.field_arr[y][x] = block
+                
+                #Update count if it is above the skyline
                 if y < SKY_LINE:  
                     count += 1
         
         #If all of the blocks are above the sky line, updated the lock out game over conidition
         if count == 4:
             self.lock_out = True
-            
-            
+            return
+        
+        self.tetromino.has_locked = True
         self.has_hold = False
         
         is_t_spin = self.is_t_spin()
@@ -283,18 +285,13 @@ class Tetris(State):
         self.score += perfect_clear_score * self.level if self.is_current_perfect_clear else 0
         self.action = self.action_dict[dict_index][lines_cleared]
         
-        self.get_new_tetromino()
         self.last_time_are = current_millis()
-        
-        #Check Block Out condition. The newly spawned Tetromino is blocked by an existing block on the field
-        for block in self.tetromino.blocks:
-            if self.field_arr[int(block.pos.y)][int(block.pos.x)]:
-                self.block_out = True
-                break
-        
-
+    
         if self.game_mode == Tetris.MODE_MARATHON: 
             self.check_next_nevel() 
+        
+        
+        if get_new_tetromino: self.get_new_tetromino()
 
     def hard_drop(self):
         """
@@ -308,10 +305,11 @@ class Tetris(State):
             # num_move_down += 1
             self.tetromino.update()
 
-        self.last_time_lock = 0
+        # self.last_time_lock = 0
         self.score += drop_distance * 2
-        # self.place_tetromino()
-        # self.last_time_lock = current_millis()
+        
+        self.place_tetromino()
+        self.last_time_lock = current_millis()
 
 
     def hard_drop2(self, tetromino):
@@ -388,6 +386,12 @@ class Tetris(State):
     
     def get_new_tetromino(self):
         self.tetromino = Tetromino(self, self.bag.pop(0))
+        
+        #Check Block Out condition. The newly spawned Tetromino is blocked by an existing block on the field
+        for block in self.tetromino.blocks:
+            if self.field_arr[int(block.pos.y)][int(block.pos.x)]:
+                self.block_out = True
+                return
     
     def hold(self):
         """
@@ -419,11 +423,47 @@ class Tetris(State):
             self.level = min(self.level + 1, MAX_LEVEL)
             self.update_time_speed()
 
+    def check_lock_out(self) -> bool:
+        """
+        Checks Lock out Game Over condition. Use this method before getting the next tetromino
+        """
+        #Only checks condition if the current tetromino has already been locked to the field
+        if not self.tetromino.has_locked: return False
+        
+        #check the number of blocks on the tetromino that is above the sky line
+        count = 0
+        for block in self.tetromino.blocks:
+            x, y = int(block.pos.x), int(block.pos.y)
+            if x in range(0, FIELD_WIDTH) and y < SKY_LINE: 
+                count += 1
+        
+        # If all the blocks are above the sky line, the tetromino is locked out
+        return count == 4
+        
+    def check_block_out(self) -> bool:
+        """
+        Checks Block out Game Over condition. Use this method before getting the next tetromino
+        """
+        
+        #Only checks condition if the current tetromino has already been locked to the field
+        if not self.tetromino.has_locked: return False
+        
+        new_tetromino = Tetromino(self, self.bag[0])
+        
+        #If the next Tetromino spawn position is blocked by an existing block on the field, return True
+        for block in new_tetromino.blocks:
+            if self.field_arr[int(block.pos.y)][int(block.pos.x)]:
+                return True
+        return False
+        
+        
     def is_game_over(self):
         """
         Identify if the current game should be over
         """
         if self.lock_out or self.block_out:
+            if self.lock_out: print("Lock out")
+            if self.block_out: print("Block out")
             return True
         
         if self.game_mode == Tetris.MODE_SPRINT and self.lines_cleared >= SPRINT_LINE_TO_CLEAR:

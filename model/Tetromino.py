@@ -91,12 +91,15 @@ class Tetromino:
         self.shape = shape
         self.blocks = [Block(self, pos, TETROMINO_COLOR[self.shape]) for pos in self.SHAPE[self.shape]]
         self.has_landed = False
+        self.has_locked = False
         
         self.tetris = tetris
         self.rotation_state = 0
 
         self.is_rotate = False
         self.is_wall_kick = False
+        
+
 
     #* Update State functions*#
     
