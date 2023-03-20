@@ -111,26 +111,39 @@ class Tetris(State):
             self.time_left_countdown_ms = COUNTDOWN_TIME - time_passed
             return
         
+        # Generation Phase. 
+        # Only get a new tetromino if the current tetromino has already been locked to the field
+        if self.tetromino.has_locked:
+            self.get_new_tetromino()
+        
+        ## Input Phase
+        for event in events:
+            if event.type == pygame.KEYDOWN:    
+                self.handle_key_down_pressed(event.key)
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_DOWN:
+                    self.accelerate = False
+        self.handle_key_pressed(pygame.key.get_pressed())
         
         # Falling Phase
         trigger = [self.app.animation_flag, self.app.accelerate_event][self.accelerate]
-        if trigger and self.check_are():             
+        if trigger and (self.accelerate or self.check_are()):             
             is_success = self.tetromino.update()
             if is_success: 
                 if self.accelerate:  self.score += 1
                 self.last_time_lock = current_millis()
 
-        # Lock/Placing Phase. Score and Combo is also updated in this phase
-        if self.tetromino.has_landed:
+        
+        # Lock/Placing Phase. Score, and Combo are also updated in this phase
+        if self.tetromino.has_landed and self.tetromino.drop_distance() == 0 and not self.tetromino.has_locked:
             if self.check_lock_delay():
-                self.accelerate = False
                 self.sound_manager.play_sfx(SoundManager.LAND_SFX)
-                self.place_tetromino() # Score and Combo are updated here
+                self.place_tetromino(False) # Score and Combo are updated here.
                 self.last_time_lock = current_millis()
         
         # Game Over Phase
         if self.is_game_over():
-            if self.game_mode == Tetris.MODE_ZEN: # Resets the game if it is in Zen mode rather than enetering the Game Over State
+            if self.game_mode == Tetris.MODE_ZEN: # Resets the game if it is in Zen mode rather than entering the Game Over State
                 self.reset()
                 return
             tetris_info = TetrisStat(level = self.level,
@@ -141,17 +154,7 @@ class Tetris(State):
             game_over_activivity = GameOver(self.app, tetris_info)
             game_over_activivity.enter_state()
             return
-        
-        ## Check events
-        for event in events:
-            if event.type == pygame.KEYDOWN:    
-                self.handle_key_down_pressed(event.key)
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_DOWN:
-                    self.accelerate = False
-        
-        self.handle_key_pressed(pygame.key.get_pressed())
-    
+
     def on_leave_state(self):
         self.sound_manager.stop()
 
@@ -172,10 +175,13 @@ class Tetris(State):
 
     def move(self, direction):
         """
-            Move the current tetromino on a given [direction]
+            Move the current tetromino on a given [direction].
+            
+            Only supports left and right direction
         """
         if direction not in [Tetromino.DIRECTIONS_RIGHT, Tetromino.DIRECTIONS_LEFT]: 
             return
+        
         if not self.key_down_pressed:
 
             is_move_success = self.tetromino.update(direction)
@@ -218,6 +224,10 @@ class Tetris(State):
         get_new_tetromino: If set, get a new tetromino from the current bag 
         and updates the current tetromino to the new tetromino after placing it on the field
         """
+        
+        self.tetromino.has_locked = True
+        self.has_hold = False
+        
         #Check the total number of blocks in the tetromino that is above the skyline. Lock out Condition
         count = 0
         
@@ -236,8 +246,6 @@ class Tetris(State):
             self.lock_out = True
             return
         
-        self.tetromino.has_locked = True
-        self.has_hold = False
         
         is_t_spin = self.is_t_spin()
         is_mini_t_spin = self.is_mini_t_spin()
@@ -288,22 +296,22 @@ class Tetris(State):
         
         if get_new_tetromino: self.get_new_tetromino()
 
-    def hard_drop(self):
+    def hard_drop(self, get_new_tetromino = False):
         """
-            Move the current tetromino down until it has landed
+        Move the current tetromino down until it has landed
+            
+        Args:
+        get_new_tetromino: If set, update the current tetromino to a new tetromino after the hard drop
         """
         self.sound_manager.play_sfx(SoundManager.HARD_DROP_SFX)
         drop_distance = self.tetromino.drop_distance()
 
-        # num_move_down = 0
         while not self.tetromino.has_landed:
-            # num_move_down += 1
             self.tetromino.update()
 
-        # self.last_time_lock = 0
         self.score += drop_distance * 2
         
-        self.place_tetromino()
+        self.place_tetromino(get_new_tetromino)
         self.last_time_lock = current_millis()
 
 
@@ -383,10 +391,10 @@ class Tetris(State):
         self.tetromino = Tetromino(self, self.bag.pop(0))
         
         #Check Block Out condition. The newly spawned Tetromino is blocked by an existing block on the field
-        for block in self.tetromino.blocks:
-            if self.field_arr[int(block.pos.y)][int(block.pos.x)]:
-                self.block_out = True
-                return
+        # for block in self.tetromino.blocks:
+        #     if self.field_arr[int(block.pos.y)][int(block.pos.x)]:
+        #         self.block_out = True
+        #         return
     
     def hold(self):
         """
@@ -422,7 +430,7 @@ class Tetris(State):
         """
         Checks Lock out Game Over condition. Use this method before getting the next tetromino
         """
-        #Only checks condition if the current tetromino has already been locked to the field
+        #Only check condition if the current tetromino has already been locked to the field
         if not self.tetromino.has_locked: return False
         
         #check the number of blocks on the tetromino that is above the sky line
@@ -440,7 +448,7 @@ class Tetris(State):
         Checks Block out Game Over condition. Use this method before getting the next tetromino
         """
         
-        #Only checks condition if the current tetromino has already been locked to the field
+        #Only check condition if the current tetromino has already been locked to the field
         if not self.tetromino.has_locked: return False
         
         new_tetromino = Tetromino(self, self.bag[0])
@@ -456,9 +464,11 @@ class Tetris(State):
         """
         Identify if the current game should be over
         """
-        if self.lock_out or self.block_out:
-            if self.lock_out: print("Lock out")
-            if self.block_out: print("Block out")
+        
+        # if self.lock_out or self.block_out:
+        #     return True
+        
+        if self.check_lock_out() or self.check_block_out():
             return True
         
         if self.game_mode == Tetris.MODE_SPRINT and self.lines_cleared >= SPRINT_LINE_TO_CLEAR:
