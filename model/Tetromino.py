@@ -145,8 +145,9 @@ class Tetromino:
 
             if not self.is_collide(new_position_kick):
                 self.is_rotate = True
-                if i != 0 and self.shape != "O":
-                    self.is_wall_kick = True
+                
+                self.is_wall_kick = False if i == 0 or self.shape == "O" else True
+                # self.is_wall_kick = True if i != 0 and self.shape != "O" else False
 
                 for i, block in enumerate(self.blocks):
                     block.pos = new_position_kick[i]
