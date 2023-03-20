@@ -143,6 +143,31 @@ ACTION_TO_TEXT = {
     MINI_T_SPIN_2 : "Mini T Spin Double"
 }
 
+
+# Key is based on lines cleared
+ACTION_BASIC = {0: LINE_0, 1: LINE_1, 2: LINE_2, 3: LINE_3, 4: LINE_4}
+ACTION_T_SPIN = {0: T_SPIN_0, 1: T_SPIN_1, 2: T_SPIN_2, 3: T_SPIN_3}
+ACTION_MINI_T_SPIN = {0: MINI_T_SPIN_0, 1: MINI_T_SPIN_1, 2: MINI_T_SPIN_2}
+
+# Key is based on score type
+ACTION_DICT = { 0: ACTION_BASIC, 1: ACTION_T_SPIN, 2: ACTION_MINI_T_SPIN}
+
+
+# Scores
+
+# Key is based on lines cleared
+BASIC_SCORE_DICT = {0: 0, 1: 100, 2: 200, 3: 500, 4: 800 }
+T_SPIN_SCORE_DICT = {0: 400, 1: 800, 2: 1200, 3: 1600,}
+MINI_T_SPIN_SCORE_DICT = {0: 100, 1: 200, 2: 400}
+SCORE_PEFECT_CLEAR_DICT = {0: 0, 1: 800, 2: 1200, 3: 1800, 4: 200 }
+SCORE_PEFECT_CLEAR_B2B = 3200
+
+# Key is based on score type
+SCORE_DICT = { 0: BASIC_SCORE_DICT, 1: T_SPIN_SCORE_DICT, 2: MINI_T_SPIN_SCORE_DICT}
+
+HARD_DROP_SCORE = 2 #Hard drop score per row dropped
+SOFT_DROP_SCORE = 1 #Soft drop score per row dropped
+
 # Links
 """
 SFX: https://you.have.fail/at/tetrioplus/#sfx-25Pi25-soundpack

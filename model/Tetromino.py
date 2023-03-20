@@ -91,6 +91,7 @@ class Tetromino:
         self.shape = shape
         self.blocks = [Block(self, pos, TETROMINO_COLOR[self.shape]) for pos in self.SHAPE[self.shape]]
         self.has_landed = False
+        self.has_previously_landed = False
         self.has_locked = False
         
         self.tetris = tetris
@@ -116,16 +117,13 @@ class Tetromino:
             self.is_wall_kick = False
             self.is_rotate = False
             self.has_landed = False
+            if self.drop_distance() == 0: 
+                self.has_previously_landed = True
+                self.has_landed = True
             return True
         
-        # Immediately check if the tetromino has landed by looking if it cannot move again in a downward direction
-        # Otherwise, require one more current update call to modify has_landed when tetromino is moved down
-        #
-        # new_positions_down = [block.pos + self.MOVE_DIRECTIONS[Tetromino.DIRECTIONS_DOWN] for block in self.blocks if block.pos]
-        # if self.is_collide(new_positions_down) and direction == Tetromino.DIRECTIONS_DOWN:
-        #     self.has_landed = True
-
         if direction == Tetromino.DIRECTIONS_DOWN:
+            self.has_previously_landed = True
             self.has_landed = True
         
         return False
@@ -175,6 +173,13 @@ class Tetromino:
             Returns the number of blocks the tetromino needs to drop to reach until a collision is detected
         """
         return min(map(Block.drop_distance, self.blocks))
+
+    def get_lowest_y(self):
+        """
+        Returns the bottom y coordinate of the tetromino. 
+        Note: the higher the y coordinate, the more bottom it is
+        """
+        return max([int(block.pos.y) for block in self.blocks])
 
     def get_offset(self, clockwise: bool):
         """

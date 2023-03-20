@@ -49,7 +49,6 @@ class Tetris(State):
         self.tetromino = None
         self.get_new_tetromino()
         
-
         self.hold_piece_shape = None
         self.has_hold = False
 
@@ -57,22 +56,8 @@ class Tetris(State):
         self.combo = -1
 
         self.score = 0
-        # Key is based on lines cleared
-        self.basic_score_system = {0: 0, 1: 100, 2: 200, 3: 500, 4: 800 }
-        self.t_spin_score_system = {0: 400, 1: 800, 2: 1200, 3: 1600,}
-        self.mini_t_spin_score_system = {0: 100, 1: 200, 2: 400}
-        self.score_perfect_clear_system = {0: 0, 1: 800, 2: 1200, 3: 1800, 4: 200 }
-        self.score_perfect_clear_b2b = 3200
-        # Key is based on score type
-        self.score_dict = { 0: self.basic_score_system, 1: self.t_spin_score_system, 2: self.mini_t_spin_score_system}
-
         self.action = LINE_0
-        # Key is based on lines cleared
-        self.action_basic = {0: LINE_0, 1: LINE_1, 2: LINE_2, 3: LINE_3, 4: LINE_4}
-        self.action_t_spin = {0: T_SPIN_0, 1: T_SPIN_1, 2: T_SPIN_2, 3: T_SPIN_3}
-        self.action_mini_t_spin = {0: MINI_T_SPIN_0, 1: MINI_T_SPIN_1, 2: MINI_T_SPIN_2}
-        # Key is based on score type
-        self.action_dict = { 0: self.action_basic, 1: self.action_t_spin, 2: self.action_mini_t_spin}
+
 
         self.is_last_action_difficult = False
         self.is_b2b = False
@@ -89,6 +74,7 @@ class Tetris(State):
         # Lock delay (in milliseconds)
         self.last_time_lock = 0
         self.lock_moves = 0
+        self.lowest_row_reached = 0
 
         # Appearance Delay (in milliseconds)
         self.last_time_are = 0 
@@ -130,13 +116,16 @@ class Tetris(State):
         if trigger and (self.accelerate or self.check_are()):             
             is_success = self.tetromino.update()
             if is_success: 
-                if self.accelerate:  self.score += 1
-                self.last_time_lock = current_millis()
+                if self.accelerate:  self.score += SOFT_DROP_SCORE
+                self.update_lock_move()
+                if self.lock_moves < MAX_LOCK_MOVES: self.last_time_lock = current_millis()
 
         
         # Lock/Placing Phase. Score, and Combo are also updated in this phase
-        if self.tetromino.has_landed and self.tetromino.drop_distance() == 0 and not self.tetromino.has_locked:
-            if self.check_lock_delay():
+        if (self.tetromino.has_landed or self.check_lock_delay()) and \
+            self.tetromino.drop_distance() == 0 and not self.tetromino.has_locked:
+                
+            if self.check_lock_delay(): 
                 self.sound_manager.play_sfx(SoundManager.LAND_SFX)
                 self.place_tetromino(False) # Score and Combo are updated here.
                 self.last_time_lock = current_millis()
@@ -170,8 +159,8 @@ class Tetris(State):
         self.sound_manager.play_sfx(SoundManager.ROTATE_SFX)
         is_rotate_success = self.tetromino.rotate(clockwise)
         if is_rotate_success: 
-            self.last_time_lock = current_millis()
             self.update_lock_move()
+            if self.lock_moves < MAX_LOCK_MOVES: self.last_time_lock = current_millis()
 
     def move(self, direction):
         """
@@ -183,12 +172,12 @@ class Tetris(State):
             return
         
         if not self.key_down_pressed:
-
             is_move_success = self.tetromino.update(direction)
             if is_move_success: 
                 self.sound_manager.play_sfx(SoundManager.MOVE_SFX, override=False)
-                self.last_time_lock = current_millis()
+                # self.last_time_lock = current_millis()
                 self.update_lock_move()
+                if self.lock_moves < MAX_LOCK_MOVES: self.last_time_lock = current_millis()
 
             self.key_down_pressed = True
 
@@ -199,8 +188,9 @@ class Tetris(State):
             is_move_success = self.tetromino.update(direction)
             if is_move_success: 
                 self.sound_manager.play_sfx(SoundManager.MOVE_SFX, override=False)
-                #self.last_time_lock = current_millis()
+                # self.last_time_lock = current_millis()
                 self.update_lock_move()
+                if self.lock_moves < MAX_LOCK_MOVES: self.last_time_lock = current_millis()
 
             self.last_time_interval = current_millis()
     
@@ -227,6 +217,8 @@ class Tetris(State):
         
         self.tetromino.has_locked = True
         self.has_hold = False
+        self.lowest_row_reached = 0
+        self.lock_moves = 0
         
         #Check the total number of blocks in the tetromino that is above the skyline. Lock out Condition
         count = 0
@@ -277,16 +269,16 @@ class Tetris(State):
             self.sound_manager.play_sfx(SoundManager.ALL_CLEAR_SFX)
         
         perfect_clear_score = 0 if not self.is_perfect_clear()\
-            else self.score_perfect_clear_b2b if self.is_b2b \
-            else self.score_perfect_clear_system[lines_cleared]            
+            else SCORE_PEFECT_CLEAR_B2B if self.is_b2b \
+            else SCORE_PEFECT_CLEAR_DICT[lines_cleared]            
 
             
         dict_index = 1 if is_t_spin else 2 if is_mini_t_spin else 0
         ## Update score
-        self.score += self.score_dict[dict_index][lines_cleared] * self.level + (self.is_b2b * B2B_MULTIPLIER)
+        self.score += SCORE_DICT[dict_index][lines_cleared] * self.level + (self.is_b2b * B2B_MULTIPLIER)
         self.score += max(0, self.combo) * 50 * self.level
         self.score += perfect_clear_score * self.level if self.is_current_perfect_clear else 0
-        self.action = self.action_dict[dict_index][lines_cleared]
+        self.action = ACTION_DICT[dict_index][lines_cleared]
         
         self.last_time_are = current_millis()
     
@@ -309,15 +301,16 @@ class Tetris(State):
         while not self.tetromino.has_landed:
             self.tetromino.update()
 
-        self.score += drop_distance * 2
+        self.score += drop_distance * HARD_DROP_SCORE
         
         self.place_tetromino(get_new_tetromino)
+      
         self.last_time_lock = current_millis()
 
 
     def hard_drop2(self, tetromino):
         """
-            Move [tetromino] down until it has landed
+            Move [tetromino] down until it has landed. Only use for the get_ghost_tetromino() function
         """
         while not tetromino.has_landed:
             tetromino.update()
@@ -545,11 +538,16 @@ class Tetris(State):
         """
             Updates the number of moves while during the lock delay
         """
-        if self.tetromino.has_landed : 
-            self.lock_moves += 1 
-        else:
+        # Only update the lock_moves if the tetromino has reached to a new lowest row reached
+        lowest_y = self.tetromino.get_lowest_y()
+        if lowest_y > self.lowest_row_reached:
             self.lock_moves = 0
-    
+            self.lowest_row_reached = lowest_y
+        else:
+            #Only update the lock moves when it has landed on a Surface before
+            if self.tetromino.has_previously_landed: 
+                self.lock_moves += 1
+                
     def check_are(self):
         """
             Check condition for Appearance Delay Rule
