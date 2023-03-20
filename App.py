@@ -44,7 +44,7 @@ class App:
         self.accelerate_event = False
 
         pygame.time.set_timer(self.animation_event, ZEN_MODE_FALL_SPEED)
-        pygame.time.set_timer(self.accelerate_event, ACCELERATE_INTERVAL)
+        pygame.time.set_timer(self.accelerate_event, ZEN_MODE_ACCELERATE_INTERVAL)
     
     def loop(self):
         """

@@ -25,7 +25,7 @@ INITIAL_TETROMINO_OFFSET = vec(FIELD_WIDTH//2 , 1)
 WIDTH, HEIGHT = BOARD_WIDTH + SIDEBAR_WIDTH + SIDEBAR_WIDTH, BOARD_HEIGHT
 
 ZEN_MODE_FALL_SPEED = 1000 # milliseconds
-ACCELERATE_INTERVAL = int(ZEN_MODE_FALL_SPEED / 20) # millisecond. Accelerate speed should be 20 times faster than the normal fall speed
+ZEN_MODE_ACCELERATE_INTERVAL = int(ZEN_MODE_FALL_SPEED / 20) # millisecond. Accelerate speed should be 20 times faster than the normal fall speed
 
 
 TETROMINO_COLOR = {

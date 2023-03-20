@@ -37,9 +37,9 @@ class Tetris(State):
 
         self.level = 1
         self.game_mode = game_mode
-        if game_mode != Tetris.MODE_MARATHON:
+        if game_mode == Tetris.MODE_ZEN:
             pygame.time.set_timer(self.app.animation_event, ZEN_MODE_FALL_SPEED)
-            pygame.time.set_timer(self.app.accelerate_event, ACCELERATE_INTERVAL)
+            pygame.time.set_timer(self.app.accelerate_event, ZEN_MODE_ACCELERATE_INTERVAL)
         else:
             self.update_time_speed()
 
