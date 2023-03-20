@@ -229,8 +229,13 @@ class Tetris(State):
             self.combo = -1
 
         ##Check B2B
-        is_current_action_difficult = lines_cleared == 4 or \
-            (lines_cleared > 1 and (is_t_spin or is_mini_t_spin))
+        
+        ## Difficult action includes a tetris, a t-spin, or a mini t-spin.
+        # Note that a t-spin with no lines is still considered a diffcult acytion
+        is_current_action_difficult = lines_cleared == 4 or is_t_spin or is_mini_t_spin
+        
+        ## Alternatively, any action that is not a single, double or triple
+        is_current_action_difficult = not (lines_cleared < 4 and not (is_t_spin or is_mini_t_spin))
 
         self.is_b2b = self.is_last_action_difficult and is_current_action_difficult
         self.is_last_action_difficult = is_current_action_difficult
@@ -269,11 +274,11 @@ class Tetris(State):
             # num_move_down += 1
             self.tetromino.update()
 
-        # self.last_time_lock = 0
-        self.score += drop_distance * 2
-        self.place_tetromino()
-        self.last_time_lock = current_millis()
-        
+        self.last_time_lock = 0
+        # self.score += drop_distance * 2
+        # self.place_tetromino()
+        # self.last_time_lock = current_millis()
+
 
     def hard_drop2(self, tetromino):
         """
@@ -384,6 +389,7 @@ class Tetris(State):
         """
         Identify if the current game should be over
         """
+        print(self.get_time_passed())
         if self.tetromino.blocks[0].pos.y == INITIAL_TETROMINO_OFFSET[1]:
             return True
         

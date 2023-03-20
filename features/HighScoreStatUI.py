@@ -57,7 +57,7 @@ class HighScoreStatUI:
     
     def draw_ultra_stats(self):
         time_passed = 0 if Tetris.Tetris.MODE_ULTRA not in self.state.data.keys() \
-            else self.state.data[Tetris.Tetris.MODE_ULTRA]["Line Cleared"]
+             else self.state.data[Tetris.Tetris.MODE_ULTRA]["Lines Cleared"]
         
         ultra_label_obj = self.text_font.render("Ultra", True, "Red")
         ultra_label_rect = ultra_label_obj.get_rect(centerx = self.state.app.screen.get_width()//2, 
