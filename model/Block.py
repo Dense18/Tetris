@@ -45,8 +45,8 @@ class Block:
         Checks if the tetromino collides with the given position
         """
         x, y = int(pos.x), int(pos.y)
-        if x in range(0, FIELD_WIDTH) and y < FIELD_HEIGHT: # hits the border
-            if y < 0 or not self.tetromino.tetris.field_arr[y][x]: # Collision with other block
+        if x in range(0, FIELD_WIDTH) and y < FIELD_HEIGHT: # Does not hits the border
+            if y < 0 or not self.tetromino.tetris.field_arr[y][x]: # Does not Collide with other block
                 return False
         return True
     
