@@ -1,7 +1,6 @@
 import pygame
 
 from features.menu.MainMenu import MainMenu
-from features.Tetris import Tetris
 from settings import *
 from SoundManager import SoundManager
 

@@ -3,9 +3,9 @@ from copy import deepcopy
 
 import pygame
 
-from features.GameOver import GameOver
+from features.gameover.GameOver import GameOver
 from features.State import State
-from features.TetrisUI import TetrisUI
+from features.tetrisgame.TetrisUI import TetrisUI
 from model.Block import Block
 from model.TetrisStat import TetrisStat
 from model.Tetromino import Tetromino
@@ -37,6 +37,16 @@ class Tetris(State):
 
         self.level = 1
         self.game_mode = game_mode
+        
+        
+        ## Drop speed
+        self.fall_speed_interval_ms = 10000 # in milliseconds
+        self.last_time_fall = 0
+        
+        self.accelerate_speed_interval_ms = self.fall_speed_interval_ms * 0.2 # in milliseconds
+        self.last_time_accelerate = 0
+        
+        
         if game_mode == Tetris.MODE_ZEN:
             pygame.time.set_timer(self.app.animation_event, ZEN_MODE_FALL_SPEED)
             pygame.time.set_timer(self.app.accelerate_event, ZEN_MODE_ACCELERATE_INTERVAL)
@@ -112,8 +122,22 @@ class Tetris(State):
         self.handle_key_pressed(pygame.key.get_pressed())
         
         # Falling Phase
-        trigger = [self.app.animation_flag, self.app.accelerate_event][self.accelerate]
-        if trigger and (self.accelerate or self.check_are()):             
+        # trigger = [self.app.animation_flag, self.app.accelerate_event][self.accelerate]
+        current_time = current_millis()
+        
+        ## Checks whether the tetromino piece is able to be move down based on the respective interval
+        should_fall_drop = (current_time - self.last_time_fall)> self.fall_speed_interval_ms
+        should_accelerate_drop = (current_time - self.last_time_accelerate) > self.accelerate_speed_interval_ms
+        
+        if should_fall_drop:
+            self.last_time_fall = current_time
+        if should_accelerate_drop:
+            self.last_time_accelerate = current_time
+
+        trigger = [should_fall_drop, should_accelerate_drop][self.accelerate]
+        
+            
+        if trigger and (self.accelerate or self.check_are()):      
             is_success = self.tetromino.update()
             if is_success: 
                 if self.accelerate:  self.score += SOFT_DROP_SCORE
@@ -408,6 +432,10 @@ class Tetris(State):
         speed = pow((0.8 - ((self.level-1) * 0.007)), self.level - 1) #https://tetris.fandom.com/wiki/Tetris_Worlds
         pygame.time.set_timer(self.app.animation_event, int(speed * 1000))
         pygame.time.set_timer(self.app.accelerate_event, int(speed * 1000 / 20))
+        
+        self.fall_speed_interval_ms = int(speed * 1000)
+        self.accelerate_speed_interval_ms = self.fall_speed_interval_ms / 20
+        
     
     def check_next_nevel(self):
         """

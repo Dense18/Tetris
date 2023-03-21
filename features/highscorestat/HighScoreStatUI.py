@@ -1,4 +1,4 @@
-import features.Tetris as Tetris
+import features.tetrisgame.Tetris as Tetris
 from settings import *
 
 

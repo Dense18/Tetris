@@ -2,7 +2,7 @@ import math
 
 import pygame
 
-import features.Tetris as Tetris
+import features.tetrisgame.Tetris as Tetris
 from model.Block import Block
 from model.Tetromino import Tetromino
 from settings import *

@@ -3,14 +3,13 @@ import copy
 import pygame
 
 import features.menu.PlayMenu as PlayMenu
-import features.Tetris as Tetris
-from features.GameOverUI import GameOverUI
+import features.tetrisgame.Tetris as Tetris
+from features.gameover.GameOverUI import GameOverUI
 from features.State import State
-from FileSystem import FileSystem
 from model.TetrisStat import TetrisStat, TetrisStatEncoder
 from settings import *
 from SoundManager import SoundManager
-from TetrisStatFileManager import TetrisStatFileManager
+from utils.TetrisStatFileManager import TetrisStatFileManager
 
 
 class GameOver(State):
@@ -22,7 +21,6 @@ class GameOver(State):
         self.ui = GameOverUI(self)
         
         self.tetris_stat = tetris_stat
-        self.fileSystem = FileSystem("")
         
         self.sound_manager = SoundManager.getInstance()
         self.tetris_stat_manager = TetrisStatFileManager()   

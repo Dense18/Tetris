@@ -2,12 +2,12 @@ import os
 
 import pygame
 
-from features.HighScoreStatUI import HighScoreStatUI
+from features.highscorestat.HighScoreStatUI import HighScoreStatUI
 from features.State import State
 from settings import *
 from SoundManager import SoundManager
-from TetrisStatFileManager import TetrisStatFileManager
 from ui.widget.AnimatedButton import AnimatedButton, Button
+from utils.TetrisStatFileManager import TetrisStatFileManager
 
 
 class HighScoreStat(State):

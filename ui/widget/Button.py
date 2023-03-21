@@ -1,6 +1,6 @@
 import pygame
 
-from ButtonObserver import ButtonObserver
+from ui.widget.ButtonObserver import ButtonObserver
 
 
 class Button(ButtonObserver):

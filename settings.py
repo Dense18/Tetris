@@ -3,11 +3,14 @@ import pygame
 vec = pygame.math.Vector2
 
 FPS = 60
+
+#* BACKGROUND COLORS *#
 BG_COLOR = (0,0,0) # or (48, 25, 52)
 SIDEBAR_BG_COLOR = (0,0,0)
 GAME_OVER_BG_COLOR = (0,0,0)
 TETRIS_BOARD_COLOR = (40,40,40)
 
+#* DIMENSIONS *#
 BLOCK_SIZE = 40 # Size of each block of tetromino
 FIELD_SIZE = FIELD_WIDTH, FIELD_HEIGHT = 10, 22 # Number of block available on the field. Also called as the Matrix
 SKY_LINE = 2# Horizontal line/ Row index on the Matrix. Tetromino will initially spawn just above the SKY_LINE
@@ -24,9 +27,7 @@ INITIAL_TETROMINO_OFFSET = vec(FIELD_WIDTH//2 , 1)
 
 WIDTH, HEIGHT = BOARD_WIDTH + SIDEBAR_WIDTH + SIDEBAR_WIDTH, BOARD_HEIGHT
 
-ZEN_MODE_FALL_SPEED = 1000 # milliseconds
-ZEN_MODE_ACCELERATE_INTERVAL = int(ZEN_MODE_FALL_SPEED / 20) # millisecond. Accelerate speed should be 20 times faster than the normal fall speed
-
+#* TETROMINO *#
 
 TETROMINO_COLOR = {
         'T': (128,0,128), #Purple
@@ -38,6 +39,9 @@ TETROMINO_COLOR = {
         'Z': (255,0,0)#Red
 }
 
+
+#* TETRIS INFORMATION *#
+
 LINES_TO_ADVANCE_LEVEL = 10 #Uses fixed goal levelling system
 MAX_LEVEL = 20
 SPRINT_LINE_TO_CLEAR = 40
@@ -45,20 +49,12 @@ ULTRA_TIME_SPAN = 120000 #milliseconds
 
 COUNTDOWN_TIME = 3000 #milliseconds
 WITH_COUNTDOWN = False # Flag to set if there should be a countdown timer before being able to apply a move in the tetris game
-# Directory
-SOUND_DIR= "Assets\\Sound"
-TETRIS_SOUND_OST_DIR = SOUND_DIR + "\\" "TetrisOst"
-TETRIS_SOUND_SFX_DIR = SOUND_DIR + "\\" + "TetrisSfx" 
 
-IMAGES_DIR = "Assets\\Images"
 
-# Sound Channel
-LEVEL_UP_CHANNNEL = 6
-MOVE_CHANNEL = 5
-MENU_CHANNEL = 4
-COMBO_CHANNEL = 3
-SFX_CHANNEL = 2
-OST_CHANNEL = 1
+ZEN_MODE_FALL_SPEED = 1000 # milliseconds
+ZEN_MODE_ACCELERATE_INTERVAL = int(ZEN_MODE_FALL_SPEED / 20) # millisecond
+
+#* TETRIS SPECIAL SYSTEMS *#
 
 # Das (Delayed Auto Shift) in milliseconds
 KEY_DELAY = 133
@@ -71,11 +67,34 @@ MAX_LOCK_MOVES = 15 # Number
 # ARE (Appearance Delay)
 APPEARANCE_DELAY = 500
 
-#SCORE
-B2B_MULTIPLIER = 1.5
+
+#* ASSETS DIRECTORIES  *#
+
+SOUND_DIR= "Assets\\Sound"
+TETRIS_SOUND_OST_DIR = SOUND_DIR + "\\" "TetrisOst"
+TETRIS_SOUND_SFX_DIR = SOUND_DIR + "\\" + "TetrisSfx" 
+
+IMAGES_DIR = "Assets\\Images"
+SAVE_DIR = "save"
+
+#* FILE NAMES *#
+BEST_SCORE_FILE_NAME = "Best_Score" 
 
 
-# Buttons
+
+#* SOUND CHANNELS *#
+
+LEVEL_UP_CHANNNEL = 6
+MOVE_CHANNEL = 5
+MENU_CHANNEL = 4
+COMBO_CHANNEL = 3
+SFX_CHANNEL = 2
+OST_CHANNEL = 1
+
+
+
+#* BUTTONS UI *#
+
 BUTTON_COLOR = (220, 0, 0) # (128, 0, 128))
 BUTTON_HOVER_COLOR = (136, 8, 8)# (150, 0, 150)
 BUTTON_TEXT_COLOR = "white"
@@ -91,13 +110,14 @@ BACK_BUTTON_TEXT_COLOR = "black"
 
 GAME_FAILED_TEXT_COLOR = "red"
 
-## TEXT_SIZE:
+#* TEXT SIZE  *#
+
 TEXT_SIZE = 30
 HINT_TEXT_SIZE = 20
 MENU_BUTTON_TEXT_SIZE = 50
 MENU_BUTTON_BORDER_RADIUS = 12
 
-## TEXT COLORS:
+#* TEXT COLORS  *#
 BONUS_ACTION_COLOR = "purple"
 ACTION_COLOR = "green"
 COMBO_SCORE_COLOR = "red"
@@ -107,10 +127,10 @@ HINT_TEXT_COLOR = "red"
 NUM_NEXT_PIECE_TO_DISPLAY = 5
 HIGH_SCORE_TEXT_COLOR = "green"
 GAME_OVER_SCORE_TEXT_COLOR = "orange"
-# NAME OF FILE TO STORING THE BEST SCORE FOR EACH GAME MODE
-BEST_SCORE_FILE_NAME = "Best_Score"
 
-#ACTIONS
+
+#* ACTIONS *#
+
 LINE_0 = 1
 LINE_1 = 2
 LINE_2 = 3
@@ -153,7 +173,7 @@ ACTION_MINI_T_SPIN = {0: MINI_T_SPIN_0, 1: MINI_T_SPIN_1, 2: MINI_T_SPIN_2}
 ACTION_DICT = { 0: ACTION_BASIC, 1: ACTION_T_SPIN, 2: ACTION_MINI_T_SPIN}
 
 
-# Scores
+#* SCORING SYSTEM *#
 
 # Key is based on lines cleared
 BASIC_SCORE_DICT = {0: 0, 1: 100, 2: 200, 3: 500, 4: 800 }
@@ -168,7 +188,10 @@ SCORE_DICT = { 0: BASIC_SCORE_DICT, 1: T_SPIN_SCORE_DICT, 2: MINI_T_SPIN_SCORE_D
 HARD_DROP_SCORE = 2 #Hard drop score per row dropped
 SOFT_DROP_SCORE = 1 #Soft drop score per row dropped
 
-# Links
+B2B_MULTIPLIER = 1.5
+
+#* Links  *#
+
 """
 SFX: https://you.have.fail/at/tetrioplus/#sfx-25Pi25-soundpack
 Main Ost: https://archive.org/details/TetrisThemeMusic

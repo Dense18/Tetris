@@ -1,6 +1,6 @@
 import pygame
 
-from features.HighScoreStat import HighScoreStat
+from features.highscorestat.HighScoreStat import HighScoreStat
 from features.menu.PlayMenu import PlayMenu
 from features.State import State
 from settings import *

@@ -1,11 +1,11 @@
-from FileSystem import FileSystem
 from model.TetrisStat import TetrisStat, TetrisStatEncoder
 from settings import *
+from utils.FileSystem import FileSystem
 
 
 class TetrisStatFileManager:
     def __init__(self):
-        self.file_system = FileSystem("", "json")
+        self.file_system = FileSystem(SAVE_DIR, "json")
         
     def get_data(self) -> dict:
         """
@@ -28,9 +28,3 @@ class TetrisStatFileManager:
         """
         self.file_system.save(tetris_stat_dict, BEST_SCORE_FILE_NAME, cls = TetrisStatEncoder)
     
-    # def save(self, tetris_info: TetrisStat):
-    #     """
-    #     Save [tetris_info] to the system
-    #     """
-    #     self.file_system.save(BEST_SCORE_FILE_NAME, tetris_info)
-        

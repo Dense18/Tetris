@@ -1,6 +1,6 @@
 import pygame
 
-import features.Tetris as Tetris
+import features.tetrisgame.Tetris as Tetris
 from settings import *
 from utils.utils import *
 

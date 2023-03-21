@@ -2,7 +2,7 @@ import os
 
 import pygame
 
-import features.Tetris as Tetris
+import features.tetrisgame.Tetris as Tetris
 from features.menu.PlayMenuUI import PlayMenuUI
 from features.State import State
 from settings import *
