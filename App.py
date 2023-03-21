@@ -2,7 +2,7 @@ import pygame
 
 from features.menu.MainMenu import MainMenu
 from settings import *
-from SoundManager import SoundManager
+from utils.SoundManager import SoundManager
 
 
 class App:

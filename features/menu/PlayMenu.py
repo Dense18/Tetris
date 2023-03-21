@@ -6,8 +6,8 @@ import features.tetrisgame.Tetris as Tetris
 from features.menu.PlayMenuUI import PlayMenuUI
 from features.State import State
 from settings import *
-from SoundManager import SoundManager
 from ui.widget.AnimatedButton import AnimatedButton
+from utils.SoundManager import SoundManager
 
 
 class PlayMenu(State):

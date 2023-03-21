@@ -5,8 +5,8 @@ import pygame
 from features.highscorestat.HighScoreStatUI import HighScoreStatUI
 from features.State import State
 from settings import *
-from SoundManager import SoundManager
 from ui.widget.AnimatedButton import AnimatedButton, Button
+from utils.SoundManager import SoundManager
 from utils.TetrisStatFileManager import TetrisStatFileManager
 
 

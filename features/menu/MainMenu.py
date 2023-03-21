@@ -4,8 +4,8 @@ from features.highscorestat.HighScoreStat import HighScoreStat
 from features.menu.PlayMenu import PlayMenu
 from features.State import State
 from settings import *
-from SoundManager import SoundManager
 from ui.widget.AnimatedButton import AnimatedButton
+from utils.SoundManager import SoundManager
 
 
 class MainMenu(State):

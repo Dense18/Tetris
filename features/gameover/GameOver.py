@@ -8,7 +8,7 @@ from features.gameover.GameOverUI import GameOverUI
 from features.State import State
 from model.TetrisStat import TetrisStat, TetrisStatEncoder
 from settings import *
-from SoundManager import SoundManager
+from utils.SoundManager import SoundManager
 from utils.TetrisStatFileManager import TetrisStatFileManager
 
 

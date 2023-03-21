@@ -1,9 +1,13 @@
 from abc import ABC, abstractmethod
 
-from Subject import Subject
+from features.Subject import Subject
 
 
 class State(Subject, ABC):
+    """
+        Abstract Class of each State of the Game
+    """
+    
     ADD_STATE = 0
     """
     If set, add the state to the state stack.
@@ -16,10 +20,6 @@ class State(Subject, ABC):
     stack will be exited and the top of the state stack will be the current state.
     """
     
-    
-    """
-        Abstract Class of each State of the Game
-    """
     def __init__(self, app):
         self.app = app
         self.prev_state = None
