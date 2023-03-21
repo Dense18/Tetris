@@ -43,6 +43,15 @@ class State(Subject, ABC):
         """
         raise NotImplementedError
     
+    def start_state(self, state, flag = ADD_STATE):
+        """
+        Start a new state [state] to the application. Same as calling [state].enter_state(flag)
+        
+        Args:
+            Flag: additional instruction when entering the state.
+        """
+        state.enter_state(flag)
+    
     def enter_state(self, flag = ADD_STATE):
         """
         Enter the current state.
