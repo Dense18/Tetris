@@ -45,7 +45,7 @@ class SoundManager:
             COMBO_CHANNEL: 0.6,
             MENU_CHANNEL: 0.5,
             MOVE_CHANNEL: 0.8,
-            LEVEL_UP_CHANNNEL: 0.8
+            LEVEL_UP_CHANNNEL: 0.2
         }
 
         self.is_muted = False
