@@ -244,6 +244,8 @@ class Tetromino:
 
             if new_pos_x in range(0, FIELD_WIDTH) and new_pos_y in range(0, FIELD_HEIGHT):
                 corner_list.append(self.tetris.field_arr[new_pos_y][new_pos_x] )
+            else:
+                corner_list.append(None)
         return corner_list
     
 
