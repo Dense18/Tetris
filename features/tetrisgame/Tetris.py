@@ -93,10 +93,14 @@ class Tetris(State):
     def on_start_state(self):
         self.sound_manager.play_ost(SoundManager.MAIN_OST)
         
+        ## Variables for countdown timer before game starts
         self.start_time_countdown_ms = current_millis()
         self.time_left_countdown_ms = COUNTDOWN_TIME
         
+        ## Variable for keeping track of the start time when the game starts
         self.start_time_in_seconds = time.time() + COUNTDOWN_TIME//1000 if WITH_COUNTDOWN else time.time()
+        
+        self.last_time_are = current_millis()
         
     def update(self, events):
         
