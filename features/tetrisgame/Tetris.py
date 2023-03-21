@@ -30,8 +30,12 @@ class Tetris(State):
         super().__init__(app)
         
         self.field_arr = [[0 for col in range(FIELD_WIDTH)] for row in range(FIELD_HEIGHT)]
+        
+        # Flag to set if it is a soft drop
         self.accelerate = False
         
+        # Game over conditions. Not used in the current code. 
+        # Current code uses the check_lock_out and check_nlock_out functions
         self.lock_out = False
         self.block_out = False
 
@@ -46,35 +50,39 @@ class Tetris(State):
         self.accelerate_speed_interval_ms = self.fall_speed_interval_ms * 0.2 # in milliseconds
         self.last_time_accelerate = 0
         
-        
+        # Update fall speed based on the game mode
         if game_mode == Tetris.MODE_ZEN:
             pygame.time.set_timer(self.app.animation_event, ZEN_MODE_FALL_SPEED)
             pygame.time.set_timer(self.app.accelerate_event, ZEN_MODE_ACCELERATE_INTERVAL)
         else:
             self.update_time_speed()
 
-        self.bag_min_items = 5
+        # Uses a randomizer bag for tetromino generation
+        self.bag_min_items = 5 
         self.bag = TetrominoBag(self.bag_min_items)
         
         self.tetromino = None
         self.get_new_tetromino()
         
+        # Hold piece functionality
         self.hold_piece_shape = None
         self.has_hold = False
 
+        # Score and Combos
+        self.score = 0
         self.lines_cleared = 0
         self.combo = -1
 
-        self.score = 0
+
+        # Actions
+        
+        # Identifies if the current "action" is a Single line clear, Tetris, T_Spin etc.
         self.action = LINE_0
 
-
-        self.is_last_action_difficult = False
+        #Difficult action is any action that is not a single, double, or triple line clear
+        self.is_last_action_difficult = False # 
         self.is_b2b = False
         self.is_current_perfect_clear = False
-
-        self.ui = TetrisUI(self)
-        self.sound_manager = SoundManager.getInstance()
 
         # Delayed Auto Shift (in milliseconds)
         self.last_time_interval = 0
@@ -88,6 +96,10 @@ class Tetris(State):
 
         # Appearance Delay (in milliseconds)
         self.last_time_are = 0 
+        
+        # UI and Sounds
+        self.ui = TetrisUI(self)
+        self.sound_manager = SoundManager.getInstance()
         
     
     def on_start_state(self):
@@ -112,7 +124,7 @@ class Tetris(State):
             return
         
         # Generation Phase. 
-        # Only get a new tetromino if the current tetromino has already been locked to the field
+        # Only generate a new tetromino if the current tetromino has already been locked to the field
         if self.tetromino.has_locked:
             self.get_new_tetromino()
         
@@ -126,7 +138,6 @@ class Tetris(State):
         self.handle_key_pressed(pygame.key.get_pressed())
         
         # Falling Phase
-        # trigger = [self.app.animation_flag, self.app.accelerate_event][self.accelerate]
         current_time = current_millis()
         
         ## Checks whether the tetromino piece is able to be move down based on the respective interval
@@ -139,8 +150,6 @@ class Tetris(State):
             self.last_time_accelerate = current_time
 
         trigger = [should_fall_drop, should_accelerate_drop][self.accelerate]
-        
-            
         if trigger and (self.accelerate or self.check_are()):      
             is_success = self.tetromino.update()
             if is_success: 

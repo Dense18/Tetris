@@ -5,7 +5,13 @@ from model.Tetromino import Tetromino
 
 
 class TetrominoBag(MutableSequence):
+    """
+    Class handling the management of a bag of tetrominoes.
+    """
     def __init__(self, min_item):
+        """
+            min_item: Minimum number of items in the bag befpre generating a new set of tetrominoes
+        """
         super(TetrominoBag, self).__init__()
         self.shape_list = []
         self.min_item = min_item
