@@ -176,14 +176,14 @@ class TetrisUI:
         # tetro.draw(self.tetris.app.screen, offset = (SIDEBAR_WIDTH, 0), mode = Block.MODE_BORDER_INDICATION)
         
         # Second method
-        drop_distance = self.tetromino.drop_distance()
-        for block in self.tetromino.blocks:
+        drop_distance = self.tetris.tetromino.drop_distance()
+        for block in self.tetris.tetromino.blocks:
             Block.draw_custom(
                 self.tetris.app.screen,
                 #(SIDEBAR_WIDTH, 0) is to offset the left sidebar when drawing the block onto the screen
                 (block.pos + (0, drop_distance)) * BLOCK_SIZE + (SIDEBAR_WIDTH,0), 
                 BLOCK_SIZE,
-                color = TETROMINO_COLOR[self.tetromino.shape],
+                color = TETROMINO_COLOR[self.tetris.tetromino.shape],
                 mode = Block.MODE_BORDER_INDICATION_COLOR
             )
     
