@@ -159,6 +159,8 @@ class Tetris(State):
 
         
         # Lock/Placing Phase. Score, and Combo are also updated in this phase
+        
+        # if self.tetromino.drop_distance() == 0 and self.check_lock_delay() and not self.tetromino.has_locked
         if (self.tetromino.has_landed or self.check_lock_delay()) and \
             self.tetromino.drop_distance() == 0 and not self.tetromino.has_locked:
                 
@@ -334,9 +336,18 @@ class Tetris(State):
         """
         self.sound_manager.play_sfx(SoundManager.HARD_DROP_SFX)
         drop_distance = self.tetromino.drop_distance()
-
-        while not self.tetromino.has_landed:
+        
+        #Method 1
+        # while not self.tetromino.has_landed:
+        #     self.tetromino.update()
+        
+        # Method 2 
+        while self.tetromino.drop_distance() > 0:
             self.tetromino.update()
+        
+        # Method 3
+        # for i in range(drop_distance):
+        #     self.tetromino.update()
 
         self.score += drop_distance * HARD_DROP_SCORE
         
