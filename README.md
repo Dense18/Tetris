@@ -10,16 +10,15 @@ pip install pygame
 py main.py
 ```
 
-# Code Structure
+# Code Structure / Information
 - Uses a stack system to manage the different states of the game.
   - Inspiration is based on how android studio works
 - Uses an custom observer design pattern to handle UI widgets such as Buttons
 - Button uses listeners to such as on_click, on_hover to handle different events
-- Uses Json to store data
 
 
 # Tetris Features
-Note: This following features is based on the official Tetris Guidelines
+**Note:** The following features is based on the official Tetris Guidelines
 
 Features:
 - Game runs in 60 fps 
@@ -99,9 +98,7 @@ The program will also display the hint description for each mode when you hover 
     <td><img src = "examples/PlayMenuMarathonHint.png" width = 300 height = 300></td>
     <td><img src = "examples/PlayMenuZenHint.png" width = 300 height = 300></td>
   </tr>
- </table>
-<table>
-  <tr>
+    <tr>
     <td>Sprint </td>
      <td>Ultra </td>
   </tr>
@@ -110,6 +107,7 @@ The program will also display the hint description for each mode when you hover 
     <td><img src = "examples/PlayMenuUltraHint.png" width = 300 height = 300></td>
   </tr>
  </table>
+<table>
 
 ## Tetris Game
 This is the main screen for the Tetris Game
