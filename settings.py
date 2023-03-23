@@ -192,17 +192,6 @@ SOFT_DROP_SCORE = 1 #Soft drop score per row dropped
 
 B2B_MULTIPLIER = 1.5
 
-#* Links  *#
 
-"""
-SFX: https://you.have.fail/at/tetrioplus/#sfx-25Pi25-soundpack
-Main Ost: https://archive.org/details/TetrisThemeMusic
-Menu Ost: https://www.zophar.net/music/gameboy-gbs/tetris
-Game Over Ost:https://downloads.khinsider.com/game-soundtracks/album/tetris-rip 
-Tetris GuideLine: https://tetris.fandom.com/wiki/Tetris_Guideline 
-Rotation System: https://tetris.wiki/Super_Rotation_System
-Score System:  https://tetris.fandom.com/wiki/Scoring#Guideline_scoring_system  
-Combo System: https://tetris.wiki/Combo#:~:text=Combo%20system%20(consecutive%20line%20clears)&text=The%20combo%20counter%20starts%20at,clears%20equals%20a%201%2Dcombo. 
-"""
 
 

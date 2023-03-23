@@ -454,10 +454,10 @@ class Tetris(State):
         Update the speed of the Tetris game based on the current level
         """
         speed = pow((0.8 - ((self.level-1) * 0.007)), self.level - 1) #https://tetris.fandom.com/wiki/Tetris_Worlds
-        pygame.time.set_timer(self.app.animation_event, int(speed * 1000))
-        pygame.time.set_timer(self.app.accelerate_event, int(speed * 1000 / 20))
+        # pygame.time.set_timer(self.app.animation_event, int(speed * 1000))
+        # pygame.time.set_timer(self.app.accelerate_event, int(speed * 1000 / 20))
         
-        self.fall_speed_interval_ms = int(speed * 1000)
+        self.fall_speed_interval_ms = speed * 1000
         self.accelerate_speed_interval_ms = self.fall_speed_interval_ms / 20
         
     
