@@ -51,11 +51,7 @@ class Tetris(State):
         self.last_time_accelerate = 0
         
         # Update fall speed based on the game mode
-        if game_mode == Tetris.MODE_ZEN:
-            pygame.time.set_timer(self.app.animation_event, ZEN_MODE_FALL_SPEED)
-            pygame.time.set_timer(self.app.accelerate_event, ZEN_MODE_ACCELERATE_INTERVAL)
-        else:
-            self.update_time_speed()
+        self.update_time_speed()
 
         # Uses a randomizer bag for tetromino generation
         self.bag_min_items = 5 
@@ -150,6 +146,7 @@ class Tetris(State):
             self.last_time_accelerate = current_time
 
         trigger = [should_fall_drop, should_accelerate_drop][self.accelerate]
+        print(trigger)
         if trigger and (self.accelerate or self.check_are()):      
             is_success = self.tetromino.update()
             if is_success: 
@@ -429,6 +426,9 @@ class Tetris(State):
     #* Update Tetris state *#
     
     def get_new_tetromino(self):
+        """
+            Retrieve a new Tetromino from the Tetromino bag and set it to the current tetromino
+        """
         self.tetromino = Tetromino(self, self.bag.pop(0))
         
         #Check Block Out condition. The newly spawned Tetromino is blocked by an existing block on the field
@@ -453,9 +453,13 @@ class Tetris(State):
         """
         Update the speed of the Tetris game based on the current level
         """
+        
+        if self.game_mode == Tetris.MODE_ZEN:
+            self.fall_speed_interval_ms = ZEN_MODE_FALL_SPEED
+            self.accelerate_speed_interval_ms = ZEN_MODE_ACCELERATE_INTERVAL
+            return
+            
         speed = pow((0.8 - ((self.level-1) * 0.007)), self.level - 1) #https://tetris.fandom.com/wiki/Tetris_Worlds
-        # pygame.time.set_timer(self.app.animation_event, int(speed * 1000))
-        # pygame.time.set_timer(self.app.accelerate_event, int(speed * 1000 / 20))
         
         self.fall_speed_interval_ms = speed * 1000
         self.accelerate_speed_interval_ms = self.fall_speed_interval_ms / 20
