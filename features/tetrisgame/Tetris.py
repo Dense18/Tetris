@@ -146,7 +146,6 @@ class Tetris(State):
             self.last_time_accelerate = current_time
 
         trigger = [should_fall_drop, should_accelerate_drop][self.accelerate]
-        print(trigger)
         if trigger and (self.accelerate or self.check_are()):      
             is_success = self.tetromino.update()
             if is_success: 
